@@ -20,6 +20,17 @@ let ReviewService = class ReviewService {
     async getAll() {
         return this.prisma.review.findMany();
     }
+    async create(createReviewDto) {
+        await this.prisma.beverage.update({
+            where: { id: createReviewDto.beverageId },
+            data: {
+                reviewCount: { increment: 1 },
+            },
+        });
+        return this.prisma.review.create({
+            data: createReviewDto,
+        });
+    }
 };
 exports.ReviewService = ReviewService;
 exports.ReviewService = ReviewService = __decorate([

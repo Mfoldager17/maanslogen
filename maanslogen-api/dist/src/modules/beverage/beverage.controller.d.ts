@@ -1,4 +1,5 @@
 import { BeverageService } from './beverage.service';
+import { CreateBeverageDto } from './dto/create-beverage.dto';
 export declare class BeverageController {
     private beverageService;
     constructor(beverageService: BeverageService);
@@ -10,8 +11,14 @@ export declare class BeverageController {
         brand: string;
         country: string;
         metadata: import("@prisma/client/runtime/client").JsonValue | null;
+        imageUrl: string | null;
         averageRating: number;
         reviewCount: number;
-        imageUrl: string | null;
     }[]>;
+    create(createBeverageDto: CreateBeverageDto): Promise<{
+        id: string;
+        name: string;
+        description: string | null;
+        icon: string | null;
+    }>;
 }

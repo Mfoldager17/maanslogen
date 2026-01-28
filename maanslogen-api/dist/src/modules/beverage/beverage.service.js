@@ -20,6 +20,11 @@ let BeverageService = class BeverageService {
     async getAll() {
         return this.prisma.beverage.findMany();
     }
+    async create(createCategoryDto) {
+        return this.prisma.beverageCategory.create({
+            data: createCategoryDto,
+        });
+    }
 };
 exports.BeverageService = BeverageService;
 exports.BeverageService = BeverageService = __decorate([
