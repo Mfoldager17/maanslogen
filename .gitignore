@@ -81,7 +81,7 @@ out/
 *.tsbuildinfo
 
 # package-lock.json
-package-lock.json
+maanslogen-api/package-lock.json
 
 # dist
 dist/
