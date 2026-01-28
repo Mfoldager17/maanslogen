@@ -10,3 +10,9 @@ prisma/generated
 
 # Environment variables
 .env
+
+# package-lock.json
+package-lock.json
+
+# dist
+dist
