@@ -12,7 +12,7 @@ async function bootstrap() {
     .setTitle('Maanslogen API')
     .setDescription('API til Maanslogen admin og frontend')
     .setVersion('1.0')
-    .addBearerAuth() // hvis du senere vil bruge auth
+    .addBearerAuth() 
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
