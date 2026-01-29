@@ -38,7 +38,9 @@ async function main() {
     data: {
       name: 'Øl',
       description: 'Alle typer øl',
-      icon: '🍺',
+      images: {
+        create: [{ url: '🍺', type: 'ICON' }],
+      },
     },
   });
 
@@ -46,7 +48,9 @@ async function main() {
     data: {
       name: 'Vin',
       description: 'Rød, hvid og rosé',
-      icon: '🍷',
+      images: {
+        create: [{ url: '🍷', type: 'ICON' }],
+      },
     },
   });
 

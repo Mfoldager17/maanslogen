@@ -1,6 +1,8 @@
 // beverage-category/dto/create-category.dto.ts
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsArray, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { CreateImageDto } from '../../../common/dto/create-image.dto';
 
 export class CreateCategoryDto {
   @ApiProperty({ description: 'The name of the beverage category', example: 'Beer' })
@@ -12,8 +14,14 @@ export class CreateCategoryDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ description: 'The icon of the beverage category', example: '🍺' })
+  @ApiProperty({
+    description: 'List of images (e.g. icon)',
+    type: [CreateImageDto],
+    required: false,
+  })
   @IsOptional()
-  @IsString()
-  icon?: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateImageDto)
+  images?: CreateImageDto[];
 }

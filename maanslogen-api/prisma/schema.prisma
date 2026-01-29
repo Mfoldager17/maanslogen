@@ -6,13 +6,36 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ImageType {
+  THUMBNAIL
+  LARGE
+  PROFILE
+  ICON
+}
+
+model Image {
+  id           String            @id @default(uuid())
+  url          String
+  type         ImageType
+  userId       String?
+  beverageId   String?
+  categoryId   String?
+  user         User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  beverage     Beverage?         @relation(fields: [beverageId], references: [id], onDelete: Cascade)
+  category     BeverageCategory? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([beverageId])
+  @@index([categoryId])
+}
+
 model User {
   id             String   @id @default(uuid())
   username       String   @unique
   email          String   @unique
   passwordHash   String
   createdAt      DateTime @default(now())
-  profilePicture String?
+  images         Image[]
   reviews        Review[]
 }
 
@@ -20,7 +43,7 @@ model BeverageCategory {
   id          String                @id @default(uuid())
   name        String
   description String?
-  icon        String?
+  images      Image[]
   attributes  AttributeDefinition[]
   types       BeverageType[]
   questions   Question[]
@@ -50,7 +73,7 @@ model Beverage {
   metadata        Json?
   averageRating   Float                    @default(0)
   reviewCount     Int                      @default(0)
-  imageUrl        String?
+  images          Image[]
   createdAt       DateTime                 @default(now())
   type            BeverageType             @relation(fields: [beverageTypeId], references: [id])
   attributeValues BeverageAttributeValue[]

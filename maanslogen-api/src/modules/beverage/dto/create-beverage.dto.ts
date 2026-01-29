@@ -1,6 +1,8 @@
 // beverage/dto/create-beverage.dto.ts
-import { IsString, IsOptional, IsObject } from 'class-validator';
+import { IsString, IsOptional, IsObject, IsArray, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { CreateImageDto } from '../../../common/dto/create-image.dto';
 
 export class CreateBeverageDto {
   @ApiProperty({ description: 'ID of the beverage type', example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -25,8 +27,15 @@ export class CreateBeverageDto {
   @IsObject()
   metadata?: object;
 
-  @ApiProperty({ description: 'URL to the beverage image', example: 'https://example.com/beer.jpg', required: false })
+  @ApiProperty({
+    description: 'List of images (e.g. thumbnail, large)',
+    type: [CreateImageDto],
+    required: false,
+  })
+  
   @IsOptional()
-  @IsString()
-  imageUrl?: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateImageDto)
+  images?: CreateImageDto[];
 }

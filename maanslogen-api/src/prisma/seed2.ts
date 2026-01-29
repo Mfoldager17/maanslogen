@@ -20,6 +20,7 @@ async function main() {
   await prisma.review.deleteMany({});
   await prisma.beverageAttributeValue.deleteMany({});
   await prisma.beverage.deleteMany({});
+  await prisma.image.deleteMany({});
   await prisma.question.deleteMany({});
   await prisma.attributeDefinition.deleteMany({});
   await prisma.beverageType.deleteMany({});
@@ -43,11 +44,19 @@ async function main() {
 
   // ---------- Categories ----------
   const beerCategory = await prisma.beverageCategory.create({
-    data: { name: 'Øl', description: 'Alle typer øl', icon: '🍺' },
+    data: {
+      name: 'Øl',
+      description: 'Alle typer øl',
+      images: { create: [{ url: '🍺', type: 'ICON' }] },
+    },
   });
 
   const wineCategory = await prisma.beverageCategory.create({
-    data: { name: 'Vin', description: 'Rød, hvid og rosé', icon: '🍷' },
+    data: {
+      name: 'Vin',
+      description: 'Rød, hvid og rosé',
+      images: { create: [{ url: '🍷', type: 'ICON' }] },
+    },
   });
 
   // ---------- Types ----------

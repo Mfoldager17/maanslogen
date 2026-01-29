@@ -7,12 +7,22 @@ export class BeverageService {
   constructor(private prisma: PrismaService) {}
 
   async getAll() {
-    return this.prisma.beverage.findMany();
+    return this.prisma.beverage.findMany({
+      include: { images: true },
+    });
   }
 
-  async create(createCategoryDto: CreateBeverageDto) {
-    return this.prisma.beverageCategory.create({
-      data: createCategoryDto,
+  async create(createBeverageDto: CreateBeverageDto) {
+    const { images, ...beverageData } = createBeverageDto;
+    return this.prisma.beverage.create({
+      data: {
+        ...beverageData,
+        country: beverageData.country || 'DK',
+        ...(images?.length
+          ? { images: { create: images.map((img) => ({ url: img.url, type: img.type })) } }
+          : {}),
+      },
+      include: { images: true },
     });
   }
 }

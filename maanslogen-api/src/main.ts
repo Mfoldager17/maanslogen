@@ -16,7 +16,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // /api vil være Swagger UI
+  SwaggerModule.setup('swagger', app, document); // /api vil være Swagger UI
 
   await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);

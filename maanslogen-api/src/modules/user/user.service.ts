@@ -7,12 +7,21 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async getAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      include: { images: true },
+    });
   }
 
   async create(createUserDto: CreateUserDto) {
+    const { images, ...userData } = createUserDto;
     return this.prisma.user.create({
-      data: createUserDto,
+      data: {
+        ...userData,
+        ...(images?.length
+          ? { images: { create: images.map((img) => ({ url: img.url, type: img.type })) } }
+          : {}),
+      },
+      include: { images: true },
     });
   }
 }
