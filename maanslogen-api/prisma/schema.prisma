@@ -166,3 +166,15 @@ model ReviewAnswer {
   @@index([reviewId])
   @@index([questionId])
 }
+
+// Uploads that got a presigned URL but were never "claimed" by creating a Beverage/User/Category/Type.
+// Cleanup job deletes these from S3 and removes the rows.
+model PendingUpload {
+  id        String   @id @default(uuid())
+  bucket   String   @default("maanslogen-test") // S3 bucket name (allows multiple buckets)
+  key       String   // S3 object key, e.g. images/uuid
+  expiresAt DateTime
+
+  @@unique([bucket, key])
+  @@index([expiresAt])
+}

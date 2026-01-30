@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { MinioService } from '../minio/minio.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Injectable()
 export class BeverageCategoryService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private minioService: MinioService,
+  ) {}
 
   async getAll() {
     return this.prisma.beverageCategory.findMany({
@@ -21,7 +25,7 @@ export class BeverageCategoryService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     const { images, ...categoryData } = createCategoryDto;
-    return this.prisma.beverageCategory.create({
+    const entity = await this.prisma.beverageCategory.create({
       data: {
         ...categoryData,
         ...(images?.length
@@ -30,5 +34,9 @@ export class BeverageCategoryService {
       },
       include: { images: true },
     });
+    if (images?.length) {
+      await this.minioService.confirmUploads(images.map((img) => img.url));
+    }
+    return entity;
   }
 }

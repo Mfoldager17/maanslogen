@@ -21,6 +21,7 @@ async function main() {
   await prisma.beverageAttributeValue.deleteMany({});
   await prisma.beverage.deleteMany({});
   await prisma.image.deleteMany({});
+  await prisma.pendingUpload.deleteMany({});
   await prisma.question.deleteMany({});
   await prisma.attributeDefinition.deleteMany({});
   await prisma.beverageType.deleteMany({});

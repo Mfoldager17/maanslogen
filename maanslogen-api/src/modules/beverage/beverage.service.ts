@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { MinioService } from '../minio/minio.service';
 import { CreateBeverageDto } from './dto/create-beverage.dto';
 
 @Injectable()
 export class BeverageService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private minioService: MinioService,
+  ) {}
 
   async getAll() {
     return this.prisma.beverage.findMany({
@@ -14,7 +18,7 @@ export class BeverageService {
 
   async create(createBeverageDto: CreateBeverageDto) {
     const { images, ...beverageData } = createBeverageDto;
-    return this.prisma.beverage.create({
+    const entity = await this.prisma.beverage.create({
       data: {
         ...beverageData,
         country: beverageData.country || 'DK',
@@ -24,5 +28,9 @@ export class BeverageService {
       },
       include: { images: true },
     });
+    if (images?.length) {
+      await this.minioService.confirmUploads(images.map((img) => img.url));
+    }
+    return entity;
   }
 }
