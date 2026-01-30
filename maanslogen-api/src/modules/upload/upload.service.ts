@@ -7,6 +7,9 @@ import {
   HeadBucketCommand,
   DeleteObjectCommand,
   PutBucketPolicyCommand,
+  ListBucketsCommand,
+  ListObjectsV2Command,
+  DeleteBucketCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
@@ -274,5 +277,37 @@ export class UploadService {
   @Cron('0 */12 * * *') // Hver 12. time (fx 00:00 og 12:00)
   async handleScheduledCleanup(): Promise<void> {
     await this.cleanupExpiredPendingUploads();
+  }
+
+  /**
+   * Sletter buckets der er tomme (0 objekter). Spring over default-bucketen (MINIO_BUCKET).
+   */
+  async deleteEmptyBuckets(): Promise<void> {
+    let buckets: { Name?: string }[] = [];
+    try {
+      const result = await this.client.send(new ListBucketsCommand({}));
+      buckets = result.Buckets ?? [];
+    } catch {
+      return;
+    }
+    for (const b of buckets) {
+      const name = b.Name;
+      if (!name || name === this.defaultBucket) continue;
+      try {
+        const list = await this.client.send(
+          new ListObjectsV2Command({ Bucket: name, MaxKeys: 1 }),
+        );
+        if ((list.KeyCount ?? 0) === 0) {
+          await this.client.send(new DeleteBucketCommand({ Bucket: name }));
+        }
+      } catch {
+        // Ignorer (fx manglende rettigheder eller bucket findes ikke)
+      }
+    }
+  }
+
+  @Cron('0 3 * * 0') // Hver søndag kl. 03:00
+  async handleWeeklyEmptyBucketCleanup(): Promise<void> {
+    await this.deleteEmptyBuckets();
   }
 }
