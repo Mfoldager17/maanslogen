@@ -6,6 +6,7 @@ import {
   CreateBucketCommand,
   HeadBucketCommand,
   DeleteObjectCommand,
+  PutBucketPolicyCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
@@ -14,6 +15,10 @@ import { PrismaService } from '../../prisma/prisma.service';
 
 export interface PresignSlot {
   type: ImageType;
+  /** Bredde (px) – bruges i key som keyPrefix/id/widthxheight. Default per type hvis udeladt. */
+  width?: number;
+  /** Højde (px) – bruges i key som keyPrefix/id/widthxheight. Default per type hvis udeladt. */
+  height?: number;
 }
 
 export interface PresignResult {
@@ -21,8 +26,18 @@ export interface PresignResult {
   url: string;
   key: string;
   type: ImageType;
+  width: number;
+  height: number;
   bucket: string;
 }
+
+/** Default dimensioner per type (width x height) når slot ikke angiver width/height. */
+const DEFAULT_DIMENSIONS: Record<ImageType, { width: number; height: number }> = {
+  [ImageType.THUMBNAIL]: { width: 200, height: 200 },
+  [ImageType.LARGE]: { width: 800, height: 800 },
+  [ImageType.PROFILE]: { width: 400, height: 400 },
+  [ImageType.ICON]: { width: 64, height: 64 },
+};
 
 export interface CreatePresignedUploadsOptions {
   /** Seconds until presigned URL expires (default: 900) */
@@ -50,7 +65,7 @@ const PRESIGN_CONTEXT_CONFIG: Record<
 };
 
 @Injectable()
-export class MinioService {
+export class UploadService {
   private readonly client: S3Client;
   private readonly defaultBucket: string;
   private readonly endpointBaseUrl: string;
@@ -90,6 +105,7 @@ export class MinioService {
 
   /**
    * Ensures the bucket exists; creates it if it does not.
+   * Nye buckets får public read policy (GetObject for everyone) så billed-URL'er kan åbnes.
    * Safe to use because bucket/keyPrefix are backend-controlled per context.
    */
   async ensureBucket(bucket?: string): Promise<void> {
@@ -98,20 +114,49 @@ export class MinioService {
       await this.client.send(new HeadBucketCommand({ Bucket: b }));
     } catch {
       await this.client.send(new CreateBucketCommand({ Bucket: b }));
+      await this.setBucketPublicReadPolicy(b);
+    }
+  }
+
+  /**
+   * Sets bucket policy to allow public read (s3:GetObject) for all objects.
+   * Bruger samme format som MinIO "download" preset så Console kan vise Public i stedet for Custom.
+   */
+  private async setBucketPublicReadPolicy(bucket: string): Promise<void> {
+    const policy = JSON.stringify({
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Sid: 'PublicRead',
+          Effect: 'Allow',
+          Principal: { AWS: ['*'] },
+          Action: ['s3:GetObject'],
+          Resource: [`arn:aws:s3:::${bucket}/*`],
+        },
+      ],
+    });
+    try {
+      await this.client.send(
+        new PutBucketPolicyCommand({ Bucket: bucket, Policy: policy }),
+      );
+    } catch {
+      // Policy may fail if MinIO has different defaults; bucket still exists
     }
   }
 
   /**
    * Presigned uploads for a given context – bucket og keyPrefix sættes i backend.
+   * Valgfri bucketOverride (fx fra query-param til test) – bruges i stedet for context default.
    */
   async createPresignedUploadsForContext(
     context: PresignContext,
     slots: PresignSlot[],
     expiresInSeconds = 900,
+    bucketOverride?: string,
   ): Promise<PresignResult[]> {
     const config = PRESIGN_CONTEXT_CONFIG[context];
     return this.createPresignedUploads(slots, {
-      bucket: config.bucket,
+      bucket: bucketOverride ?? config.bucket,
       keyPrefix: config.keyPrefix,
       expiresInSeconds,
     });
@@ -136,9 +181,15 @@ export class MinioService {
     const results: PresignResult[] = [];
     const expiresAt = new Date(Date.now() + expiresInSeconds * 1000);
     const publicBaseUrl = this.getPublicBaseUrl(bucket);
+    const imageId = randomUUID();
 
     for (const slot of slots) {
-      const key = `${keyPrefix}/${randomUUID()}`;
+      const dims =
+        slot.width != null && slot.height != null
+          ? { width: slot.width, height: slot.height }
+          : DEFAULT_DIMENSIONS[slot.type];
+      const sizeSegment = `${dims.width}x${dims.height}`;
+      const key = `${keyPrefix}/${imageId}/${sizeSegment}`;
       const command = new PutObjectCommand({
         Bucket: bucket,
         Key: key,
@@ -159,6 +210,8 @@ export class MinioService {
         url,
         key,
         type: slot.type,
+        width: dims.width,
+        height: dims.height,
         bucket,
       });
     }
@@ -184,7 +237,7 @@ export class MinioService {
   }
 
   /**
-   * Parses a full object URL (e.g. http://minio:9000/bucket/images/uuid) into bucket and key.
+   * Parses a full object URL (e.g. http://storage:9000/bucket/images/uuid) into bucket and key.
    */
   urlToBucketAndKey(url: string): { bucket: string; key: string } | null {
     try {

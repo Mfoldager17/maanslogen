@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { MinioService } from '../minio/minio.service';
+import { UploadService } from '../upload/upload.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     private prisma: PrismaService,
-    private minioService: MinioService,
+    private uploadService: UploadService,
   ) {}
 
   async getAll() {
@@ -22,13 +22,22 @@ export class UserService {
       data: {
         ...userData,
         ...(images?.length
-          ? { images: { create: images.map((img) => ({ url: img.url, type: img.type })) } }
+          ? {
+              images: {
+                create: images.map((img) => ({
+                  url: img.url,
+                  type: img.type,
+                  width: img.width,
+                  height: img.height,
+                })),
+              },
+            }
           : {}),
       },
       include: { images: true },
     });
     if (images?.length) {
-      await this.minioService.confirmUploads(images.map((img) => img.url));
+      await this.uploadService.confirmUploads(images.map((img) => img.url));
     }
     return entity;
   }

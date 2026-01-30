@@ -21,6 +21,28 @@ export class PresignSlotDto {
   })
   @IsEnum(ImageType)
   type: ImageType;
+
+  @ApiPropertyOptional({
+    description: 'Bredde (px) – bruges i key som .../id/widthxheight. Default per type hvis udeladt.',
+    minimum: 1,
+    maximum: 4096,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(4096)
+  width?: number;
+
+  @ApiPropertyOptional({
+    description: 'Højde (px) – bruges i key som .../id/widthxheight. Default per type hvis udeladt.',
+    minimum: 1,
+    maximum: 4096,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(4096)
+  height?: number;
 }
 
 export class PresignUploadDto {

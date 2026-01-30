@@ -17,6 +17,8 @@ model Image {
   id           String            @id @default(uuid())
   url          String
   type         ImageType
+  width        Int?              // billedbredde (px)
+  height       Int?              // billedhøjde (px)
   userId       String?
   beverageId   String?
   categoryId   String?

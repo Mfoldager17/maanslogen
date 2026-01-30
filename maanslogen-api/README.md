@@ -31,9 +31,9 @@ Billeder uploades via **presigned URLs**: frontend henter upload-URLs fra API’
 
 **Flow:**  
 1. Kald presign med **context** (bucket og mappesti sættes i backend):  
-   - `POST /minio/presign/beverage-images` – til beverage-billeder  
-   - `POST /minio/presign/user-profile` – til brugerprofil  
-   - `POST /minio/presign/category-icons` – til kategorier  
+   - `POST /upload/presign/beverage-images` – til beverage-billeder  
+   - `POST /upload/presign/user-profile` – til brugerprofil  
+   - `POST /upload/presign/category-icons` – til kategorier  
    Body: `{ "uploads": [ { "type": "THUMBNAIL" }, { "type": "LARGE" } ] }`  
 2. For hver slot: **PUT** fil til `uploadUrl` (body = fil, header `Content-Type: image/jpeg` eller tilsvarende)  
 3. Opret entitet (f.eks. `POST /beverages`) med `images: [ { "url": "<url fra step 1>", "type": "THUMBNAIL" }, ... ]`  
@@ -87,7 +87,7 @@ Så peger API’et på MinIO via proxy-domænet, og de billed-URL’er der retur
    ```
    Scriptet (kræver Node.js og curl): henter beverage type → presigned URL → uploader testbillede → opretter beverage med billed-URL. Ved succes står der ✅ i slutningen.
 
-Alternativt: brug **Swagger** på `http://localhost:3000/swagger` – test fx `POST /minio/presign/beverage-images` og `POST /beverages`. Til fil-upload til `uploadUrl`: `curl -X PUT "<uploadUrl>" -H "Content-Type: image/png" --data-binary @fil.png`.
+Alternativt: brug **Swagger** på `http://localhost:3000/swagger` – test fx `POST /upload/presign/beverage-images` og `POST /beverages`. Til fil-upload til `uploadUrl`: `curl -X PUT "<uploadUrl>" -H "Content-Type: image/png" --data-binary @fil.png`.
 
 ## Project setup
 

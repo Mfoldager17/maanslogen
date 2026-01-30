@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { BeverageController } from './beverage.controller';
 import { BeverageService } from './beverage.service';
-import { MinioModule } from '../minio/minio.module';
+import { UploadModule } from '../upload/upload.module';
 
 @Module({
-  imports: [MinioModule],
+  imports: [UploadModule],
   controllers: [BeverageController],
   providers: [BeverageService],
 })

@@ -1,12 +1,12 @@
-import { Body, Controller, Param, ParseEnumPipe, Post } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
-import { MinioService, PresignContext } from './minio.service';
+import { BadRequestException, Body, Controller, Headers, Param, Post } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiHeader } from '@nestjs/swagger';
+import { UploadService, PresignContext } from './upload.service';
 import { PresignUploadDto } from './dto/presign-upload.dto';
 
-@ApiTags('MinIO')
-@Controller('minio')
-export class MinioController {
-  constructor(private readonly minioService: MinioService) {}
+@ApiTags('Upload')
+@Controller('upload')
+export class UploadController {
+  constructor(private readonly uploadService: UploadService) {}
 
   @Post('presign/:context')
   @ApiOperation({
@@ -25,6 +25,11 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
     enum: ['beverage-images', 'user-profile', 'category-icons'],
     description: 'Upload-type – backend vælger bucket og mappesti',
   })
+  @ApiHeader({
+    name: 'X-Test-Bucket',
+    required: false,
+    description: 'Valgfri bucket (fx til test) – opretter ny bucket med public policy hvis den ikke findes',
+  })
   @ApiBody({ type: PresignUploadDto })
   @ApiResponse({
     status: 201,
@@ -41,6 +46,8 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
               url: { type: 'string', description: 'Brug denne URL i images[] ved oprettelse' },
               key: { type: 'string' },
               type: { type: 'string', enum: ['THUMBNAIL', 'LARGE', 'PROFILE', 'ICON'] },
+              width: { type: 'number', description: 'Bredde (px) – brug ved oprettelse' },
+              height: { type: 'number', description: 'Højde (px) – brug ved oprettelse' },
               bucket: { type: 'string' },
             },
           },
@@ -50,13 +57,26 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
   })
   @ApiResponse({ status: 400, description: 'Ugyldig request eller bucket findes ikke' })
   async presign(
-    @Param('context', new ParseEnumPipe({ enum: PresignContext })) context: PresignContext,
+    @Param('context') contextParam: string,
     @Body() dto: PresignUploadDto,
+    @Headers('x-test-bucket') bucketOverride?: string,
   ) {
-    const uploads = await this.minioService.createPresignedUploadsForContext(
+    const validContexts = Object.values(PresignContext);
+    if (!validContexts.includes(contextParam as PresignContext)) {
+      throw new BadRequestException(
+        `context skal være én af: ${validContexts.join(', ')}`,
+      );
+    }
+    const context = contextParam as PresignContext;
+    const uploads = await this.uploadService.createPresignedUploadsForContext(
       context,
-      dto.uploads.map((u) => ({ type: u.type })),
+      dto.uploads.map((u) => ({
+        type: u.type,
+        width: u.width,
+        height: u.height,
+      })),
       dto.expiresInSeconds,
+      bucketOverride,
     );
     return { uploads };
   }

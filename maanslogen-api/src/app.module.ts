@@ -6,7 +6,7 @@ import { BeverageModule } from './modules/beverage/beverage.module';
 import { ReviewModule } from './modules/review/review.module';
 import { BeverageCategoryModule } from './modules/beverage-category/beverage-category.module';
 import { BeverageTypeModule } from './modules/beverage-type/beverage-type.module';
-import { MinioModule } from './modules/minio/minio.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { MinioModule } from './modules/minio/minio.module';
     ReviewModule,
     BeverageCategoryModule,
     BeverageTypeModule,
-    MinioModule,
+    UploadModule,
   ],
   controllers: [],
   providers: [],
