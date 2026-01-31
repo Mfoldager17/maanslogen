@@ -1,0 +1,540 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Maanslogen API", "version": "1.0" },
+  "paths": {
+    "/api/admin/beverage-categories": {
+      "get": {
+        "operationId": "getAllCategories",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/BeverageCategory" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCategoryDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BeverageCategory" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/beverage-categories/{id}": {
+      "get": {
+        "operationId": "getCategoryById",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BeverageCategory" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/beverage-types": {
+      "get": {
+        "operationId": "getAllTypes",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/BeverageType" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createType",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateBeverageTypeDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BeverageType" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/beverage-types/{id}": {
+      "get": {
+        "operationId": "getTypeById",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BeverageType" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/beverages": {
+      "get": {
+        "operationId": "getAllBeverages",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Beverage" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createBeverage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateBeverageDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Beverage" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/beverages/{id}": {
+      "get": {
+        "operationId": "getBeverageById",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Beverage" }
+              }
+            }
+          },
+          "404": { "description": "Beverage not found" }
+        }
+      }
+    },
+    "/api/admin/attributes": {
+      "get": {
+        "operationId": "findAllAttributes",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AttributeDefinition" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAttribute",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateAttributeDefinitionDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AttributeDefinition" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/attributes/category/{categoryId}": {
+      "get": {
+        "operationId": "findAttributesByCategory",
+        "parameters": [{ "name": "categoryId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AttributeDefinition" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/attributes/{id}": {
+      "get": {
+        "operationId": "getAttributeById",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AttributeDefinition" }
+              }
+            }
+          },
+          "404": { "description": "Attribute definition not found" }
+        }
+      }
+    },
+    "/api/admin/reviews": {
+      "get": {
+        "operationId": "getAllReviews",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Review" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/reviews/{id}": {
+      "get": {
+        "operationId": "getReviewById",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Review" }
+              }
+            }
+          },
+          "404": { "description": "Review not found" }
+        }
+      }
+    },
+    "/api/admin/questions": {
+      "get": {
+        "operationId": "findAllQuestions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Question" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createQuestion",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateQuestionDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Question" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/questions/category/{categoryId}": {
+      "get": {
+        "operationId": "findQuestionsByCategory",
+        "parameters": [{ "name": "categoryId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Question" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/questions/type/{typeId}": {
+      "get": {
+        "operationId": "findQuestionsByType",
+        "parameters": [{ "name": "typeId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Question" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/questions/{id}": {
+      "get": {
+        "operationId": "getQuestionById",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Question" }
+              }
+            }
+          },
+          "404": { "description": "Question not found" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuestion",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Question deleted, sortOrder compacted" },
+          "404": { "description": "Question not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BeverageCategory": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string", "nullable": true }
+        }
+      },
+      "CreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CreateImageDto" }
+          }
+        },
+        "required": ["name"]
+      },
+      "CreateImageDto": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string" },
+          "type": { "type": "string", "enum": ["THUMBNAIL", "LARGE", "PROFILE", "ICON"] },
+          "width": { "type": "number" },
+          "height": { "type": "number" }
+        },
+        "required": ["url", "type"]
+      },
+      "BeverageType": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "categoryId": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string", "nullable": true },
+          "active": { "type": "boolean" }
+        }
+      },
+      "CreateBeverageTypeDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "categoryId": { "type": "string" },
+          "description": { "type": "string" },
+          "active": { "type": "boolean" }
+        },
+        "required": ["name", "categoryId"]
+      },
+      "BeverageImage": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "url": { "type": "string" },
+          "type": { "type": "string", "enum": ["THUMBNAIL", "LARGE", "PROFILE", "ICON"] },
+          "width": { "type": "number", "nullable": true },
+          "height": { "type": "number", "nullable": true }
+        }
+      },
+      "Beverage": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "beverageTypeId": { "type": "string" },
+          "brand": { "type": "string" },
+          "name": { "type": "string" },
+          "country": { "type": "string" },
+          "metadata": {},
+          "averageRating": { "type": "number" },
+          "reviewCount": { "type": "number" },
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BeverageImage" }
+          }
+        }
+      },
+      "CreateBeverageDto": {
+        "type": "object",
+        "properties": {
+          "beverageTypeId": { "type": "string" },
+          "brand": { "type": "string" },
+          "name": { "type": "string" },
+          "country": { "type": "string" },
+          "metadata": {},
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CreateImageDto" }
+          }
+        },
+        "required": ["beverageTypeId", "brand", "name"]
+      },
+      "AttributeDefinition": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "categoryId": { "type": "string" },
+          "typeId": { "type": "string", "nullable": true },
+          "attributeKey": { "type": "string" },
+          "displayName": { "type": "string" },
+          "dataType": { "type": "string" },
+          "filterable": { "type": "boolean" },
+          "required": { "type": "boolean" }
+        }
+      },
+      "CreateAttributeDefinitionDto": {
+        "type": "object",
+        "properties": {
+          "categoryId": { "type": "string" },
+          "typeId": { "type": "string" },
+          "attributeKey": { "type": "string" },
+          "displayName": { "type": "string" },
+          "dataType": { "type": "string" },
+          "filterable": { "type": "boolean" },
+          "required": { "type": "boolean" }
+        },
+        "required": ["categoryId", "attributeKey", "displayName", "dataType"]
+      },
+      "ReviewAnswerQuestion": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "questionText": { "type": "string" },
+          "answerType": { "type": "string" }
+        }
+      },
+      "ReviewAnswerWithQuestion": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "reviewId": { "type": "string" },
+          "questionId": { "type": "string" },
+          "answer": { "type": "string" },
+          "question": { "$ref": "#/components/schemas/ReviewAnswerQuestion" }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "userId": { "type": "string" },
+          "beverageId": { "type": "string" },
+          "rating": { "type": "number" },
+          "title": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "answers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReviewAnswerWithQuestion" }
+          }
+        }
+      },
+      "Question": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "categoryId": { "type": "string" },
+          "typeId": { "type": "string", "nullable": true },
+          "questionText": { "type": "string" },
+          "answerType": { "type": "string" },
+          "options": {},
+          "sortOrder": { "type": "number", "nullable": true },
+          "required": { "type": "boolean" }
+        }
+      },
+      "CreateQuestionDto": {
+        "type": "object",
+        "properties": {
+          "categoryId": { "type": "string" },
+          "typeId": { "type": "string" },
+          "questionText": { "type": "string" },
+          "answerType": { "type": "string" },
+          "options": {},
+          "sortOrder": { "type": "number" },
+          "required": { "type": "boolean" }
+        },
+        "required": ["categoryId", "questionText", "answerType"]
+      }
+    }
+  }
+}

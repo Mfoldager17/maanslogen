@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
 import { CreateBeverageDto } from './dto/create-beverage.dto';
@@ -9,6 +9,15 @@ export class BeverageService {
     private prisma: PrismaService,
     private uploadService: UploadService,
   ) {}
+
+  async getById(id: string) {
+    const beverage = await this.prisma.beverage.findUnique({
+      where: { id },
+      include: { images: true },
+    });
+    if (!beverage) throw new NotFoundException('Beverage not found');
+    return beverage;
+  }
 
   async getAll() {
     return this.prisma.beverage.findMany({

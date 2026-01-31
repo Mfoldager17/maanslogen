@@ -110,6 +110,8 @@ async function main() {
   const aromaQuestion = await prisma.question.create({ data: { categoryId: beerCategory.id, typeId: null, questionText: 'Hvordan er aromaen?', answerType: 'text', sortOrder: 1 } });
   const bitternessQuestion = await prisma.question.create({ data: { categoryId: beerCategory.id, typeId: ipaType.id, questionText: 'Hvor bitter smager den?', answerType: 'number', sortOrder: 2 } });
   const colorQuestion = await prisma.question.create({ data: { categoryId: beerCategory.id, typeId: null, questionText: 'Hvordan ser den ud?', answerType: 'text', sortOrder: 3 } });
+  const tasteQuestion = await prisma.question.create({ data: { categoryId: beerCategory.id, typeId: null, questionText: 'Hvordan er smagen?', answerType: 'text', sortOrder: 4 } });
+  const recommendQuestion = await prisma.question.create({ data: { categoryId: beerCategory.id, typeId: null, questionText: 'Vil du anbefale den?', answerType: 'text', sortOrder: 5 } });
 
   // ---------- Reviews ----------
   const review1 = await prisma.$transaction(async (tx) => {
@@ -176,10 +178,18 @@ async function main() {
   // ---------- Review Answers ----------
   await prisma.reviewAnswer.createMany({
     data: [
+      // Review 1 (Carlsberg Lager) – flere spørgsmål og svar
       { reviewId: review1.id, questionId: aromaQuestion.id, answer: 'Let malt aroma' },
       { reviewId: review1.id, questionId: colorQuestion.id, answer: 'Lys gul' },
+      { reviewId: review1.id, questionId: tasteQuestion.id, answer: 'Let og forfriskende, lidt sød malt' },
+      { reviewId: review1.id, questionId: recommendQuestion.id, answer: 'Ja, god hverdagsøl' },
+      // Review 2 (Mikkeller IPA) – flere spørgsmål og svar
       { reviewId: review2.id, questionId: aromaQuestion.id, answer: 'Humlet aroma' },
-      { reviewId: review2.id, questionId: bitternessQuestion.id, answer: '60 IBU' },
+      { reviewId: review2.id, questionId: bitternessQuestion.id, answer: '60' },
+      { reviewId: review2.id, questionId: colorQuestion.id, answer: 'Mørk amber' },
+      { reviewId: review2.id, questionId: tasteQuestion.id, answer: 'Kraftig humle, citrus og lidt malt' },
+      { reviewId: review2.id, questionId: recommendQuestion.id, answer: 'Ja, helt sikkert til IPA-fans' },
+      // Review 3 (rødvin)
       { reviewId: review3.id, questionId: colorQuestion.id, answer: 'Rød' },
     ],
   });

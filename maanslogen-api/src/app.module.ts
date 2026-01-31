@@ -7,6 +7,8 @@ import { ReviewModule } from './modules/review/review.module';
 import { BeverageCategoryModule } from './modules/beverage-category/beverage-category.module';
 import { BeverageTypeModule } from './modules/beverage-type/beverage-type.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { AttributeDefinitionModule } from './modules/attribute/attribute-definition.module';
+import { QuestionModule } from './modules/question/question.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { UploadModule } from './modules/upload/upload.module';
     BeverageCategoryModule,
     BeverageTypeModule,
     UploadModule,
+    AttributeDefinitionModule,
+    QuestionModule,
   ],
   controllers: [],
   providers: [],

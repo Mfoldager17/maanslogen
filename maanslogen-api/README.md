@@ -89,6 +89,14 @@ Så peger API’et på MinIO via proxy-domænet, og de billed-URL’er der retur
 
 Alternativt: brug **Swagger** på `http://localhost:3000/swagger` – test fx `POST /upload/presign/beverage-images` og `POST /beverages`. Til fil-upload til `uploadUrl`: `curl -X PUT "<uploadUrl>" -H "Content-Type: image/png" --data-binary @fil.png`.
 
+### Admin og Swagger JSON
+
+**Next.js-admin** ligger i `maanslogen/maanslogen-admin` og bruger denne API. Adminen genererer en typet API-klient fra OpenAPI/Swagger.
+
+- **Swagger UI:** `http://localhost:3000/swagger`
+- **Swagger JSON (til klientgenerering):** `http://localhost:3000/swagger-json`  
+  I adminen: `npm run generate:api:live` (når API kører) opdaterer `src/lib/api-types.d.ts` fra dette endpoint.
+
 ## Project setup
 
 ```bash

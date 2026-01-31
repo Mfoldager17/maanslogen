@@ -1,0 +1,55 @@
+/**
+ * Liquid Glass theme (iOS‑agtig) – mere transparency og blur som på iPhone
+ * Frostet glas, saturateret blur, let gennemsigtighed.
+ */
+[data-theme="liquidglass"] {
+  --color-bg: 242 242 247;
+  --color-bg-elevated: 255 255 255;
+  --color-bg-hover: 229 229 234;
+  --color-fg: 0 0 0;
+  --color-fg-muted: 60 60 67;
+  --color-border: 209 209 214;
+  --color-accent: 0 122 255;
+  --color-accent-hover: 10 132 255;
+  --color-accent-fg: 255 255 255;
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+  --radius: 12px;
+  --radius-lg: 16px;
+  /* iPhone-agtig glas: mere transparency */
+  --glass-bg: rgb(255 255 255 / 0.12);
+  --glass-bg-strong: rgb(255 255 255 / 0.2);
+  --glass-border: rgb(255 255 255 / 0.22);
+  --glass-blur: 10px;
+  --glass-saturate: 180%;
+}
+
+[data-theme="liquidglass"] body {
+  /* Baggrund med lidt struktur så blur bliver synlig (gradient + let mønster) */
+  background: linear-gradient(180deg, rgb(242 242 247) 0%, rgb(230 230 238) 50%, rgb(235 235 242) 100%);
+  background-image:
+    linear-gradient(180deg, rgb(242 242 247) 0%, rgb(230 230 238) 50%, rgb(235 235 242) 100%),
+    radial-gradient(ellipse 120% 80% at 20% 20%, rgb(255 255 255 / 0.4), transparent),
+    radial-gradient(ellipse 100% 60% at 80% 80%, rgb(220 220 230 / 0.5), transparent);
+}
+
+[data-theme="liquidglass"] .glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  backdrop-filter: saturate(160%) blur(10px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Cards og elevated surfaces får glas-effekt */
+[data-theme="liquidglass"] .card,
+[data-theme="liquidglass"] .bg-elevated {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  backdrop-filter: saturate(160%) blur(10px);
+  border: 1px solid var(--glass-border);
+  isolation: isolate;
+}
+
+[data-theme="liquidglass"] .card:hover {
+  background: rgb(255 255 255 / 0.28);
+}

@@ -3,8 +3,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiHeader } from
 import { UploadService, PresignContext } from './upload.service';
 import { PresignUploadDto } from './dto/presign-upload.dto';
 
-@ApiTags('Upload')
-@Controller('upload')
+@ApiTags('Admin – Upload')
+@Controller('admin/upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
