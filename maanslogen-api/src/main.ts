@@ -29,7 +29,9 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document); // /api vil være Swagger UI
+  SwaggerModule.setup('swagger', app, document, {
+    useGlobalPrefix: true, // Swagger UI og JSON under /api/swagger og /api/swagger-json
+  });
 
   await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);

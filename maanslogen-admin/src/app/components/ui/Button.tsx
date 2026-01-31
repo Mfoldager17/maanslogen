@@ -14,7 +14,7 @@ export function Button({
   className?: string;
   variant?: "accent" | "ghost";
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const base = "rounded-theme min-h-[44px] px-4 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[rgb(var(--color-accent))] disabled:opacity-50 disabled:cursor-not-allowed";
+  const base = "rounded-theme min-h-[44px] px-4 font-medium transition-colors focus:ring-2 focus:ring-[rgb(var(--color-accent))] disabled:opacity-50 disabled:cursor-not-allowed";
   const variants =
     variant === "accent"
       ? "btn-accent"

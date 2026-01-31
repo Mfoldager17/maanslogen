@@ -61,3 +61,11 @@ export function IconStar({ className }: { className?: string } = {}) {
     </svg>
   );
 }
+
+export function IconBuildingStorefront({ className }: { className?: string } = {}) {
+  return (
+    <svg className={cn(className)} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 21h19.5M3.75 21V10.5m0 0h16.5V21M3.75 10.5L12 3l8.25 7.5M3.75 10.5v10.5h16.5V10.5M12 10.5v10.5" />
+    </svg>
+  );
+}

@@ -93,9 +93,9 @@ Alternativt: brug **Swagger** på `http://localhost:3000/swagger` – test fx `P
 
 **Next.js-admin** ligger i `maanslogen/maanslogen-admin` og bruger denne API. Adminen genererer en typet API-klient fra OpenAPI/Swagger.
 
-- **Swagger UI:** `http://localhost:3000/swagger`
-- **Swagger JSON (til klientgenerering):** `http://localhost:3000/swagger-json`  
-  I adminen: `npm run generate:api:live` (når API kører) opdaterer `src/lib/api-types.d.ts` fra dette endpoint.
+- **Swagger UI:** `http://localhost:3000/api/swagger`
+- **Swagger JSON (til klientgenerering):** `http://localhost:3000/api/swagger-json`  
+  I adminen: `npm run generate:api:live` (når API kører) genererer typer og klient i `src/lib/api` fra dette endpoint.
 
 ## Project setup
 

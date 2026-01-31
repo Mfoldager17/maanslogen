@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateAttributeData, CreateAttributeResponses, CreateBeverageData, CreateBeverageResponses, CreateCategoryData, CreateCategoryResponses, CreateQuestionData, CreateQuestionResponses, CreateTypeData, CreateTypeResponses, DeleteQuestionData, DeleteQuestionErrors, DeleteQuestionResponses, FindAllAttributesData, FindAllAttributesResponses, FindAllQuestionsData, FindAllQuestionsResponses, FindAttributesByCategoryData, FindAttributesByCategoryResponses, FindQuestionsByCategoryData, FindQuestionsByCategoryResponses, FindQuestionsByTypeData, FindQuestionsByTypeResponses, GetAllBeveragesData, GetAllBeveragesResponses, GetAllCategoriesData, GetAllCategoriesResponses, GetAllReviewsData, GetAllReviewsResponses, GetAllTypesData, GetAllTypesResponses, GetAttributeByIdData, GetAttributeByIdErrors, GetAttributeByIdResponses, GetBeverageByIdData, GetBeverageByIdErrors, GetBeverageByIdResponses, GetCategoryByIdData, GetCategoryByIdResponses, GetQuestionByIdData, GetQuestionByIdErrors, GetQuestionByIdResponses, GetReviewByIdData, GetReviewByIdErrors, GetReviewByIdResponses, GetTypeByIdData, GetTypeByIdResponses } from './types.gen';
+import type { AttributeDefinitionAdminControllerCreateData, AttributeDefinitionAdminControllerCreateErrors, AttributeDefinitionAdminControllerCreateResponses, AttributeDefinitionAdminControllerFindAllData, AttributeDefinitionAdminControllerFindAllResponses, AttributeDefinitionAdminControllerFindByCategoryData, AttributeDefinitionAdminControllerFindByCategoryResponses, AttributeDefinitionAdminControllerGetByIdData, AttributeDefinitionAdminControllerGetByIdErrors, AttributeDefinitionAdminControllerGetByIdResponses, AttributeDefinitionWebControllerFindAllData, AttributeDefinitionWebControllerFindAllResponses, AttributeDefinitionWebControllerFindByCategoryData, AttributeDefinitionWebControllerFindByCategoryResponses, AttributeDefinitionWebControllerGetByIdData, AttributeDefinitionWebControllerGetByIdErrors, AttributeDefinitionWebControllerGetByIdResponses, BeverageAdminControllerCreateData, BeverageAdminControllerCreateErrors, BeverageAdminControllerCreateResponses, BeverageAdminControllerGetAllData, BeverageAdminControllerGetAllResponses, BeverageAdminControllerGetByIdData, BeverageAdminControllerGetByIdErrors, BeverageAdminControllerGetByIdResponses, BeverageCategoryAdminControllerCreateData, BeverageCategoryAdminControllerCreateErrors, BeverageCategoryAdminControllerCreateResponses, BeverageCategoryAdminControllerGetAllData, BeverageCategoryAdminControllerGetAllResponses, BeverageCategoryAdminControllerGetByIdData, BeverageCategoryAdminControllerGetByIdErrors, BeverageCategoryAdminControllerGetByIdResponses, BeverageCategoryWebControllerGetAllData, BeverageCategoryWebControllerGetAllResponses, BeverageCategoryWebControllerGetByIdData, BeverageCategoryWebControllerGetByIdErrors, BeverageCategoryWebControllerGetByIdResponses, BeverageTypeAdminControllerCreateData, BeverageTypeAdminControllerCreateErrors, BeverageTypeAdminControllerCreateResponses, BeverageTypeAdminControllerGetAllData, BeverageTypeAdminControllerGetAllResponses, BeverageTypeAdminControllerGetByIdData, BeverageTypeAdminControllerGetByIdErrors, BeverageTypeAdminControllerGetByIdResponses, BeverageTypeWebControllerGetAllData, BeverageTypeWebControllerGetAllResponses, BeverageTypeWebControllerGetByIdData, BeverageTypeWebControllerGetByIdErrors, BeverageTypeWebControllerGetByIdResponses, BeverageWebControllerGetAllData, BeverageWebControllerGetAllResponses, BeverageWebControllerGetByIdData, BeverageWebControllerGetByIdErrors, BeverageWebControllerGetByIdResponses, BrandAdminControllerCreateData, BrandAdminControllerCreateErrors, BrandAdminControllerCreateResponses, BrandAdminControllerGetAllData, BrandAdminControllerGetAllResponses, BrandAdminControllerGetByIdData, BrandAdminControllerGetByIdErrors, BrandAdminControllerGetByIdResponses, BrandWebControllerGetAllData, BrandWebControllerGetAllResponses, BrandWebControllerGetByIdData, BrandWebControllerGetByIdErrors, BrandWebControllerGetByIdResponses, QuestionAdminControllerCreateData, QuestionAdminControllerCreateErrors, QuestionAdminControllerCreateResponses, QuestionAdminControllerFindAllData, QuestionAdminControllerFindAllResponses, QuestionAdminControllerFindByCategoryData, QuestionAdminControllerFindByCategoryResponses, QuestionAdminControllerFindByTypeData, QuestionAdminControllerFindByTypeResponses, QuestionAdminControllerGetByIdData, QuestionAdminControllerGetByIdErrors, QuestionAdminControllerGetByIdResponses, QuestionAdminControllerRemoveData, QuestionAdminControllerRemoveErrors, QuestionAdminControllerRemoveResponses, QuestionWebControllerFindAllData, QuestionWebControllerFindAllResponses, QuestionWebControllerFindByCategoryData, QuestionWebControllerFindByCategoryResponses, QuestionWebControllerFindByTypeData, QuestionWebControllerFindByTypeResponses, QuestionWebControllerGetByIdData, QuestionWebControllerGetByIdErrors, QuestionWebControllerGetByIdResponses, ReviewAdminControllerCreateData, ReviewAdminControllerCreateErrors, ReviewAdminControllerCreateResponses, ReviewAdminControllerGetAllData, ReviewAdminControllerGetAllResponses, ReviewAdminControllerGetByIdData, ReviewAdminControllerGetByIdErrors, ReviewAdminControllerGetByIdResponses, ReviewWebControllerGetAllData, ReviewWebControllerGetAllResponses, ReviewWebControllerGetByIdData, ReviewWebControllerGetByIdErrors, ReviewWebControllerGetByIdResponses, UploadControllerPresignData, UploadControllerPresignErrors, UploadControllerPresignResponses, UserControllerCreateData, UserControllerCreateErrors, UserControllerCreateResponses, UserControllerGetAllData, UserControllerGetAllResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -18,79 +18,303 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: Record<string, unknown>;
 };
 
-export const getAllCategories = <ThrowOnError extends boolean = false>(options?: Options<GetAllCategoriesData, ThrowOnError>) => (options?.client ?? client).get<GetAllCategoriesResponses, unknown, ThrowOnError>({ url: '/api/admin/beverage-categories', ...options });
+/**
+ * Get all users
+ *
+ * Retrieve a list of all users
+ */
+export const userControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<UserControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<UserControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/admin/users', ...options });
 
-export const createCategory = <ThrowOnError extends boolean = false>(options?: Options<CreateCategoryData, ThrowOnError>) => (options?.client ?? client).post<CreateCategoryResponses, unknown, ThrowOnError>({
-    url: '/api/admin/beverage-categories',
+/**
+ * Create a new user
+ *
+ * Create a new user account
+ */
+export const userControllerCreate = <ThrowOnError extends boolean = false>(options: Options<UserControllerCreateData, ThrowOnError>) => (options.client ?? client).post<UserControllerCreateResponses, UserControllerCreateErrors, ThrowOnError>({
+    url: '/api/admin/users',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
 
-export const getCategoryById = <ThrowOnError extends boolean = false>(options: Options<GetCategoryByIdData, ThrowOnError>) => (options.client ?? client).get<GetCategoryByIdResponses, unknown, ThrowOnError>({ url: '/api/admin/beverage-categories/{id}', ...options });
-
-export const getAllTypes = <ThrowOnError extends boolean = false>(options?: Options<GetAllTypesData, ThrowOnError>) => (options?.client ?? client).get<GetAllTypesResponses, unknown, ThrowOnError>({ url: '/api/admin/beverage-types', ...options });
-
-export const createType = <ThrowOnError extends boolean = false>(options?: Options<CreateTypeData, ThrowOnError>) => (options?.client ?? client).post<CreateTypeResponses, unknown, ThrowOnError>({
-    url: '/api/admin/beverage-types',
+/**
+ * Get presigned upload URLs (bucket og sti sættes i backend)
+ *
+ *
+ * **Flow:**
+ * 1. Kald dette endpoint med `context` (beverage-images, user-profile eller category-icons). Bucket og mappesti bestemmes i backend.
+ * 2. For hver slot: upload fil med **PUT** til `uploadUrl`, body = fil, header `Content-Type: image/jpeg` (eller png/gif/webp).
+ * 3. Brug den returnerede `url` for hver slot når du opretter entiteten (Beverage/User/Category) med `images: [ { url, type } ]`.
+ *
+ * Presigned URLs udløber efter 15 minutter (kan overstyres med `expiresInSeconds`).
+ *
+ */
+export const uploadControllerPresign = <ThrowOnError extends boolean = false>(options: Options<UploadControllerPresignData, ThrowOnError>) => (options.client ?? client).post<UploadControllerPresignResponses, UploadControllerPresignErrors, ThrowOnError>({
+    url: '/api/admin/upload/presign/{context}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
 
-export const getTypeById = <ThrowOnError extends boolean = false>(options: Options<GetTypeByIdData, ThrowOnError>) => (options.client ?? client).get<GetTypeByIdResponses, unknown, ThrowOnError>({ url: '/api/admin/beverage-types/{id}', ...options });
+/**
+ * [Admin] Get all beverages
+ */
+export const beverageAdminControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BeverageAdminControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BeverageAdminControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/admin/beverages', ...options });
 
-export const getAllBeverages = <ThrowOnError extends boolean = false>(options?: Options<GetAllBeveragesData, ThrowOnError>) => (options?.client ?? client).get<GetAllBeveragesResponses, unknown, ThrowOnError>({ url: '/api/admin/beverages', ...options });
-
-export const createBeverage = <ThrowOnError extends boolean = false>(options?: Options<CreateBeverageData, ThrowOnError>) => (options?.client ?? client).post<CreateBeverageResponses, unknown, ThrowOnError>({
+/**
+ * [Admin] Create a new beverage
+ */
+export const beverageAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<BeverageAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<BeverageAdminControllerCreateResponses, BeverageAdminControllerCreateErrors, ThrowOnError>({
     url: '/api/admin/beverages',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
 
-export const getBeverageById = <ThrowOnError extends boolean = false>(options: Options<GetBeverageByIdData, ThrowOnError>) => (options.client ?? client).get<GetBeverageByIdResponses, GetBeverageByIdErrors, ThrowOnError>({ url: '/api/admin/beverages/{id}', ...options });
+/**
+ * [Admin] Get beverage by ID
+ */
+export const beverageAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageAdminControllerGetByIdResponses, BeverageAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/beverages/{id}', ...options });
 
-export const findAllAttributes = <ThrowOnError extends boolean = false>(options?: Options<FindAllAttributesData, ThrowOnError>) => (options?.client ?? client).get<FindAllAttributesResponses, unknown, ThrowOnError>({ url: '/api/admin/attributes', ...options });
+/**
+ * [Web] Get all beverages (public)
+ */
+export const beverageWebControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BeverageWebControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BeverageWebControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/beverages', ...options });
 
-export const createAttribute = <ThrowOnError extends boolean = false>(options?: Options<CreateAttributeData, ThrowOnError>) => (options?.client ?? client).post<CreateAttributeResponses, unknown, ThrowOnError>({
+/**
+ * [Web] Get beverage by ID (public)
+ */
+export const beverageWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageWebControllerGetByIdResponses, BeverageWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/beverages/{id}', ...options });
+
+/**
+ * [Admin] Get all reviews
+ */
+export const reviewAdminControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<ReviewAdminControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<ReviewAdminControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/admin/reviews', ...options });
+
+/**
+ * [Admin] Create a review
+ */
+export const reviewAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<ReviewAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<ReviewAdminControllerCreateResponses, ReviewAdminControllerCreateErrors, ThrowOnError>({
+    url: '/api/admin/reviews',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * [Admin] Get review by ID
+ */
+export const reviewAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<ReviewAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<ReviewAdminControllerGetByIdResponses, ReviewAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/reviews/{id}', ...options });
+
+/**
+ * [Web] Get all reviews (public)
+ */
+export const reviewWebControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<ReviewWebControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<ReviewWebControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/reviews', ...options });
+
+/**
+ * [Web] Get review by ID (public)
+ */
+export const reviewWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<ReviewWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<ReviewWebControllerGetByIdResponses, ReviewWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/reviews/{id}', ...options });
+
+/**
+ * [Admin] Get all beverage categories
+ */
+export const beverageCategoryAdminControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BeverageCategoryAdminControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BeverageCategoryAdminControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/admin/beverage-categories', ...options });
+
+/**
+ * [Admin] Create a beverage category
+ */
+export const beverageCategoryAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<BeverageCategoryAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<BeverageCategoryAdminControllerCreateResponses, BeverageCategoryAdminControllerCreateErrors, ThrowOnError>({
+    url: '/api/admin/beverage-categories',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * [Admin] Get category by ID
+ */
+export const beverageCategoryAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageCategoryAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageCategoryAdminControllerGetByIdResponses, BeverageCategoryAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/beverage-categories/{id}', ...options });
+
+/**
+ * [Web] Get all beverage categories (public)
+ */
+export const beverageCategoryWebControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BeverageCategoryWebControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BeverageCategoryWebControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/beverage-categories', ...options });
+
+/**
+ * [Web] Get category by ID (public)
+ */
+export const beverageCategoryWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageCategoryWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageCategoryWebControllerGetByIdResponses, BeverageCategoryWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/beverage-categories/{id}', ...options });
+
+/**
+ * [Admin] Get all beverage types
+ */
+export const beverageTypeAdminControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BeverageTypeAdminControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BeverageTypeAdminControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/admin/beverage-types', ...options });
+
+/**
+ * [Admin] Create a beverage type
+ */
+export const beverageTypeAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<BeverageTypeAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<BeverageTypeAdminControllerCreateResponses, BeverageTypeAdminControllerCreateErrors, ThrowOnError>({
+    url: '/api/admin/beverage-types',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * [Admin] Get beverage type by ID
+ */
+export const beverageTypeAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageTypeAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageTypeAdminControllerGetByIdResponses, BeverageTypeAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/beverage-types/{id}', ...options });
+
+/**
+ * [Web] Get all beverage types (public)
+ */
+export const beverageTypeWebControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BeverageTypeWebControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BeverageTypeWebControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/beverage-types', ...options });
+
+/**
+ * [Web] Get beverage type by ID (public)
+ */
+export const beverageTypeWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageTypeWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageTypeWebControllerGetByIdResponses, BeverageTypeWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/beverage-types/{id}', ...options });
+
+/**
+ * [Admin] Get all brands
+ */
+export const brandAdminControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BrandAdminControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BrandAdminControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/admin/brands', ...options });
+
+/**
+ * [Admin] Create a brand
+ */
+export const brandAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<BrandAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<BrandAdminControllerCreateResponses, BrandAdminControllerCreateErrors, ThrowOnError>({
+    url: '/api/admin/brands',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * [Admin] Get brand by ID
+ */
+export const brandAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BrandAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BrandAdminControllerGetByIdResponses, BrandAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/brands/{id}', ...options });
+
+/**
+ * [Web] Get all brands (public)
+ */
+export const brandWebControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BrandWebControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BrandWebControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/brands', ...options });
+
+/**
+ * [Web] Get brand by ID (public)
+ */
+export const brandWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BrandWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BrandWebControllerGetByIdResponses, BrandWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/brands/{id}', ...options });
+
+/**
+ * [Admin] Get all attribute definitions
+ */
+export const attributeDefinitionAdminControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<AttributeDefinitionAdminControllerFindAllData, ThrowOnError>) => (options?.client ?? client).get<AttributeDefinitionAdminControllerFindAllResponses, unknown, ThrowOnError>({ url: '/api/admin/attributes', ...options });
+
+/**
+ * [Admin] Create attribute definition
+ */
+export const attributeDefinitionAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<AttributeDefinitionAdminControllerCreateResponses, AttributeDefinitionAdminControllerCreateErrors, ThrowOnError>({
     url: '/api/admin/attributes',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
 
-export const findAttributesByCategory = <ThrowOnError extends boolean = false>(options: Options<FindAttributesByCategoryData, ThrowOnError>) => (options.client ?? client).get<FindAttributesByCategoryResponses, unknown, ThrowOnError>({ url: '/api/admin/attributes/category/{categoryId}', ...options });
+/**
+ * [Admin] Get attribute definitions by category
+ */
+export const attributeDefinitionAdminControllerFindByCategory = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerFindByCategoryData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionAdminControllerFindByCategoryResponses, unknown, ThrowOnError>({ url: '/api/admin/attributes/category/{categoryId}', ...options });
 
-export const getAttributeById = <ThrowOnError extends boolean = false>(options: Options<GetAttributeByIdData, ThrowOnError>) => (options.client ?? client).get<GetAttributeByIdResponses, GetAttributeByIdErrors, ThrowOnError>({ url: '/api/admin/attributes/{id}', ...options });
+/**
+ * [Admin] Get attribute definition by ID
+ */
+export const attributeDefinitionAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionAdminControllerGetByIdResponses, AttributeDefinitionAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/attributes/{id}', ...options });
 
-export const getAllReviews = <ThrowOnError extends boolean = false>(options?: Options<GetAllReviewsData, ThrowOnError>) => (options?.client ?? client).get<GetAllReviewsResponses, unknown, ThrowOnError>({ url: '/api/admin/reviews', ...options });
+/**
+ * [Web] Get all attribute definitions (public)
+ */
+export const attributeDefinitionWebControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<AttributeDefinitionWebControllerFindAllData, ThrowOnError>) => (options?.client ?? client).get<AttributeDefinitionWebControllerFindAllResponses, unknown, ThrowOnError>({ url: '/api/attributes', ...options });
 
-export const getReviewById = <ThrowOnError extends boolean = false>(options: Options<GetReviewByIdData, ThrowOnError>) => (options.client ?? client).get<GetReviewByIdResponses, GetReviewByIdErrors, ThrowOnError>({ url: '/api/admin/reviews/{id}', ...options });
+/**
+ * [Web] Get attribute definitions by category (public)
+ */
+export const attributeDefinitionWebControllerFindByCategory = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionWebControllerFindByCategoryData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionWebControllerFindByCategoryResponses, unknown, ThrowOnError>({ url: '/api/attributes/category/{categoryId}', ...options });
 
-export const findAllQuestions = <ThrowOnError extends boolean = false>(options?: Options<FindAllQuestionsData, ThrowOnError>) => (options?.client ?? client).get<FindAllQuestionsResponses, unknown, ThrowOnError>({ url: '/api/admin/questions', ...options });
+/**
+ * [Web] Get attribute definition by ID (public)
+ */
+export const attributeDefinitionWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionWebControllerGetByIdResponses, AttributeDefinitionWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/attributes/{id}', ...options });
 
-export const createQuestion = <ThrowOnError extends boolean = false>(options?: Options<CreateQuestionData, ThrowOnError>) => (options?.client ?? client).post<CreateQuestionResponses, unknown, ThrowOnError>({
+/**
+ * [Admin] Get all questions
+ */
+export const questionAdminControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<QuestionAdminControllerFindAllData, ThrowOnError>) => (options?.client ?? client).get<QuestionAdminControllerFindAllResponses, unknown, ThrowOnError>({ url: '/api/admin/questions', ...options });
+
+/**
+ * [Admin] Create a question
+ */
+export const questionAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<QuestionAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<QuestionAdminControllerCreateResponses, QuestionAdminControllerCreateErrors, ThrowOnError>({
     url: '/api/admin/questions',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
 
-export const findQuestionsByCategory = <ThrowOnError extends boolean = false>(options: Options<FindQuestionsByCategoryData, ThrowOnError>) => (options.client ?? client).get<FindQuestionsByCategoryResponses, unknown, ThrowOnError>({ url: '/api/admin/questions/category/{categoryId}', ...options });
+/**
+ * [Admin] Get questions by category
+ */
+export const questionAdminControllerFindByCategory = <ThrowOnError extends boolean = false>(options: Options<QuestionAdminControllerFindByCategoryData, ThrowOnError>) => (options.client ?? client).get<QuestionAdminControllerFindByCategoryResponses, unknown, ThrowOnError>({ url: '/api/admin/questions/category/{categoryId}', ...options });
 
-export const findQuestionsByType = <ThrowOnError extends boolean = false>(options: Options<FindQuestionsByTypeData, ThrowOnError>) => (options.client ?? client).get<FindQuestionsByTypeResponses, unknown, ThrowOnError>({ url: '/api/admin/questions/type/{typeId}', ...options });
+/**
+ * [Admin] Get questions by type
+ */
+export const questionAdminControllerFindByType = <ThrowOnError extends boolean = false>(options: Options<QuestionAdminControllerFindByTypeData, ThrowOnError>) => (options.client ?? client).get<QuestionAdminControllerFindByTypeResponses, unknown, ThrowOnError>({ url: '/api/admin/questions/type/{typeId}', ...options });
 
-export const deleteQuestion = <ThrowOnError extends boolean = false>(options: Options<DeleteQuestionData, ThrowOnError>) => (options.client ?? client).delete<DeleteQuestionResponses, DeleteQuestionErrors, ThrowOnError>({ url: '/api/admin/questions/{id}', ...options });
+/**
+ * [Admin] Delete question and compact sortOrder
+ */
+export const questionAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<QuestionAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<QuestionAdminControllerRemoveResponses, QuestionAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/questions/{id}', ...options });
 
-export const getQuestionById = <ThrowOnError extends boolean = false>(options: Options<GetQuestionByIdData, ThrowOnError>) => (options.client ?? client).get<GetQuestionByIdResponses, GetQuestionByIdErrors, ThrowOnError>({ url: '/api/admin/questions/{id}', ...options });
+/**
+ * [Admin] Get question by ID
+ */
+export const questionAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<QuestionAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<QuestionAdminControllerGetByIdResponses, QuestionAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/questions/{id}', ...options });
+
+/**
+ * [Web] Get all questions (public)
+ */
+export const questionWebControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<QuestionWebControllerFindAllData, ThrowOnError>) => (options?.client ?? client).get<QuestionWebControllerFindAllResponses, unknown, ThrowOnError>({ url: '/api/questions', ...options });
+
+/**
+ * [Web] Get questions by category (public)
+ */
+export const questionWebControllerFindByCategory = <ThrowOnError extends boolean = false>(options: Options<QuestionWebControllerFindByCategoryData, ThrowOnError>) => (options.client ?? client).get<QuestionWebControllerFindByCategoryResponses, unknown, ThrowOnError>({ url: '/api/questions/category/{categoryId}', ...options });
+
+/**
+ * [Web] Get questions by type (public)
+ */
+export const questionWebControllerFindByType = <ThrowOnError extends boolean = false>(options: Options<QuestionWebControllerFindByTypeData, ThrowOnError>) => (options.client ?? client).get<QuestionWebControllerFindByTypeResponses, unknown, ThrowOnError>({ url: '/api/questions/type/{typeId}', ...options });
+
+/**
+ * [Web] Get question by ID (public)
+ */
+export const questionWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<QuestionWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<QuestionWebControllerGetByIdResponses, QuestionWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/questions/{id}', ...options });

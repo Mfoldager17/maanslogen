@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { QuestionService } from './question.service';
+import { Question } from './dto/question-response.dto';
 
 @ApiTags('Web – Questions')
 @Controller('questions')
@@ -9,7 +10,7 @@ export class QuestionWebController {
 
   @Get()
   @ApiOperation({ summary: '[Web] Get all questions (public)' })
-  @ApiResponse({ status: 200, description: 'List of questions' })
+  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
   findAll() {
     return this.service.findAll();
   }
@@ -17,7 +18,7 @@ export class QuestionWebController {
   @Get('category/:categoryId')
   @ApiOperation({ summary: '[Web] Get questions by category (public)' })
   @ApiParam({ name: 'categoryId', description: 'Beverage category ID' })
-  @ApiResponse({ status: 200, description: 'List of questions' })
+  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
   findByCategory(@Param('categoryId') categoryId: string) {
     return this.service.findByCategory(categoryId);
   }
@@ -25,7 +26,7 @@ export class QuestionWebController {
   @Get('type/:typeId')
   @ApiOperation({ summary: '[Web] Get questions by type (public)' })
   @ApiParam({ name: 'typeId', description: 'Beverage type ID' })
-  @ApiResponse({ status: 200, description: 'List of questions' })
+  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
   findByType(@Param('typeId') typeId: string) {
     return this.service.findByType(typeId);
   }
@@ -33,7 +34,7 @@ export class QuestionWebController {
   @Get(':id')
   @ApiOperation({ summary: '[Web] Get question by ID (public)' })
   @ApiParam({ name: 'id', description: 'Question ID' })
-  @ApiResponse({ status: 200, description: 'Question found' })
+  @ApiResponse({ status: 200, description: 'Question found', type: Question })
   @ApiResponse({ status: 404, description: 'Not found' })
   getById(@Param('id') id: string) {
     return this.service.getById(id);

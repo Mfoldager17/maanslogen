@@ -122,11 +122,15 @@ async function main() {
     },
   });
 
+  // Brands
+  const brandCarlsberg = await prisma.brand.create({ data: { name: 'Carlsberg', description: 'Dansk bryggeri' } });
+  const brandMikkeller = await prisma.brand.create({ data: { name: 'Mikkeller', description: 'Dansk mikrobryggeri' } });
+
   // Beverages
   const beer1 = await prisma.beverage.create({
     data: {
       beverageTypeId: lagerType.id,
-      brand: 'Carlsberg',
+      brandId: brandCarlsberg.id,
       name: 'Classic Lager',
       country: 'DK',
       metadata: { notes: 'Lys og let' },
@@ -136,7 +140,7 @@ async function main() {
   const beer2 = await prisma.beverage.create({
     data: {
       beverageTypeId: ipaType.id,
-      brand: 'Mikkeller',
+      brandId: brandMikkeller.id,
       name: 'IPA Dark',
       country: 'DK',
       metadata: { notes: 'Humlet smag' },

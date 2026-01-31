@@ -66,10 +66,19 @@ model BeverageType {
   @@index([categoryId])
 }
 
+model Brand {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  beverages   Beverage[]
+}
+
 model Beverage {
   id              String                   @id @default(uuid())
   beverageTypeId  String
-  brand           String
+  brandId         String
   name            String
   country         String
   metadata        Json?
@@ -78,11 +87,13 @@ model Beverage {
   images          Image[]
   createdAt       DateTime                 @default(now())
   type            BeverageType             @relation(fields: [beverageTypeId], references: [id])
+  brand           Brand                    @relation(fields: [brandId], references: [id])
   attributeValues BeverageAttributeValue[]
   reviews         Review[]
 
-  @@unique([brand, name])
+  @@unique([brandId, name])
   @@index([beverageTypeId])
+  @@index([brandId])
 }
 
 model BeverageAttributeValue {

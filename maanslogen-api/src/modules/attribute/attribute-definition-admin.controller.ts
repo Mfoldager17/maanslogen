@@ -3,6 +3,7 @@ import { Controller, Post, Get, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { AttributeDefinitionService } from './attribute-definition.service';
 import { CreateAttributeDefinitionDto } from './dto/create-attribute-definition.dto';
+import { AttributeDefinition } from './dto/attribute-definition-response.dto';
 
 @ApiTags('Admin – Attribute Definitions')
 @Controller('admin/attributes')
@@ -12,7 +13,7 @@ export class AttributeDefinitionAdminController {
   @Post()
   @ApiOperation({ summary: '[Admin] Create attribute definition' })
   @ApiBody({ type: CreateAttributeDefinitionDto })
-  @ApiResponse({ status: 201, description: 'Attribute definition created' })
+  @ApiResponse({ status: 201, description: 'Attribute definition created', type: AttributeDefinition })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   create(@Body() dto: CreateAttributeDefinitionDto) {
     return this.service.create(dto);
@@ -20,7 +21,7 @@ export class AttributeDefinitionAdminController {
 
   @Get()
   @ApiOperation({ summary: '[Admin] Get all attribute definitions' })
-  @ApiResponse({ status: 200, description: 'List of attribute definitions' })
+  @ApiResponse({ status: 200, description: 'List of attribute definitions', type: [AttributeDefinition] })
   findAll() {
     return this.service.findAll();
   }
@@ -28,7 +29,7 @@ export class AttributeDefinitionAdminController {
   @Get('category/:categoryId')
   @ApiOperation({ summary: '[Admin] Get attribute definitions by category' })
   @ApiParam({ name: 'categoryId', description: 'Beverage category ID' })
-  @ApiResponse({ status: 200, description: 'List of attribute definitions' })
+  @ApiResponse({ status: 200, description: 'List of attribute definitions', type: [AttributeDefinition] })
   findByCategory(@Param('categoryId') categoryId: string) {
     return this.service.findByCategory(categoryId);
   }
@@ -36,7 +37,7 @@ export class AttributeDefinitionAdminController {
   @Get(':id')
   @ApiOperation({ summary: '[Admin] Get attribute definition by ID' })
   @ApiParam({ name: 'id', description: 'Attribute definition ID' })
-  @ApiResponse({ status: 200, description: 'Attribute definition found' })
+  @ApiResponse({ status: 200, description: 'Attribute definition found', type: AttributeDefinition })
   @ApiResponse({ status: 404, description: 'Not found' })
   getById(@Param('id') id: string) {
     return this.service.getById(id);

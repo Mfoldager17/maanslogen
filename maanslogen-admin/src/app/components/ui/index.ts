@@ -2,6 +2,7 @@ export { Alert } from "./Alert";
 export { AccentLink } from "./AccentLink";
 export { Button } from "./Button";
 export { Card } from "./Card";
+export { CollapsibleCard } from "./CollapsibleCard";
 export { CardList } from "./CardList";
 export { CardListItem } from "./CardListItem";
 export { Input } from "./Input";

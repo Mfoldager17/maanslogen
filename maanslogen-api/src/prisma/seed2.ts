@@ -20,6 +20,7 @@ async function main() {
   await prisma.review.deleteMany({});
   await prisma.beverageAttributeValue.deleteMany({});
   await prisma.beverage.deleteMany({});
+  await prisma.brand.deleteMany({});
   await prisma.image.deleteMany({});
   await prisma.pendingUpload.deleteMany({});
   await prisma.question.deleteMany({});
@@ -67,6 +68,13 @@ async function main() {
   const redWineType = await prisma.beverageType.create({ data: { name: 'Rødvin', categoryId: wineCategory.id, description: 'Fyldig og frugtrig' } });
   const whiteWineType = await prisma.beverageType.create({ data: { name: 'Hvidvin', categoryId: wineCategory.id, description: 'Let og frisk' } });
 
+  // ---------- Brands ----------
+  const brandCarlsberg = await prisma.brand.create({ data: { name: 'Carlsberg', description: 'Dansk bryggeri' } });
+  const brandMikkeller = await prisma.brand.create({ data: { name: 'Mikkeller', description: 'Dansk mikrobryggeri' } });
+  const brandGuinness = await prisma.brand.create({ data: { name: 'Guinness', description: 'Irsk stout' } });
+  const brandVega = await prisma.brand.create({ data: { name: 'Vega', description: 'Spansk vin' } });
+  const brandChardonnay = await prisma.brand.create({ data: { name: 'Chardonnay', description: 'Vindruesort' } });
+
   // ---------- Attribute Definitions ----------
   const abvAttribute = await prisma.attributeDefinition.create({
     data: { categoryId: beerCategory.id, typeId: null, attributeKey: 'abv', displayName: 'Alkohol %', dataType: 'number', filterable: true, required: true, sortOrder: 1 },
@@ -85,11 +93,11 @@ async function main() {
   });
 
   // ---------- Beverages ----------
-  const beer1 = await prisma.beverage.create({ data: { beverageTypeId: lagerType.id, brand: 'Carlsberg', name: 'Classic Lager', country: 'DK', metadata: { notes: 'Lys og let' } } });
-  const beer2 = await prisma.beverage.create({ data: { beverageTypeId: ipaType.id, brand: 'Mikkeller', name: 'IPA Dark', country: 'DK', metadata: { notes: 'Humlet smag' } } });
-  const beer3 = await prisma.beverage.create({ data: { beverageTypeId: stoutType.id, brand: 'Guinness', name: 'Original Stout', country: 'IE', metadata: { notes: 'Fyldig og mørk' } } });
-  const wine1 = await prisma.beverage.create({ data: { beverageTypeId: redWineType.id, brand: 'Vega', name: 'Red Classic', country: 'ES' } });
-  const wine2 = await prisma.beverage.create({ data: { beverageTypeId: whiteWineType.id, brand: 'Chardonnay', name: 'White Fresh', country: 'FR' } });
+  const beer1 = await prisma.beverage.create({ data: { beverageTypeId: lagerType.id, brandId: brandCarlsberg.id, name: 'Classic Lager', country: 'DK', metadata: { notes: 'Lys og let' } } });
+  const beer2 = await prisma.beverage.create({ data: { beverageTypeId: ipaType.id, brandId: brandMikkeller.id, name: 'IPA Dark', country: 'DK', metadata: { notes: 'Humlet smag' } } });
+  const beer3 = await prisma.beverage.create({ data: { beverageTypeId: stoutType.id, brandId: brandGuinness.id, name: 'Original Stout', country: 'IE', metadata: { notes: 'Fyldig og mørk' } } });
+  const wine1 = await prisma.beverage.create({ data: { beverageTypeId: redWineType.id, brandId: brandVega.id, name: 'Red Classic', country: 'ES' } });
+  const wine2 = await prisma.beverage.create({ data: { beverageTypeId: whiteWineType.id, brandId: brandChardonnay.id, name: 'White Fresh', country: 'FR' } });
 
   // ---------- Beverage Attribute Values ----------
   await prisma.beverageAttributeValue.createMany({

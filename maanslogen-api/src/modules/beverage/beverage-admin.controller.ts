@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { BeverageService } from './beverage.service';
 import { CreateBeverageDto } from './dto/create-beverage.dto';
+import { Beverage } from './dto/beverage-response.dto';
 
 @ApiTags('Admin – Beverages')
 @Controller('admin/beverages')
@@ -10,7 +11,7 @@ export class BeverageAdminController {
 
   @Get()
   @ApiOperation({ summary: '[Admin] Get all beverages' })
-  @ApiResponse({ status: 200, description: 'List of beverages' })
+  @ApiResponse({ status: 200, description: 'List of beverages', type: [Beverage] })
   getAll() {
     return this.beverageService.getAll();
   }
@@ -18,7 +19,7 @@ export class BeverageAdminController {
   @Get(':id')
   @ApiOperation({ summary: '[Admin] Get beverage by ID' })
   @ApiParam({ name: 'id', description: 'Beverage ID' })
-  @ApiResponse({ status: 200, description: 'Beverage found' })
+  @ApiResponse({ status: 200, description: 'Beverage found', type: Beverage })
   @ApiResponse({ status: 404, description: 'Beverage not found' })
   getById(@Param('id') id: string) {
     return this.beverageService.getById(id);
@@ -27,7 +28,7 @@ export class BeverageAdminController {
   @Post()
   @ApiOperation({ summary: '[Admin] Create a new beverage' })
   @ApiBody({ type: CreateBeverageDto })
-  @ApiResponse({ status: 201, description: 'Beverage created' })
+  @ApiResponse({ status: 201, description: 'Beverage created', type: Beverage })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   create(@Body() createBeverageDto: CreateBeverageDto) {
     return this.beverageService.create(createBeverageDto);

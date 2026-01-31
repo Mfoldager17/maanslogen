@@ -10,6 +10,7 @@ import {
   IconFolder,
   IconTag,
   IconBeaker,
+  IconBuildingStorefront,
   IconListBullets,
   IconQuestionMarkCircle,
   IconStar,
@@ -19,6 +20,7 @@ const nav = [
   { href: "/", label: "Forside", icon: IconHome },
   { href: "/categories", label: "Kategorier", icon: IconFolder },
   { href: "/types", label: "Typer", icon: IconTag },
+  { href: "/brands", label: "Mærker", icon: IconBuildingStorefront },
   { href: "/beverages", label: "Drikke", icon: IconBeaker },
   { href: "/attributes", label: "Attribute", icon: IconListBullets },
   { href: "/questions", label: "Spørgsmål", icon: IconQuestionMarkCircle },
@@ -115,7 +117,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="flex min-h-10 min-w-10 items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--color-accent))]"
+              className="flex min-h-10 min-w-10 items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:ring-2 focus:ring-[rgb(var(--color-accent))]"
               aria-label="Åbn menu"
             >
               <MenuIcon open={false} />
@@ -136,7 +138,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                className="hidden min-h-9 min-w-9 touch-manipulation items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--color-accent))] md:flex"
+                className="hidden min-h-9 min-w-9 touch-manipulation items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:ring-2 focus:ring-[rgb(var(--color-accent))] md:flex"
                 aria-label="Luk menu"
               >
                 <MenuIcon open={true} />
@@ -157,7 +159,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={() => setSidebarOpen((o) => !o)}
-          className="flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--color-accent))]"
+          className="flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:ring-2 focus:ring-[rgb(var(--color-accent))]"
           aria-label={sidebarOpen ? "Luk menu" : "Åbn menu"}
           aria-expanded={sidebarOpen}
         >

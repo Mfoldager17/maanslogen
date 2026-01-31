@@ -13,7 +13,7 @@ export class BeverageService {
   async getById(id: string) {
     const beverage = await this.prisma.beverage.findUnique({
       where: { id },
-      include: { images: true },
+      include: { images: true, brand: true },
     });
     if (!beverage) throw new NotFoundException('Beverage not found');
     return beverage;
@@ -21,7 +21,7 @@ export class BeverageService {
 
   async getAll() {
     return this.prisma.beverage.findMany({
-      include: { images: true },
+      include: { images: true, brand: true },
     });
   }
 
@@ -44,7 +44,7 @@ export class BeverageService {
             }
           : {}),
       },
-      include: { images: true },
+      include: { images: true, brand: true },
     });
     if (images?.length) {
       await this.uploadService.confirmUploads(images.map((img) => img.url));

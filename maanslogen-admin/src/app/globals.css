@@ -98,14 +98,24 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
-.card:hover {
-  box-shadow: var(--shadow-md);
-}
 .card-list-item {
   border-bottom: 1px solid rgb(var(--color-border) / 0.6);
+  transition: background-color 0.15s;
+}
+.card-list-item:hover {
+  background-color: rgb(var(--color-bg-hover));
 }
 .card-list-item:last-child {
   border-bottom: none;
+}
+
+*:focus,
+*:focus-visible {
+  outline: none;
+}
+button:focus,
+button:focus-visible {
+  outline: none;
 }
 
 /* Inputs og selects – følger tema, mobilvenlig min-højde */
@@ -117,13 +127,27 @@ body {
   padding: 0.5rem 0.75rem;
   min-height: 44px;
 }
+/* Select: egen pil så padding venstre/højre er lige (native pil ignorerer padding) */
+select.input-theme {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-left: 0.75rem;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+}
 .input-theme::placeholder {
   color: rgb(var(--color-fg-muted) / 0.8);
 }
 .input-theme:focus {
-  outline: none;
   border-color: rgb(var(--color-accent));
-  box-shadow: 0 0 0 1px rgb(var(--color-accent));
+  box-shadow: 0 0 0 2px rgb(var(--color-accent));
+}
+.input-theme:focus-visible {
+  border-color: rgb(var(--color-accent));
+  box-shadow: 0 0 0 2px rgb(var(--color-accent));
 }
 
 /* Primær knap – følger tema, mobilvenlig touch-target */

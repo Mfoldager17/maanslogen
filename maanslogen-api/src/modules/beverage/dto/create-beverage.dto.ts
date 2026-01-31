@@ -9,9 +9,9 @@ export class CreateBeverageDto {
   @IsString()
   beverageTypeId: string;
 
-  @ApiProperty({ description: 'Brand name of the beverage', example: 'Carlsberg' })
+  @ApiProperty({ description: 'ID of the brand', example: '123e4567-e89b-12d3-a456-426614174000' })
   @IsString()
-  brand: string;
+  brandId: string;
 
   @ApiProperty({ description: 'Name of the beverage', example: 'Classic Lager' })
   @IsString()

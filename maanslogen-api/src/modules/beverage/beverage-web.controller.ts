@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { BeverageService } from './beverage.service';
+import { Beverage } from './dto/beverage-response.dto';
 
 @ApiTags('Web – Beverages')
 @Controller('beverages')
@@ -9,7 +10,7 @@ export class BeverageWebController {
 
   @Get()
   @ApiOperation({ summary: '[Web] Get all beverages (public)' })
-  @ApiResponse({ status: 200, description: 'List of beverages' })
+  @ApiResponse({ status: 200, description: 'List of beverages', type: [Beverage] })
   getAll() {
     return this.beverageService.getAll();
   }
@@ -17,7 +18,7 @@ export class BeverageWebController {
   @Get(':id')
   @ApiOperation({ summary: '[Web] Get beverage by ID (public)' })
   @ApiParam({ name: 'id', description: 'Beverage ID' })
-  @ApiResponse({ status: 200, description: 'Beverage found' })
+  @ApiResponse({ status: 200, description: 'Beverage found', type: Beverage })
   @ApiResponse({ status: 404, description: 'Beverage not found' })
   getById(@Param('id') id: string) {
     return this.beverageService.getById(id);
