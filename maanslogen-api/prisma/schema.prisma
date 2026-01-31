@@ -14,17 +14,17 @@ enum ImageType {
 }
 
 model Image {
-  id           String            @id @default(uuid())
-  url          String
-  type         ImageType
-  width        Int?              // billedbredde (px)
-  height       Int?              // billedhøjde (px)
-  userId       String?
-  beverageId   String?
-  categoryId   String?
-  user         User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  beverage     Beverage?         @relation(fields: [beverageId], references: [id], onDelete: Cascade)
-  category     BeverageCategory? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id         String            @id @default(uuid())
+  url        String
+  type       ImageType
+  width      Int? // billedbredde (px)
+  height     Int? // billedhøjde (px)
+  userId     String?
+  beverageId String?
+  categoryId String?
+  user       User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  beverage   Beverage?         @relation(fields: [beverageId], references: [id], onDelete: Cascade)
+  category   BeverageCategory? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([beverageId])
@@ -32,47 +32,49 @@ model Image {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  username       String   @unique
-  email          String   @unique
-  passwordHash   String
-  createdAt      DateTime @default(now())
-  images         Image[]
-  reviews        Review[]
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  images       Image[]
+  reviews      Review[]
 }
 
 model BeverageCategory {
-  id          String                @id @default(uuid())
-  name        String
-  description String?
-  images      Image[]
-  attributes  AttributeDefinition[]
-  types       BeverageType[]
-  questions   Question[]
+  id                   String                @id @default(uuid())
+  name                 String
+  description          String?
+  images               Image[]
+  attributeDefinitions AttributeDefinition[]
+  types                BeverageType[]
+  questions            Question[]
+  brands               Brand[]
 }
 
 model BeverageType {
-  id          String                @id @default(uuid())
-  categoryId  String
-  name        String
-  description String?
-  active      Boolean               @default(true)
-  createdAt   DateTime              @default(now())
-  attributes  AttributeDefinition[]
-  beverages   Beverage[]
-  category    BeverageCategory      @relation(fields: [categoryId], references: [id])
-  questions   Question[]
+  id                   String                @id @default(uuid())
+  categoryId           String
+  name                 String
+  description          String?
+  active               Boolean               @default(true)
+  createdAt            DateTime              @default(now())
+  attributeDefinitions AttributeDefinition[]
+  beverages            Beverage[]
+  category             BeverageCategory      @relation(fields: [categoryId], references: [id])
+  questions            Question[]
 
   @@index([categoryId])
 }
 
 model Brand {
-  id          String    @id @default(uuid())
+  id          String             @id @default(uuid())
   name        String
   description String?
-  active      Boolean   @default(true)
-  createdAt   DateTime  @default(now())
+  active      Boolean            @default(true)
+  createdAt   DateTime           @default(now())
   beverages   Beverage[]
+  categories  BeverageCategory[]
 }
 
 model Beverage {
@@ -113,9 +115,7 @@ model BeverageAttributeValue {
 
 model AttributeDefinition {
   id              String                   @id @default(uuid())
-  categoryId      String
-  typeId          String?
-  attributeKey    String
+  attributeKey    String                   @unique
   displayName     String
   dataType        String
   filterable      Boolean                  @default(false)
@@ -123,13 +123,9 @@ model AttributeDefinition {
   validationRules Json?
   options         Json?
   sortOrder       Int?
-  category        BeverageCategory         @relation(fields: [categoryId], references: [id])
-  type            BeverageType?            @relation(fields: [typeId], references: [id], onDelete: Restrict)
+  categories      BeverageCategory[]
+  types           BeverageType[]
   attributeValues BeverageAttributeValue[]
-
-  @@unique([categoryId, typeId, attributeKey])
-  @@index([categoryId])
-  @@index([typeId])
 }
 
 model Question {
@@ -184,8 +180,8 @@ model ReviewAnswer {
 // Cleanup job deletes these from S3 and removes the rows.
 model PendingUpload {
   id        String   @id @default(uuid())
-  bucket   String   @default("maanslogen-test") // S3 bucket name (allows multiple buckets)
-  key       String   // S3 object key, e.g. images/uuid
+  bucket    String   @default("maanslogen-test") // S3 bucket name (allows multiple buckets)
+  key       String // S3 object key, e.g. images/uuid
   expiresAt DateTime
 
   @@unique([bucket, key])

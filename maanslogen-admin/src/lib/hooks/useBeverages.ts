@@ -6,6 +6,7 @@ import {
   getAllTypes,
   getAllCategories,
   getAllBrands,
+  getBrandsByCategory,
   createBeverage,
   findAttributesByCategory,
   type Beverage,
@@ -17,9 +18,13 @@ import {
 import { getApiError } from "./useApiError";
 import { resizeImageToBlob, THUMBNAIL_SIZE, LARGE_SIZE } from "@/lib/resizeImage";
 
-function defTypeId(def: AttributeDefinition): string | undefined {
-  const t = (def as { typeId?: string }).typeId;
-  return typeof t === "string" ? t : undefined;
+function defAppliesToType(
+  def: AttributeDefinition & { typeIds?: string[]; typeId?: unknown },
+  beverageTypeId: string,
+): boolean {
+  if (Array.isArray(def.typeIds)) return def.typeIds.length === 0 || def.typeIds.includes(beverageTypeId);
+  const t = def.typeId as string | undefined;
+  return t == null || t === "" || (typeof t === "string" && t === beverageTypeId);
 }
 
 const API_BASE =
@@ -39,6 +44,7 @@ export function useBeverages() {
   const [error, setError] = useState<string | null>(null);
   const [filterCategoryId, setFilterCategoryId] = useState("");
   const [filterTypeId, setFilterTypeId] = useState("");
+  const [createCategoryId, setCreateCategoryId] = useState("");
   const [beverageTypeId, setBeverageTypeId] = useState("");
   const [brandId, setBrandId] = useState("");
   const [name, setName] = useState("");
@@ -69,9 +75,7 @@ export function useBeverages() {
         return;
       }
       const all = (res.data ?? []) as AttributeDefinition[];
-      const forType = all.filter(
-        (def) => !defTypeId(def) || defTypeId(def) === beverageTypeId,
-      );
+      const forType = all.filter((def) => defAppliesToType(def, beverageTypeId));
       setAttributeDefinitions(forType);
       setAttributeValues((prev) => {
         const next: Record<string, string | number | boolean | undefined> = {};
@@ -102,11 +106,11 @@ export function useBeverages() {
     const bevErr = getApiError(beveragesRes);
     if (bevErr) setError(bevErr);
     else setList(beveragesRes.data ?? []);
-    if (typesRes.data) {
-      setTypes(typesRes.data);
-      setBeverageTypeId((prev) => prev || (typesRes.data?.[0]?.id ?? ""));
+    if (typesRes.data) setTypes(typesRes.data);
+    if (categoriesRes.data) {
+      setCategories(categoriesRes.data);
+      setCreateCategoryId((prev) => prev || (categoriesRes.data?.[0]?.id ?? ""));
     }
-    if (categoriesRes.data) setCategories(categoriesRes.data);
     if (brandsRes.data) {
       setBrands(brandsRes.data);
       setBrandId((prev) => prev || (brandsRes.data?.[0]?.id ?? ""));
@@ -118,17 +122,50 @@ export function useBeverages() {
     load();
   }, []);
 
+  const typesInCreateCategory = useMemo(
+    () => (createCategoryId ? types.filter((t) => t.categoryId === createCategoryId) : []),
+    [types, createCategoryId],
+  );
+
+  const [brandsInCreateCategory, setBrandsInCreateCategory] = useState<Brand[]>([]);
   useEffect(() => {
-    const firstId = types[0]?.id;
-    if (types.length && !beverageTypeId && firstId) setBeverageTypeId(firstId);
-  }, [types, beverageTypeId]);
+    if (!createCategoryId) {
+      setBrandsInCreateCategory([]);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const res = await getBrandsByCategory(createCategoryId);
+      if (cancelled) return;
+      const err = getApiError(res);
+      if (err) setBrandsInCreateCategory([]);
+      else setBrandsInCreateCategory((res.data as Brand[]) ?? []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [createCategoryId]);
+
   useEffect(() => {
-    const firstId = brands[0]?.id;
-    if (brands.length && !brandId && firstId) setBrandId(firstId);
-  }, [brands, brandId]);
+    const firstTypeInCategory = typesInCreateCategory[0]?.id;
+    if (typesInCreateCategory.length && !beverageTypeId && firstTypeInCategory) setBeverageTypeId(firstTypeInCategory);
+  }, [typesInCreateCategory, beverageTypeId]);
+  useEffect(() => {
+    const currentType = types.find((t) => t.id === beverageTypeId);
+    if (createCategoryId && currentType && currentType.categoryId !== createCategoryId) setBeverageTypeId("");
+  }, [createCategoryId, beverageTypeId, types]);
+  useEffect(() => {
+    const forCreate = brandsInCreateCategory;
+    const firstId = forCreate[0]?.id;
+    if (forCreate.length && !brandId && firstId) setBrandId(firstId);
+  }, [brandsInCreateCategory, brandId]);
+  useEffect(() => {
+    if (brandId && !brandsInCreateCategory.some((br) => br.id === brandId)) setBrandId("");
+  }, [brandId, brandsInCreateCategory]);
 
   const typeMap = useMemo(() => Object.fromEntries(types.map((t) => [t.id, t.name])), [types]);
   const categoryMap = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c.name])), [categories]);
+
   const typesInFilterCategory = useMemo(
     () => (filterCategoryId ? types.filter((t) => t.categoryId === filterCategoryId) : types),
     [types, filterCategoryId],
@@ -251,8 +288,13 @@ export function useBeverages() {
     setFilterCategoryId,
     filterTypeId,
     setFilterTypeId,
+    createCategoryId,
+    setCreateCategoryId,
+    typesInCreateCategory,
     beverageTypeId,
     setBeverageTypeId,
+    brandsInCreateCategory,
+    showBrandsFilteredHint: createCategoryId && brandsInCreateCategory.length > 0 && brandsInCreateCategory.length < brands.length,
     brandId,
     setBrandId,
     name,

@@ -1,8 +1,8 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { getBrandById } from "@/lib/api-client";
-import { useFetch } from "@/lib/hooks";
+import { getBrandById, getAllCategories } from "@/lib/api-client";
+import { useFetchAll } from "@/lib/hooks";
 import { PageHeading, Card, Alert, AccentLink } from "@/app/components/ui";
 import { BackLink } from "@/app/components/layout";
 import { DetailList, DetailItem, LoadingState } from "@/app/components/data";
@@ -11,11 +11,15 @@ export function BrandDetailClient() {
   const params = useParams();
   const id = (params?.id as string) ?? "";
 
-  const { data: item, loading, error } = useFetch(
-    () => getBrandById({ path: { id } }),
+  const { data, loading, error } = useFetchAll(
+    [() => getBrandById({ path: { id } }), () => getAllCategories()],
     [id],
     { enabled: !!id },
   );
+
+  const [item, categories] = data ?? [null, null];
+  const categoryIds = (item as { categoryIds?: string[] })?.categoryIds ?? [];
+  const categoryMap = categories?.length ? Object.fromEntries(categories.map((c) => [c.id, c])) : {};
 
   if (loading) {
     return (
@@ -47,6 +51,20 @@ export function BrandDetailClient() {
             {typeof item.description === "string" ? item.description : "—"}
           </DetailItem>
           <DetailItem label="Aktiv">{item.active ? "Ja" : "Nej"}</DetailItem>
+          <DetailItem label="Tilladte kategorier">
+            {categoryIds.length === 0 ? (
+              "Alle kategorier"
+            ) : (
+              <>
+                {categoryIds.map((cid, i) => (
+                  <span key={cid}>
+                    {i > 0 && ", "}
+                    <AccentLink href={`/categories/${cid}`}>{categoryMap[cid]?.name ?? cid}</AccentLink>
+                  </span>
+                ))}
+              </>
+            )}
+          </DetailItem>
         </DetailList>
         <div className="mt-6">
           <AccentLink href={`/beverages?brandId=${encodeURIComponent(item.id ?? "")}`} small>

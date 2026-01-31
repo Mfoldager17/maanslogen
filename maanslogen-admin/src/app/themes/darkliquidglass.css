@@ -16,11 +16,11 @@
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.5);
   --radius: 12px;
   --radius-lg: 16px;
-  /* Mørk glas: mere transparency (iPhone Control Center) */
-  --glass-bg: rgb(28 28 30 / 0.12);
-  --glass-bg-strong: rgb(44 44 46 / 0.2);
-  --glass-border: rgb(255 255 255 / 0.05);
-  --glass-blur: 10px;
+  /* Mørk glas – mere transparent, mere blur */
+  --glass-bg: rgb(28 28 30 / 0.25);
+  --glass-bg-strong: rgb(44 44 46 / 0.55);
+  --glass-border: rgb(255 255 255 / 0.06);
+  --glass-blur: 32px;
   --glass-saturate: 180%;
 }
 
@@ -35,21 +35,38 @@
 
 [data-theme="darkliquidglass"] .glass {
   background: var(--glass-bg);
-  -webkit-backdrop-filter: saturate(160%) blur(10px);
-  backdrop-filter: saturate(160%) blur(10px);
+  -webkit-backdrop-filter: saturate(160%) blur(32px);
+  backdrop-filter: saturate(160%) blur(32px);
   border: 1px solid var(--glass-border);
 }
 
-/* Cards og elevated surfaces får glas-effekt */
+/* Cards og elevated: først solid fallback */
 [data-theme="darkliquidglass"] .card,
 [data-theme="darkliquidglass"] .bg-elevated {
-  background: var(--glass-bg-strong);
-  -webkit-backdrop-filter: saturate(160%) blur(10px);
-  backdrop-filter: saturate(160%) blur(10px);
-  border: 1px solid var(--glass-border);
-  isolation: isolate;
+  background: rgb(var(--color-bg-elevated));
+  border: 1px solid rgb(var(--color-border));
 }
 
-[data-theme="darkliquidglass"] .card:hover {
-  background: rgb(44 44 46 / 0.3);
+@supports (backdrop-filter: blur(32px)) or (-webkit-backdrop-filter: blur(32px)) {
+  [data-theme="darkliquidglass"] .card,
+  [data-theme="darkliquidglass"] .bg-elevated {
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: saturate(160%) blur(32px);
+    backdrop-filter: saturate(160%) blur(32px);
+    border: 1px solid var(--glass-border);
+    isolation: isolate;
+  }
 }
+
+/* Dropdown-panel: eksplicit blur */
+@supports (backdrop-filter: blur(32px)) or (-webkit-backdrop-filter: blur(32px)) {
+  [data-theme="darkliquidglass"] .dropdown-panel {
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: saturate(160%) blur(32px);
+    backdrop-filter: saturate(160%) blur(32px);
+    border: 1px solid var(--glass-border);
+    isolation: isolate;
+  }
+}
+
+/* Card-hover fjernet – kun .card-list-item har hover */

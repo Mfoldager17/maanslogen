@@ -24,10 +24,10 @@ export function AttributesPageClient() {
     types,
     loading,
     error,
-    categoryId,
-    setCategoryId,
-    typeId,
-    setTypeId,
+    categoryIds,
+    toggleCategoryId,
+    typeIds,
+    toggleTypeId,
     attributeKey,
     setAttributeKey,
     displayName,
@@ -42,11 +42,17 @@ export function AttributesPageClient() {
     handleSubmit,
     categoryMap,
     typeMap,
-    typesInCategory,
+    typesInSelectedCategories,
   } = useAttributes();
 
-  const typeIdDisplay = (a: { typeId?: unknown }) =>
-    typeof a.typeId === "string" ? (typeMap[a.typeId] ?? a.typeId) : "";
+  const categoryLabels = (a: { categoryIds?: string[]; categoryId?: string }) =>
+    (a.categoryIds ?? (a.categoryId ? [a.categoryId] : []))
+      .map((id) => categoryMap[id] ?? id)
+      .join(", ");
+  const typeLabels = (a: { typeIds?: string[]; typeId?: unknown }) =>
+    (a.typeIds ?? (typeof a.typeId === "string" ? [a.typeId] : []))
+      .map((id) => typeMap[id] ?? id)
+      .join(", ");
 
   return (
     <div>
@@ -55,29 +61,37 @@ export function AttributesPageClient() {
       <CollapsibleCard title="Opret ny attributedefinition" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-wrap gap-4">
-          <div>
-            <Label>Kategori</Label>
-            <Select
-              value={categoryId}
-              onChange={(e) => {
-                const newCategoryId = e.target.value;
-                setCategoryId(newCategoryId);
-                if (typeId && types.find((t) => t.id === typeId)?.categoryId !== newCategoryId) setTypeId("");
-              }}
-            >
+          <div className="w-full">
+            <Label>Kategorier (vælg mindst én)</Label>
+            <div className="mt-1 flex flex-wrap gap-3">
               {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
+                <label key={c.id} className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={categoryIds.includes(c.id)}
+                    onChange={() => toggleCategoryId(c.id)}
+                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                  />
+                  <span className="text-sm">{c.name}</span>
+                </label>
               ))}
-            </Select>
+            </div>
           </div>
-          <div>
-            <Label>Type (valgfri)</Label>
-            <Select value={typeId} onChange={(e) => setTypeId(e.target.value)}>
-              <option value="">Alle typer i kategorien</option>
-              {typesInCategory.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
+          <div className="w-full">
+            <Label>Typer (valgfri – tom = alle typer i valgte kategorier)</Label>
+            <div className="mt-1 flex flex-wrap gap-3">
+              {typesInSelectedCategories.map((t) => (
+                <label key={t.id} className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={typeIds.includes(t.id)}
+                    onChange={() => toggleTypeId(t.id)}
+                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                  />
+                  <span className="text-sm">{t.name}</span>
+                </label>
               ))}
-            </Select>
+            </div>
           </div>
           <div>
             <Label>Attribut-nøgle</Label>
@@ -131,7 +145,7 @@ export function AttributesPageClient() {
           <div className="flex w-full items-end sm:w-auto">
             <Button
               type="submit"
-              disabled={submitting || !categoryId || !attributeKey.trim() || !displayName.trim()}
+              disabled={submitting || categoryIds.length === 0 || !attributeKey.trim() || !displayName.trim()}
             >
               {submitting ? "Opretter…" : "Opret"}
             </Button>
@@ -160,8 +174,8 @@ export function AttributesPageClient() {
                     ({a.attributeKey}, {a.dataType})
                   </span>
                   <span className="text-heading-muted ml-2 text-sm">
-                    {a.categoryId ? (categoryMap[a.categoryId] ?? a.categoryId) : ""}
-                    {typeIdDisplay(a) ? ` / ${typeIdDisplay(a)}` : ""}
+                    {categoryLabels(a)}
+                    {typeLabels(a) ? ` / ${typeLabels(a)}` : ""}
                   </span>
                 </div>
                 <span className="text-heading-muted text-xs">

@@ -1,4 +1,4 @@
-import { IsString, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, IsBoolean, IsOptional, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBrandDto {
@@ -15,4 +15,10 @@ export class CreateBrandDto {
   @IsOptional()
   @IsBoolean()
   active?: boolean;
+
+  @ApiProperty({ description: 'IDs of categories this brand is allowed in (empty = all)', example: [], type: [String], required: false })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  categoryIds?: string[];
 }

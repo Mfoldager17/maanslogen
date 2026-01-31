@@ -16,6 +16,14 @@ export class BrandAdminController {
     return this.service.getAll();
   }
 
+  @Get('category/:categoryId')
+  @ApiOperation({ summary: '[Admin] Get brands allowed in this category' })
+  @ApiParam({ name: 'categoryId', description: 'Beverage category ID' })
+  @ApiResponse({ status: 200, description: 'List of brands', type: [Brand] })
+  getByCategory(@Param('categoryId') categoryId: string) {
+    return this.service.getByCategory(categoryId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: '[Admin] Get brand by ID' })
   @ApiParam({ name: 'id', description: 'Brand ID' })

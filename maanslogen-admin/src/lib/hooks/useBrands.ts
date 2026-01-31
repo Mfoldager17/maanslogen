@@ -1,29 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllBrands, brandAdminControllerCreate, type Brand } from "@/lib/api-client";
+import { getAllBrands, getAllCategories, brandAdminControllerCreate, type Brand } from "@/lib/api-client";
 import { getApiError } from "./useApiError";
 
 export function useBrands() {
   const [list, setList] = useState<Brand[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [active, setActive] = useState(true);
+  const [categoryIds, setCategoryIds] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   async function load() {
     setLoading(true);
     setError(null);
-    const res = await getAllBrands();
-    const err = getApiError(res);
+    const [brandsRes, categoriesRes] = await Promise.all([getAllBrands(), getAllCategories()]);
+    const err = getApiError(brandsRes);
     if (err) {
       setError(err);
       setList([]);
     } else {
-      setList(res.data ?? []);
+      setList(brandsRes.data ?? []);
     }
+    if (categoriesRes.data) setCategories(categoriesRes.data);
     setLoading(false);
   }
 
@@ -31,13 +34,22 @@ export function useBrands() {
     load();
   }, []);
 
+  function toggleCategoryId(id: string) {
+    setCategoryIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
     setSubmitting(true);
     setError(null);
     const createRes = await brandAdminControllerCreate({
-      body: { name: name.trim(), description: description.trim() || undefined, active },
+      body: {
+        name: name.trim(),
+        description: description.trim() || undefined,
+        active,
+        categoryIds: categoryIds.length ? categoryIds : undefined,
+      } as unknown as Parameters<typeof brandAdminControllerCreate>[0]["body"],
     });
     setSubmitting(false);
     const createErr = getApiError(createRes);
@@ -47,11 +59,13 @@ export function useBrands() {
     }
     setName("");
     setDescription("");
+    setCategoryIds([]);
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
   }
 
   return {
     list,
+    categories,
     loading,
     error,
     name,
@@ -60,6 +74,8 @@ export function useBrands() {
     setDescription,
     active,
     setActive,
+    categoryIds,
+    toggleCategoryId,
     submitting,
     handleSubmit,
   };

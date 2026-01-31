@@ -16,4 +16,7 @@ export class Brand {
 
   @ApiProperty({ description: 'Creation timestamp' })
   createdAt: Date;
+
+  @ApiProperty({ description: 'IDs of categories this brand is allowed in (empty = all)', type: [String] })
+  categoryIds: string[];
 }

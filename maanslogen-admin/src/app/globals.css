@@ -78,6 +78,18 @@ body {
   box-shadow: var(--shadow-md);
 }
 
+/* Dropdown-panel: baggrund med blur (base for alle temaer; liquidglass overstyrer) */
+.dropdown-panel {
+  isolation: isolate;
+}
+@supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
+  .dropdown-panel {
+    background-color: rgb(var(--color-bg-elevated) / 0.92);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+  }
+}
+
 /* Nav (aktiv / inaktiv) – bruger accent i standard, tilpas i tema-filer hvis nødvendigt */
 .nav-active {
   background-color: rgb(var(--color-accent) / 0.15);
@@ -148,6 +160,13 @@ select.input-theme {
 .input-theme:focus-visible {
   border-color: rgb(var(--color-accent));
   box-shadow: 0 0 0 2px rgb(var(--color-accent));
+}
+/* Checkbox: ingen focus-ring/outline */
+input.input-theme[type="checkbox"]:focus,
+input.input-theme[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-color: rgb(var(--color-border));
 }
 
 /* Primær knap – følger tema, mobilvenlig touch-target */

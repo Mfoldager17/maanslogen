@@ -82,24 +82,23 @@ async function main() {
   // Attributes
   const abvAttribute = await prisma.attributeDefinition.create({
     data: {
-      categoryId: beerCategory.id,
-      typeId: null, // gælder alle øl typer
       attributeKey: 'abv',
       displayName: 'Alkohol %',
       dataType: 'number',
       filterable: true,
       required: true,
+      categories: { connect: { id: beerCategory.id } },
     },
   });
 
   const bitternessAttribute = await prisma.attributeDefinition.create({
     data: {
-      categoryId: beerCategory.id,
-      typeId: ipaType.id, // kun IPA
       attributeKey: 'ibu',
       displayName: 'Bitterhed (IBU)',
       dataType: 'number',
       filterable: true,
+      categories: { connect: { id: beerCategory.id } },
+      types: { connect: { id: ipaType.id } },
     },
   });
 
@@ -122,9 +121,13 @@ async function main() {
     },
   });
 
-  // Brands
-  const brandCarlsberg = await prisma.brand.create({ data: { name: 'Carlsberg', description: 'Dansk bryggeri' } });
-  const brandMikkeller = await prisma.brand.create({ data: { name: 'Mikkeller', description: 'Dansk mikrobryggeri' } });
+  // Brands (tilladte kategorier: øl-mærker → Øl)
+  const brandCarlsberg = await prisma.brand.create({
+    data: { name: 'Carlsberg', description: 'Dansk bryggeri', categories: { connect: { id: beerCategory.id } } },
+  });
+  const brandMikkeller = await prisma.brand.create({
+    data: { name: 'Mikkeller', description: 'Dansk mikrobryggeri', categories: { connect: { id: beerCategory.id } } },
+  });
 
   // Beverages
   const beer1 = await prisma.beverage.create({

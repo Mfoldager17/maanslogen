@@ -5,11 +5,11 @@ export class AttributeDefinition {
   @ApiProperty({ description: 'Attribute definition ID' })
   id: string;
 
-  @ApiProperty({ description: 'Category ID' })
-  categoryId: string;
+  @ApiProperty({ description: 'Category IDs this attribute applies to', type: [String] })
+  categoryIds: string[];
 
-  @ApiPropertyOptional({ description: 'Beverage type ID (optional)' })
-  typeId?: string | null;
+  @ApiPropertyOptional({ description: 'Type IDs (optional; empty = all types in the categories)', type: [String] })
+  typeIds?: string[];
 
   @ApiProperty({ description: 'Attribute key' })
   attributeKey: string;

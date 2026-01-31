@@ -29,8 +29,13 @@ export function BeveragesPageClient() {
     setFilterCategoryId,
     filterTypeId,
     setFilterTypeId,
+    createCategoryId,
+    setCreateCategoryId,
+    typesInCreateCategory,
     beverageTypeId,
     setBeverageTypeId,
+    brandsInCreateCategory,
+    showBrandsFilteredHint,
     brandId,
     setBrandId,
     name,
@@ -60,20 +65,58 @@ export function BeveragesPageClient() {
         <form onSubmit={handleSubmit}>
           <div className="flex flex-wrap gap-4">
           <div>
+            <Label>Kategori</Label>
+            <Select
+              value={createCategoryId}
+              onChange={(e) => setCreateCategoryId(e.target.value)}
+            >
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </Select>
+          </div>
+          <div>
             <Label>Type</Label>
-            <Select value={beverageTypeId} onChange={(e) => setBeverageTypeId(e.target.value)}>
-              {types.map((t) => (
+            <Select
+              value={beverageTypeId}
+              onChange={(e) => setBeverageTypeId(e.target.value)}
+              disabled={!createCategoryId || typesInCreateCategory.length === 0}
+            >
+              <option value="">
+                {createCategoryId
+                  ? typesInCreateCategory.length === 0
+                    ? "Ingen typer i kategorien"
+                    : "Vælg type"
+                  : "Vælg kategori først"}
+              </option>
+              {typesInCreateCategory.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </Select>
           </div>
           <div>
             <Label>Mærke</Label>
-            <Select value={brandId} onChange={(e) => setBrandId(e.target.value)}>
-              {brands.map((br) => (
+            <Select
+              value={brandId}
+              onChange={(e) => setBrandId(e.target.value)}
+              disabled={!createCategoryId}
+            >
+              <option value="">
+                {createCategoryId
+                  ? brandsInCreateCategory.length === 0
+                    ? "Ingen mærker tilladt i denne kategori"
+                    : "Vælg mærke"
+                  : "Vælg kategori først"}
+              </option>
+              {brandsInCreateCategory.map((br) => (
                 <option key={br.id} value={br.id}>{br.name}</option>
               ))}
             </Select>
+            {showBrandsFilteredHint && (
+              <p className="text-heading-muted mt-1 text-xs">
+                Viser kun mærker tilladt i denne kategori
+              </p>
+            )}
           </div>
           <div>
             <Label>Navn</Label>

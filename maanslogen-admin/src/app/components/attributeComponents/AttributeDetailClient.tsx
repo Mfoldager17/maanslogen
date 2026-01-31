@@ -22,13 +22,10 @@ export function AttributeDetailClient() {
   );
 
   const [item, categories, types] = data ?? [null, null, null];
-  const categoryName = item?.categoryId && categories?.length
-    ? (categories.find((c) => c.id === item.categoryId)?.name ?? item.categoryId)
-    : "—";
-  const typeIdStr = typeof item?.typeId === "string" ? item.typeId : undefined;
-  const typeName = typeIdStr && types?.length
-    ? (types.find((t) => t.id === typeIdStr)?.name ?? typeIdStr)
-    : "—";
+  const catIds = (item as { categoryIds?: string[]; categoryId?: string })?.categoryIds ?? (item?.categoryId ? [item.categoryId] : []);
+  const categoryLabels = catIds.map((cid) => (categories?.find((c) => c.id === cid)?.name ?? cid)).join(", ") || "—";
+  const typIds = (item as { typeIds?: string[]; typeId?: unknown })?.typeIds ?? (typeof item?.typeId === "string" ? [item.typeId] : []);
+  const typeLabels = typIds.map((tid) => (types?.find((t) => t.id === tid)?.name ?? tid)).join(", ") || "—";
 
   if (loading) {
     return (
@@ -57,14 +54,36 @@ export function AttributeDetailClient() {
           <DetailItem label="ID" mono>{item.id}</DetailItem>
           <DetailItem label="Nøgle">{item.attributeKey ?? "—"}</DetailItem>
           <DetailItem label="Visningsnavn">{item.displayName ?? "—"}</DetailItem>
-          <DetailItem label="Kategori">
-            <AccentLink href={`/categories/${item.categoryId}`}>{categoryName}</AccentLink>
-          </DetailItem>
-          <DetailItem label="Type">
-            {typeIdStr ? (
-              <AccentLink href={`/types/${typeIdStr}`}>{typeName}</AccentLink>
+          <DetailItem label="Kategorier">
+            {catIds.length ? (
+              <>
+                {catIds.map((cid, i) => (
+                  <span key={cid}>
+                    {i > 0 && ", "}
+                    <AccentLink href={`/categories/${cid}`}>
+                      {categories?.find((c) => c.id === cid)?.name ?? cid}
+                    </AccentLink>
+                  </span>
+                ))}
+              </>
             ) : (
-              "Hele kategorien"
+              "—"
+            )}
+          </DetailItem>
+          <DetailItem label="Typer">
+            {typIds.length ? (
+              <>
+                {typIds.map((tid, i) => (
+                  <span key={tid}>
+                    {i > 0 && ", "}
+                    <AccentLink href={`/types/${tid}`}>
+                      {types?.find((t) => t.id === tid)?.name ?? tid}
+                    </AccentLink>
+                  </span>
+                ))}
+              </>
+            ) : (
+              "Alle typer i kategorierne"
             )}
           </DetailItem>
           <DetailItem label="Datatype">{item.dataType ?? "—"}</DetailItem>

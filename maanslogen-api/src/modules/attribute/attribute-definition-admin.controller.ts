@@ -34,6 +34,14 @@ export class AttributeDefinitionAdminController {
     return this.service.findByCategory(categoryId);
   }
 
+  @Get('type/:beverageTypeId')
+  @ApiOperation({ summary: '[Admin] Get attribute definitions that apply to a beverage type' })
+  @ApiParam({ name: 'beverageTypeId', description: 'Beverage type ID' })
+  @ApiResponse({ status: 200, description: 'List of attribute definitions', type: [AttributeDefinition] })
+  findByType(@Param('beverageTypeId') beverageTypeId: string) {
+    return this.service.findByType(beverageTypeId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: '[Admin] Get attribute definition by ID' })
   @ApiParam({ name: 'id', description: 'Attribute definition ID' })

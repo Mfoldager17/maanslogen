@@ -44,6 +44,11 @@ export {
   type Options,
 } from "./api/sdk.gen";
 
+/** Get brands allowed in this category (until generate:api:live adds brandAdminControllerGetByCategory). */
+export async function getBrandsByCategory(categoryId: string) {
+  return client.get<unknown>({ url: `/api/admin/brands/category/${encodeURIComponent(categoryId)}` });
+}
+
 // All generated SDK functions (new endpoints appear here after generate:api:live)
 export * from "./api/sdk.gen";
 

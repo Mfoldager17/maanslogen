@@ -12,14 +12,14 @@ export class BeverageCategoryService {
 
   async getAll() {
     return this.prisma.beverageCategory.findMany({
-      include: { types: true, attributes: true, questions: true, images: true },
+      include: { types: true, attributeDefinitions: true, questions: true, images: true },
     });
   }
 
   async getById(id: string) {
     return this.prisma.beverageCategory.findUnique({
       where: { id },
-      include: { types: true, attributes: true, questions: true, images: true },
+      include: { types: true, attributeDefinitions: true, questions: true, images: true },
     });
   }
 

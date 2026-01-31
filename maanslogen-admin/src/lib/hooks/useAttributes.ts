@@ -18,8 +18,8 @@ export function useAttributes() {
   const [types, setTypes] = useState<BeverageType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [categoryId, setCategoryId] = useState("");
-  const [typeId, setTypeId] = useState("");
+  const [categoryIds, setCategoryIds] = useState<string[]>([]);
+  const [typeIds, setTypeIds] = useState<string[]>([]);
   const [attributeKey, setAttributeKey] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [dataType, setDataType] = useState<"string" | "number" | "boolean">("string");
@@ -40,7 +40,7 @@ export function useAttributes() {
     else setList(attrRes.data ?? []);
     if (categoriesRes.data) {
       setCategories(categoriesRes.data);
-      setCategoryId((prev) => prev || (categoriesRes.data?.[0]?.id ?? ""));
+      setCategoryIds((prev) => (prev.length ? prev : (categoriesRes.data?.[0]?.id ? [categoriesRes.data[0].id] : [])));
     }
     if (typesRes.data) setTypes(typesRes.data);
     setLoading(false);
@@ -52,24 +52,36 @@ export function useAttributes() {
 
   useEffect(() => {
     const firstId = categories[0]?.id;
-    if (categories.length && !categoryId && firstId) setCategoryId(firstId);
-  }, [categories, categoryId]);
+    if (categories.length && categoryIds.length === 0 && firstId) setCategoryIds([firstId]);
+  }, [categories, categoryIds.length]);
+
+  function toggleCategoryId(id: string) {
+    setCategoryIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  }
+
+  function toggleTypeId(id: string) {
+    setTypeIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!categoryId || !attributeKey.trim() || !displayName.trim() || !dataType) return;
+    if (categoryIds.length === 0 || !attributeKey.trim() || !displayName.trim() || !dataType) return;
     setSubmitting(true);
     setError(null);
     const createRes = await createAttribute({
       body: {
-        categoryId,
-        typeId: typeId || undefined,
+        categoryIds,
+        typeIds: typeIds.length ? typeIds : undefined,
         attributeKey: attributeKey.trim(),
         displayName: displayName.trim(),
         dataType,
         filterable,
         required,
-      },
+      } as unknown as Parameters<typeof createAttribute>[0]["body"],
     });
     setSubmitting(false);
     const createErr = getApiError(createRes);
@@ -79,13 +91,15 @@ export function useAttributes() {
     }
     setAttributeKey("");
     setDisplayName("");
-    setTypeId("");
+    setTypeIds([]);
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
   }
 
   const categoryMap = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c.name])), [categories]);
   const typeMap = useMemo(() => Object.fromEntries(types.map((t) => [t.id, t.name])), [types]);
-  const typesInCategory = categoryId ? types.filter((t) => t.categoryId === categoryId) : types;
+  const typesInSelectedCategories = categoryIds.length
+    ? types.filter((t) => t.categoryId && categoryIds.includes(t.categoryId))
+    : types;
 
   return {
     list,
@@ -93,10 +107,12 @@ export function useAttributes() {
     types,
     loading,
     error,
-    categoryId,
-    setCategoryId,
-    typeId,
-    setTypeId,
+    categoryIds,
+    setCategoryIds,
+    toggleCategoryId,
+    typeIds,
+    setTypeIds,
+    toggleTypeId,
     attributeKey,
     setAttributeKey,
     displayName,
@@ -111,6 +127,6 @@ export function useAttributes() {
     handleSubmit,
     categoryMap,
     typeMap,
-    typesInCategory,
+    typesInSelectedCategories,
   };
 }
