@@ -48,7 +48,7 @@ Hvis brugeren aldrig opretter entiteten, bliver uploadet stående i S3. API’et
 | `MINIO_USE_SSL`   | Ja       | `true` eller `false` |
 | `MINIO_ACCESS_KEY`| Ja       | MinIO access key |
 | `MINIO_SECRET_KEY`| Ja       | MinIO secret key |
-| `MINIO_BUCKET`    | Nej      | Default bucket (default: `maanslogen-test`) |
+| `MINIO_BUCKET`    | Nej      | Default bucket (default: `maanslogen-dev`) |
 | `MINIO_PUBLIC_URL`| Nej      | Public base URL til filer (ellers bruges `http(s)://MINIO_ENDPOINT/MINIO_BUCKET`) |
 | `MINIO_REGION`    | Nej      | Region, fx `eu-north-1` |
 
@@ -59,7 +59,7 @@ MINIO_ENDPOINT=localhost:9000
 MINIO_USE_SSL=false
 MINIO_ACCESS_KEY=din-access-key
 MINIO_SECRET_KEY=din-secret-key
-MINIO_BUCKET=maanslogen-test
+MINIO_BUCKET=maanslogen-dev
 ```
 
 **Eksempel: MinIO bag proxy** (fx `maanslogen-images.mathiasfoldager.com`):

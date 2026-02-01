@@ -21,7 +21,7 @@ echo "2. Henter presigned URLs (THUMBNAIL + LARGE, samme id)..."
 # Bruger dedikeret test-bucket så den oprettes med public policy hvis den ikke findes
 PRESIGN=$(curl -s -X POST "$API_URL/upload/presign/beverage-images" \
   -H "Content-Type: application/json" \
-  -H "X-Test-Bucket: maanslogen-test-upload" \
+  -H "X-Test-Bucket: maanslogen-dev-upload" \
   -d '{"uploads":[{"type":"THUMBNAIL"},{"type":"LARGE"}]}')
 UPLOAD_URL_THUMB=$(echo "$PRESIGN" | json "console.log(d?.uploads?.[0]?.uploadUrl||'')")
 UPLOAD_URL_LARGE=$(echo "$PRESIGN" | json "console.log(d?.uploads?.[1]?.uploadUrl||'')")
@@ -40,16 +40,16 @@ echo "   THUMBNAIL URL: $IMAGE_URL_THUMB (${WIDTH_THUMB}x${HEIGHT_THUMB})"
 echo "   LARGE URL:     $IMAGE_URL_LARGE (${WIDTH_LARGE}x${HEIGHT_LARGE})"
 
 echo "3. Henter testbillede, laver lille + stor version, uploader til begge slots..."
-curl -sL "https://placehold.co/500x500.png" -o /tmp/maanslogen-test.png
+curl -sL "https://placehold.co/500x500.png" -o /tmp/maanslogen-dev.png
 # Lav lille version (thumbnail) og stor version (large) med sips (macOS) – ellers brug samme fil
 if command -v sips >/dev/null 2>&1; then
-  sips -z "$HEIGHT_THUMB" "$WIDTH_THUMB" /tmp/maanslogen-test.png --out /tmp/maanslogen-test-thumb.png 2>/dev/null || cp /tmp/maanslogen-test.png /tmp/maanslogen-test-thumb.png
-  sips -z "$HEIGHT_LARGE" "$WIDTH_LARGE" /tmp/maanslogen-test.png --out /tmp/maanslogen-test-large.png 2>/dev/null || cp /tmp/maanslogen-test.png /tmp/maanslogen-test-large.png
-  FILE_THUMB=/tmp/maanslogen-test-thumb.png
-  FILE_LARGE=/tmp/maanslogen-test-large.png
+  sips -z "$HEIGHT_THUMB" "$WIDTH_THUMB" /tmp/maanslogen-dev.png --out /tmp/maanslogen-dev-thumbnail.png 2>/dev/null || cp /tmp/maanslogen-dev.png /tmp/maanslogen-dev-thumbnail.png
+  sips -z "$HEIGHT_LARGE" "$WIDTH_LARGE" /tmp/maanslogen-dev.png --out /tmp/maanslogen-dev-large.png 2>/dev/null || cp /tmp/maanslogen-dev.png /tmp/maanslogen-dev-large.png
+  FILE_THUMB=/tmp/maanslogen-dev-thumbnail.png
+  FILE_LARGE=/tmp/maanslogen-dev-large.png
 else
-  FILE_THUMB=/tmp/maanslogen-test.png
-  FILE_LARGE=/tmp/maanslogen-test.png
+  FILE_THUMB=/tmp/maanslogen-dev.png
+  FILE_LARGE=/tmp/maanslogen-dev.png
 fi
 HTTP1=$(curl -s -o /dev/null -w "%{http_code}" -X PUT "$UPLOAD_URL_THUMB" \
   -H "Content-Type: image/png" \

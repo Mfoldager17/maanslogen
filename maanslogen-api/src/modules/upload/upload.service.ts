@@ -81,7 +81,7 @@ export class UploadService {
   constructor(private readonly prisma: PrismaService) {
     const endpoint = process.env.MINIO_ENDPOINT;
     const useSSL = process.env.MINIO_USE_SSL;
-    this.defaultBucket = process.env.MINIO_BUCKET ?? 'maanslogen-test';
+    this.defaultBucket = process.env.MINIO_BUCKET ?? 'maanslogen-dev';
 
     const endpointUrl = `${useSSL === 'true' ? 'https' : 'http'}://${endpoint}`;
     this.endpointBaseUrl = endpointUrl.replace(/\/$/, '');
