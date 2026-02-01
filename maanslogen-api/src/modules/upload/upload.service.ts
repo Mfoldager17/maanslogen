@@ -10,6 +10,8 @@ import {
   ListBucketsCommand,
   ListObjectsV2Command,
   DeleteBucketCommand,
+  ListMultipartUploadsCommand,
+  AbortMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
@@ -33,6 +35,9 @@ export interface PresignResult {
   height: number;
   bucket: string;
 }
+
+/** Bucket der aldrig slettes ved cleanup af tomme buckets (kun denne springes over). */
+const PROTECTED_BUCKET_CLEANUP = 'maanslogen-dev';
 
 /** Default dimensioner per type (width x height) når slot ikke angiver width/height. */
 const DEFAULT_DIMENSIONS: Record<ImageType, { width: number; height: number }> = {
@@ -280,34 +285,141 @@ export class UploadService {
   }
 
   /**
-   * Sletter buckets der er tomme (0 objekter). Spring over default-bucketen (MINIO_BUCKET).
+   * Afbryder alle uafsluttede multipart-uploads i en bucket (ellers blokerer de DeleteBucket).
    */
-  async deleteEmptyBuckets(): Promise<void> {
+  private async abortIncompleteMultipartUploads(bucket: string): Promise<number> {
+    let aborted = 0;
+    let keyMarker: string | undefined;
+    let uploadIdMarker: string | undefined;
+    do {
+      const list = await this.client.send(
+        new ListMultipartUploadsCommand({
+          Bucket: bucket,
+          KeyMarker: keyMarker,
+          UploadIdMarker: uploadIdMarker,
+        }),
+      );
+      const uploads = list.Uploads ?? [];
+      for (const u of uploads) {
+        if (u.Key == null || u.UploadId == null) continue;
+        try {
+          await this.client.send(
+            new AbortMultipartUploadCommand({
+              Bucket: bucket,
+              Key: u.Key,
+              UploadId: u.UploadId,
+            }),
+          );
+          aborted++;
+        } catch {
+          // Ignorer enkelt fejl
+        }
+      }
+      keyMarker = list.IsTruncated ? list.NextKeyMarker : undefined;
+      uploadIdMarker = list.IsTruncated ? list.NextUploadIdMarker : undefined;
+    } while (keyMarker != null || uploadIdMarker != null);
+    return aborted;
+  }
+
+  /**
+   * Returnerer antal objekter i bucketen (tjekker alle sider).
+   */
+  private async getBucketObjectCount(bucket: string): Promise<number> {
+    let total = 0;
+    let continuationToken: string | undefined;
+    do {
+      const list = await this.client.send(
+        new ListObjectsV2Command({
+          Bucket: bucket,
+          MaxKeys: 1000,
+          ContinuationToken: continuationToken,
+        }),
+      );
+      const count = list.KeyCount ?? list.Contents?.length ?? 0;
+      total += count;
+      continuationToken = list.IsTruncated ? list.NextContinuationToken : undefined;
+    } while (continuationToken);
+    return total;
+  }
+
+  /**
+   * Returnerer true hvis bucketen har 0 objekter (tjekker alle sider).
+   */
+  private async isBucketEmpty(bucket: string): Promise<boolean> {
+    return (await this.getBucketObjectCount(bucket)) === 0;
+  }
+
+  /**
+   * Rapport fra deleteEmptyBuckets – så man kan se i API-svaret hvorfor en bucket ikke blev slettet.
+   */
+  async deleteEmptyBucketsReport(): Promise<{
+    protectedBucket: string;
+    bucketsListed: string[];
+    deleted: string[];
+    skippedProtected: string[];
+    hadObjects: { bucket: string; objectCount: number }[];
+    multipartAborted: { bucket: string; count: number }[];
+    errors: { bucket: string; message: string }[];
+  }> {
+    const report = {
+      protectedBucket: PROTECTED_BUCKET_CLEANUP,
+      bucketsListed: [] as string[],
+      deleted: [] as string[],
+      skippedProtected: [] as string[],
+      hadObjects: [] as { bucket: string; objectCount: number }[],
+      multipartAborted: [] as { bucket: string; count: number }[],
+      errors: [] as { bucket: string; message: string }[],
+    };
     let buckets: { Name?: string }[] = [];
     try {
       const result = await this.client.send(new ListBucketsCommand({}));
       buckets = result.Buckets ?? [];
-    } catch {
-      return;
+      report.bucketsListed = buckets.map((b) => b.Name).filter((n): n is string => !!n);
+    } catch (err) {
+      report.errors.push({ bucket: '(ListBuckets)', message: (err as Error).message });
+      return report;
     }
     for (const b of buckets) {
       const name = b.Name;
-      if (!name || name === this.defaultBucket) continue;
+      if (!name) continue;
+      if (name === PROTECTED_BUCKET_CLEANUP) {
+        report.skippedProtected.push(name);
+        continue;
+      }
       try {
-        const list = await this.client.send(
-          new ListObjectsV2Command({ Bucket: name, MaxKeys: 1 }),
-        );
-        if ((list.KeyCount ?? 0) === 0) {
-          await this.client.send(new DeleteBucketCommand({ Bucket: name }));
+        const aborted = await this.abortIncompleteMultipartUploads(name);
+        if (aborted > 0) report.multipartAborted.push({ bucket: name, count: aborted });
+        const objectCount = await this.getBucketObjectCount(name);
+        if (objectCount > 0) {
+          report.hadObjects.push({ bucket: name, objectCount });
+          continue;
         }
-      } catch {
-        // Ignorer (fx manglende rettigheder eller bucket findes ikke)
+        await this.client.send(new DeleteBucketCommand({ Bucket: name }));
+        report.deleted.push(name);
+      } catch (err) {
+        report.errors.push({ bucket: name, message: (err as Error).message });
       }
     }
+    return report;
   }
 
-  @Cron('0 3 * * 0') // Hver søndag kl. 03:00
+  /**
+   * Sletter buckets der er tomme (0 objekter). Kun "maanslogen-dev" springes over.
+   * Kalder deleteEmptyBucketsReport som udfører selve sletningen.
+   */
+  async deleteEmptyBuckets(): Promise<void> {
+    await this.deleteEmptyBucketsReport();
+  }
+
+  @Cron('0 3 * * 0') // Hver søndag kl. 03:00 (produktion)
   async handleWeeklyEmptyBucketCleanup(): Promise<void> {
+    await this.deleteEmptyBuckets();
+  }
+
+  /** Kører hver 2. minut når CRON_EMPTY_BUCKETS_EVERY_2MIN=true – kun til test. */
+  @Cron('*/2 * * * *')
+  async handleTestEmptyBucketCleanup(): Promise<void> {
+    if (process.env.CRON_EMPTY_BUCKETS_EVERY_2MIN !== 'true') return;
     await this.deleteEmptyBuckets();
   }
 }

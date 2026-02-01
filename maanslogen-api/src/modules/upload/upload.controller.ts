@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Headers, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Headers, Param, Post, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiHeader } from '@nestjs/swagger';
 import { UploadService, PresignContext } from './upload.service';
 import { PresignUploadDto } from './dto/presign-upload.dto';
@@ -79,5 +79,27 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
       bucketOverride,
     );
     return { uploads };
+  }
+
+  @Get('cleanup-empty-buckets')
+  @ApiOperation({
+    summary: 'Slet tomme buckets (test)',
+    description:
+      'Kører sletning af tomme S3/MinIO-buckets med det samme. Returnerer rapport: hvilke buckets der blev slettet, hvilke der springes over (default / har objekter), og evt. fejl.',
+  })
+  @ApiResponse({ status: 200, description: 'Cleanup kørt med rapport' })
+  async cleanupEmptyBuckets() {
+    const report = await this.uploadService.deleteEmptyBucketsReport();
+    return {
+      ok: true,
+      message: 'Cleanup kørt',
+      protectedBucket: report.protectedBucket,
+      bucketsListed: report.bucketsListed,
+      deleted: report.deleted,
+      skippedProtected: report.skippedProtected,
+      hadObjects: report.hadObjects,
+      multipartAborted: report.multipartAborted,
+      errors: report.errors,
+    };
   }
 }
