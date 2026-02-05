@@ -126,7 +126,7 @@ export type Image = {
      */
     id: string;
     /**
-     * Image URL
+     * Image URL, or for type ICON the icon itself (e.g. an emoji character like 🍷) – not a link in that case.
      */
     url: string;
     /**
@@ -366,6 +366,10 @@ export type CreateCategoryDto = {
      */
     name: string;
     /**
+     * Icon – tom eller præcis én emoji
+     */
+    icon?: string;
+    /**
      * The description of the beverage category
      */
     description: string;
@@ -380,6 +384,10 @@ export type UpdateCategoryDto = {
      * The name of the beverage category
      */
     name?: string;
+    /**
+     * Icon – tom eller præcis én emoji
+     */
+    icon?: string;
     /**
      * The description of the beverage category
      */
@@ -893,6 +901,55 @@ export type UploadControllerPresignResponses = {
 };
 
 export type UploadControllerPresignResponse = UploadControllerPresignResponses[keyof UploadControllerPresignResponses];
+
+export type UploadControllerCleanupExpiredPendingData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/upload/cleanup-expired-pending';
+};
+
+export type UploadControllerCleanupExpiredPendingResponses = {
+    /**
+     * Cleanup kørt
+     */
+    200: {
+        ok?: boolean;
+        deleted?: number;
+    };
+};
+
+export type UploadControllerCleanupExpiredPendingResponse = UploadControllerCleanupExpiredPendingResponses[keyof UploadControllerCleanupExpiredPendingResponses];
+
+export type UploadControllerGetCronJobsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/upload/cron-jobs';
+};
+
+export type UploadControllerGetCronJobsResponses = {
+    /**
+     * Liste over cron-jobs
+     */
+    200: {
+        jobs?: Array<{
+            id?: string;
+            name?: string;
+            /**
+             * Cron-udtryk (min time dag måned ugedag)
+             */
+            schedule?: string;
+            description?: string;
+            /**
+             * Om jobbet kører (evt. betinget af env)
+             */
+            enabled?: boolean;
+        }>;
+    };
+};
+
+export type UploadControllerGetCronJobsResponse = UploadControllerGetCronJobsResponses[keyof UploadControllerGetCronJobsResponses];
 
 export type UploadControllerCleanupEmptyBucketsData = {
     body?: never;

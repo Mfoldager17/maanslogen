@@ -11,7 +11,7 @@ export function Select({
   return (
     <select
       className={[
-        "w-full min-w-0 min-h-[44px] py-2 pl-3 pr-10 rounded bg-background-elevated border border-border text-foreground appearance-none bg-no-repeat bg-[length:1.25rem] bg-[right_0.75rem_center] focus:border-accent focus:ring-2 focus:ring-accent focus:outline-none",
+        "w-full min-w-0 h-11 py-2 pl-3 pr-10 rounded border border-border bg-background-elevated text-foreground appearance-none bg-no-repeat bg-[length:1.25rem] bg-[right_0.75rem_center] focus:border-accent focus:ring-2 focus:ring-accent focus:outline-none focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent box-border",
         className,
       ]
         .filter(Boolean)

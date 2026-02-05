@@ -8,9 +8,9 @@ import {
   CardListItem,
   CollapsibleCard,
   Button,
-  Input,
+  TextField,
+  SelectField,
   Label,
-  Select,
   Alert,
   AccentLink,
   LinkButton,
@@ -60,54 +60,51 @@ export function QuestionsPageClient() {
       <CollapsibleCard title="Tilføj spørgsmål" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-wrap gap-4">
-          <div>
-            <Label>Kategori</Label>
-            <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label>Type (valgfri)</Label>
-            <Select value={typeId} onChange={(e) => setTypeId(e.target.value)}>
-              <option value="">Alle typer i kategorien</option>
-              {types.filter((t) => t.categoryId === categoryId).map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div className="min-w-60 flex-1">
-            <Label>Spørgsmålstekst</Label>
-            <Input
-              type="text"
-              value={questionText}
-              onChange={(e) => setQuestionText(e.target.value)}
-              placeholder="fx Hvordan er aromaen?"
-            />
-          </div>
-          <div>
-            <Label>Svar-type</Label>
-            <Select
-              value={answerType}
-              onChange={(e) => setAnswerType(e.target.value as (typeof ANSWER_TYPES)[number])}
-            >
-              {ANSWER_TYPES.map((a) => (
-                <option key={a} value={a}>{a}</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label>Rækkefølge</Label>
-            <Input
-              type="number"
-              min={0}
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="w-20"
-              placeholder="0"
-            />
-          </div>
+          <SelectField
+            label="Kategori"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+          >
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </SelectField>
+          <SelectField
+            label="Type (valgfri)"
+            value={typeId}
+            onChange={(e) => setTypeId(e.target.value)}
+          >
+            <option value="">Alle typer i kategorien</option>
+            {types.filter((t) => t.categoryId === categoryId).map((t) => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </SelectField>
+          <TextField
+            label="Spørgsmålstekst"
+            className="min-w-60 flex-1"
+            value={questionText}
+            onChange={(e) => setQuestionText(e.target.value)}
+            placeholder="fx Hvordan er aromaen?"
+          />
+          <SelectField
+            label="Svar-type"
+            id="answer-type"
+            value={answerType}
+            onChange={(e) => setAnswerType(e.target.value as (typeof ANSWER_TYPES)[number])}
+          >
+            {ANSWER_TYPES.map((a) => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </SelectField>
+          <TextField
+            label="Rækkefølge"
+            type="number"
+            min={0}
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="w-20"
+            placeholder="0"
+          />
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -118,7 +115,7 @@ export function QuestionsPageClient() {
             />
             <Label htmlFor="required" className="mb-0 text-sm">Påkrævet</Label>
           </div>
-          <div className="flex w-full items-end sm:w-auto">
+          <div className="flex w-full items-center sm:w-auto">
             <Button
               type="submit"
               disabled={submitting || !categoryId || !questionText.trim()}
@@ -135,18 +132,28 @@ export function QuestionsPageClient() {
       <section className="mb-6">
         <div className="mb-4 flex flex-wrap items-center gap-4">
           <SectionHeading className="mb-0">Filtre</SectionHeading>
-          <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="text-sm">
+          <SelectField
+            label="Kategori"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            selectClassName="text-sm"
+          >
             <option value="">Alle kategorier</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
-          </Select>
-          <Select value={typeId} onChange={(e) => setTypeId(e.target.value)} className="text-sm">
+          </SelectField>
+          <SelectField
+            label="Type"
+            value={typeId}
+            onChange={(e) => setTypeId(e.target.value)}
+            selectClassName="text-sm"
+          >
             <option value="">Alle typer</option>
             {types.filter((t) => !categoryId || t.categoryId === categoryId).map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
-          </Select>
+          </SelectField>
           <label className="flex cursor-pointer items-center gap-2">
             <input
               type="checkbox"

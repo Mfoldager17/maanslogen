@@ -8,8 +8,7 @@ import {
   CardListItem,
   CollapsibleCard,
   Button,
-  Input,
-  Label,
+  TextField,
   Alert,
   AccentLink,
   LinkButton,
@@ -36,43 +35,32 @@ export function CategoriesPageClient() {
 
       <CollapsibleCard title="Opret ny kategori" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <TextField
+              label="Navn"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="fx Øl"
+            />
+            <TextField
+              label="Icon (emoji)"
+              id="cat-icon"
+              className="w-20"
+              value={icon}
+              onChange={(e) => setIcon(e.target.value)}
+              placeholder="Emoji"
+              maxLength={8}
+              helperText={iconError ?? undefined}
+              error={!!iconError}
+            />
+            <TextField
+              label="Beskrivelse"
+              className="min-w-[200px] flex-1"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Valgfri"
+            />
             <div>
-              <Label>Navn</Label>
-              <Input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="fx Øl"
-              />
-            </div>
-            <div className="w-20">
-              <Label>Icon (emoji)</Label>
-              <Input
-                type="text"
-                value={icon}
-                onChange={(e) => setIcon(e.target.value)}
-                placeholder="🍺"
-                maxLength={8}
-                aria-invalid={!!iconError}
-                aria-describedby={iconError ? "icon-error" : undefined}
-              />
-              {iconError && (
-                <span id="icon-error" className="text-foreground-muted mt-0.5 block text-xs" role="alert">
-                  {iconError}
-                </span>
-              )}
-            </div>
-            <div className="min-w-[200px] flex-1">
-              <Label>Beskrivelse</Label>
-              <Input
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Valgfri"
-              />
-            </div>
-            <div className="flex items-end">
               <Button type="submit" disabled={submitting || !name.trim() || !!iconError}>
                 {submitting ? "Opretter…" : "Opret"}
               </Button>

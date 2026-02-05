@@ -16,9 +16,9 @@ import {
   Alert,
   LinkButton,
   Button,
-  Input,
+  TextField,
+  SelectField,
   Label,
-  Select,
 } from "@/app/components/ui";
 import { BackLink } from "@/app/components/layout";
 import { LoadingState } from "@/app/components/data";
@@ -130,7 +130,7 @@ export function AttributeEditClient() {
       <PageHeading>Rediger attributedefinition</PageHeading>
       {submitError && <Alert className="mb-4">{submitError}</Alert>}
       <Card>
-        <form onSubmit={handleSubmit} className="flex flex-row flex-wrap items-end gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-row flex-wrap items-center gap-4">
           <div className="flex min-w-[200px] flex-1 basis-full flex-col gap-1">
             <Label>Kategorier (vælg mindst én)</Label>
             <div className="flex flex-wrap gap-3">
@@ -163,38 +163,33 @@ export function AttributeEditClient() {
               ))}
             </div>
           </div>
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="attr-key">Attribut-nøgle</Label>
-            <Input
-              id="attr-key"
-              type="text"
-              value={attributeKey}
-              onChange={(e) => setAttributeKey(e.target.value)}
-              placeholder="fx abv"
-            />
-          </div>
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="attr-display">Visningsnavn</Label>
-            <Input
-              id="attr-display"
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="fx Alkohol %"
-            />
-          </div>
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="attr-dtype">Datatype</Label>
-            <Select
-              id="attr-dtype"
-              value={dataType}
-              onChange={(e) => setDataType(e.target.value as "string" | "number" | "boolean")}
-            >
-              <option value="string">string</option>
-              <option value="number">number</option>
-              <option value="boolean">boolean</option>
-            </Select>
-          </div>
+          <TextField
+            label="Attribut-nøgle"
+            id="attr-key"
+            className="min-w-[200px] flex-1"
+            value={attributeKey}
+            onChange={(e) => setAttributeKey(e.target.value)}
+            placeholder="fx abv"
+          />
+          <TextField
+            label="Visningsnavn"
+            id="attr-display"
+            className="min-w-[200px] flex-1"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="fx Alkohol %"
+          />
+          <SelectField
+            label="Datatype"
+            id="attr-dtype"
+            className="min-w-[200px] flex-1"
+            value={dataType}
+            onChange={(e) => setDataType(e.target.value as "string" | "number" | "boolean")}
+          >
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="boolean">boolean</option>
+          </SelectField>
           <div className="flex flex-wrap items-center gap-4">
             <label className="flex cursor-pointer items-center gap-2">
               <input

@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getTypeById, getAllCategories, updateType } from "@/lib/api-client";
 import { useFetchAll } from "@/lib/hooks";
 import { getApiError } from "@/lib/hooks/useApiError";
-import { PageHeading, Card, Alert, LinkButton, Button, Input, Label, Select } from "@/app/components/ui";
+import { PageHeading, Card, Alert, LinkButton, Button, TextField, SelectField, Label } from "@/app/components/ui";
 import { BackLink } from "@/app/components/layout";
 import { LoadingState } from "@/app/components/data";
 import { useState, useEffect } from "react";
@@ -81,23 +81,34 @@ export function TypeEditClient() {
       <PageHeading>Rediger type</PageHeading>
       {submitError && <Alert className="mb-4">{submitError}</Alert>}
       <Card>
-        <form onSubmit={handleSubmit} className="flex flex-row flex-wrap items-end gap-4">
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="type-name">Navn</Label>
-            <Input id="type-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="fx IPA" />
-          </div>
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="type-cat">Kategori</Label>
-            <Select id="type-cat" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-              {(categories ?? []).map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="type-desc">Beskrivelse</Label>
-            <Input id="type-desc" type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Valgfri" />
-          </div>
+        <form onSubmit={handleSubmit} className="flex flex-row flex-wrap items-center gap-4">
+          <TextField
+            label="Navn"
+            id="type-name"
+            className="min-w-[200px] flex-1"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="fx IPA"
+          />
+          <SelectField
+            label="Kategori"
+            id="type-cat"
+            className="min-w-[200px] flex-1"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+          >
+            {(categories ?? []).map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </SelectField>
+          <TextField
+            label="Beskrivelse"
+            id="type-desc"
+            className="min-w-[200px] flex-1"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Valgfri"
+          />
           <div className="flex items-center gap-2">
             <input
               type="checkbox"

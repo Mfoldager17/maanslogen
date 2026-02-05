@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getCategoryById, updateCategory } from "@/lib/api-client";
 import { useFetch } from "@/lib/hooks";
 import { getApiError } from "@/lib/hooks/useApiError";
-import { PageHeading, Card, Alert, LinkButton, Button, Input, Label } from "@/app/components/ui";
+import { PageHeading, Card, Alert, LinkButton, Button, TextField } from "@/app/components/ui";
 import { BackLink } from "@/app/components/layout";
 import { LoadingState } from "@/app/components/data";
 import { useState, useEffect } from "react";
@@ -85,32 +85,34 @@ export function CategoryEditClient() {
       <PageHeading>Rediger kategori</PageHeading>
       {submitError && <Alert className="mb-4">{submitError}</Alert>}
       <Card>
-        <form onSubmit={handleSubmit} className="flex flex-row flex-wrap items-end gap-4">
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="cat-name">Navn</Label>
-            <Input id="cat-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="fx Øl" />
-          </div>
-          <div className="flex w-20 flex-col gap-1">
-            <Label htmlFor="cat-icon">Icon (emoji)</Label>
-            <Input
-              id="cat-icon"
-              type="text"
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
-              placeholder="🍺"
-              maxLength={8}
-              aria-invalid={!!iconError}
-            />
-            {iconError && (
-              <span className="text-foreground-muted mt-0.5 block text-xs" role="alert">
-                {iconError}
-              </span>
-            )}
-          </div>
-          <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-            <Label htmlFor="cat-desc">Beskrivelse</Label>
-            <Input id="cat-desc" type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Valgfri" />
-          </div>
+        <form onSubmit={handleSubmit} className="flex flex-row flex-wrap items-center gap-4">
+          <TextField
+            label="Navn"
+            id="cat-name"
+            className="min-w-[200px] flex-1"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="fx Øl"
+          />
+          <TextField
+            label="Icon (emoji)"
+            id="cat-icon"
+            className="w-20"
+            value={icon}
+            onChange={(e) => setIcon(e.target.value)}
+            placeholder="🍺"
+            maxLength={8}
+            helperText={iconError ?? undefined}
+            error={!!iconError}
+          />
+          <TextField
+            label="Beskrivelse"
+            id="cat-desc"
+            className="min-w-[200px] flex-1"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Valgfri"
+          />
           <div className="flex w-full items-center gap-3 sm:w-auto">
             <Button type="submit" disabled={submitting || !name.trim() || !!iconError}>
               {submitting ? "Gemmer…" : "Gem"}

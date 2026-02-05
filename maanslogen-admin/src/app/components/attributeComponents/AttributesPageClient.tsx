@@ -8,9 +8,9 @@ import {
   CardListItem,
   CollapsibleCard,
   Button,
-  Input,
+  TextField,
+  SelectField,
   Label,
-  Select,
   Alert,
   AccentLink,
   LinkButton,
@@ -101,35 +101,27 @@ export function AttributesPageClient() {
               ))}
             </div>
           </div>
-          <div>
-            <Label>Attribut-nøgle</Label>
-            <Input
-              type="text"
-              value={attributeKey}
-              onChange={(e) => setAttributeKey(e.target.value)}
-              placeholder="fx abv"
-            />
-          </div>
-          <div>
-            <Label>Visningsnavn</Label>
-            <Input
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="fx Alkohol %"
-            />
-          </div>
-          <div>
-            <Label>Datatype</Label>
-            <Select
-              value={dataType}
-              onChange={(e) => setDataType(e.target.value as "string" | "number" | "boolean")}
-            >
-              <option value="string">string</option>
-              <option value="number">number</option>
-              <option value="boolean">boolean</option>
-            </Select>
-          </div>
+          <TextField
+            label="Attribut-nøgle"
+            value={attributeKey}
+            onChange={(e) => setAttributeKey(e.target.value)}
+            placeholder="fx abv"
+          />
+          <TextField
+            label="Visningsnavn"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="fx Alkohol %"
+          />
+          <SelectField
+            label="Datatype"
+            value={dataType}
+            onChange={(e) => setDataType(e.target.value as "string" | "number" | "boolean")}
+          >
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="boolean">boolean</option>
+          </SelectField>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2">
               <input
@@ -150,7 +142,7 @@ export function AttributesPageClient() {
               <span className="text-foreground-muted text-sm">Påkrævet</span>
             </label>
           </div>
-          <div className="flex w-full items-end sm:w-auto">
+          <div className="flex w-full items-center sm:w-auto">
             <Button
               type="submit"
               disabled={submitting || categoryIds.length === 0 || !attributeKey.trim() || !displayName.trim()}

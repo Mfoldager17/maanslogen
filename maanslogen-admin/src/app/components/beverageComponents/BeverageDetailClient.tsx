@@ -4,8 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { getBeverageById, getAllTypes, deleteBeverage } from "@/lib/api-client";
 import { useFetchAll } from "@/lib/hooks";
 import { getApiError } from "@/lib/hooks/useApiError";
-import { PageHeading, Card, Alert, AccentLink, Button } from "@/app/components/ui";
-import { BackLink, IconTrash } from "@/app/components/layout";
+import { PageHeading, Card, Alert, AccentLink, Button, LinkButton } from "@/app/components/ui";
+import { BackLink, IconPencil, IconTrash } from "@/app/components/layout";
 import { DetailList, DetailItem, LoadingState } from "@/app/components/data";
 import { useState } from "react";
 
@@ -70,6 +70,9 @@ export function BeverageDetailClient() {
     <div>
       <BackLink href="/beverages">← Tilbage til drikkevarer</BackLink>
       <div className="mb-4 flex flex-wrap items-center gap-3">
+        <LinkButton href={`/beverages/${id}/edit`} variant="secondary" iconOnly aria-label="Rediger">
+          <IconPencil className="h-5 w-5" />
+        </LinkButton>
         <Button
           type="button"
           variant="danger"

@@ -8,9 +8,9 @@ import {
   CardListItem,
   CollapsibleCard,
   Button,
-  Input,
+  TextField,
+  SelectField,
   Label,
-  Select,
   Alert,
   AccentLink,
   LinkButton,
@@ -51,28 +51,30 @@ export function TypesPageClient() {
 
       <CollapsibleCard title="Opret ny type" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-wrap gap-4">
-            <div>
-              <Label>Navn</Label>
-              <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="fx IPA" />
-            </div>
-            <div>
-              <Label>Kategori</Label>
-              <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </Select>
-            </div>
-            <div className="min-w-[200px] flex-1">
-              <Label>Beskrivelse</Label>
-              <Input
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Valgfri"
-              />
-            </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <TextField
+              label="Navn"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="fx IPA"
+            />
+            <SelectField
+              label="Kategori"
+              id="type-cat"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </SelectField>
+            <TextField
+              label="Beskrivelse"
+              className="min-w-[200px] flex-1"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Valgfri"
+            />
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -83,7 +85,7 @@ export function TypesPageClient() {
               />
               <Label htmlFor="active" className="mb-0 text-sm">Aktiv</Label>
             </div>
-            <div className="flex items-end">
+            <div>
               <Button type="submit" disabled={submitting || !name.trim() || !categoryId}>
                 {submitting ? "Opretter…" : "Opret"}
               </Button>

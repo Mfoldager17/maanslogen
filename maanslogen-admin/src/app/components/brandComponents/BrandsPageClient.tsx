@@ -8,7 +8,7 @@ import {
   CardListItem,
   CollapsibleCard,
   Button,
-  Input,
+  TextField,
   Label,
   Alert,
   AccentLink,
@@ -51,24 +51,18 @@ export function BrandsPageClient() {
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <Label>Navn</Label>
-                <Input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="fx Carlsberg"
-                />
-              </div>
-              <div>
-                <Label>Beskrivelse</Label>
-                <Input
-                  type="text"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Valgfri"
-                />
-              </div>
+              <TextField
+                label="Navn"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="fx Carlsberg"
+              />
+              <TextField
+                label="Beskrivelse"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Valgfri"
+              />
             </div>
 
             <div>

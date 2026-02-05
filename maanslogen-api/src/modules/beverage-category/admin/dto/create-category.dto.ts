@@ -1,5 +1,5 @@
 // src/modules/beverage-category/admin/dto/create-category.dto.ts
-import { IsString, IsOptional, IsArray, ValidateNested, Matches } from 'class-validator';
+import { IsString, IsOptional, IsArray, ValidateNested, Matches, ValidateIf } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateImageDto } from '../../../image/dto/create-image.dto';
@@ -12,10 +12,11 @@ export class CreateCategoryDto {
   @IsString()
   name: string;
 
-  @ApiPropertyOptional({ description: 'Icon – kun én emoji', example: '🍺' })
+  @ApiPropertyOptional({ description: 'Icon – tom eller præcis én emoji', example: '🍺' })
   @IsOptional()
   @IsString()
-  @Matches(EMOJI_ONLY_REGEX, { message: 'Icon skal være præcis én emoji' })
+  @ValidateIf((_o, v) => (v ?? '').trim() !== '')
+  @Matches(EMOJI_ONLY_REGEX, { message: 'Icon skal være tom eller præcis én emoji' })
   icon?: string;
 
   @ApiProperty({ description: 'The description of the beverage category', example: 'All types of beer' })
