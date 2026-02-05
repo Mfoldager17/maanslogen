@@ -242,7 +242,7 @@ export function BeverageEditClient() {
                     <span className="text-foreground-muted text-xs">{img.type}</span>
                     <Button
                       type="button"
-                      variant="secondary"
+                      variant="accent"
                       aria-label="Fjern billede"
                       onClick={() => removeImage(img.url)}
                       disabled={submitting}

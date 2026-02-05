@@ -28,11 +28,17 @@ export class ReviewService {
   }
 
   async create(createReviewDto: CreateReviewDto) {
+    const beverage = await this.prisma.beverage.findUnique({
+      where: { id: createReviewDto.beverageId },
+      select: { reviewCount: true, averageRating: true },
+    });
+    const prevCount = beverage?.reviewCount ?? 0;
+    const prevAverage = beverage?.averageRating ?? 0;
+    const newCount = prevCount + 1;
+    const newAverage = (prevAverage * prevCount + createReviewDto.rating) / newCount;
     await this.prisma.beverage.update({
       where: { id: createReviewDto.beverageId },
-      data: {
-        reviewCount: { increment: 1 },
-      },
+      data: { reviewCount: newCount, averageRating: newAverage },
     });
     return this.prisma.review.create({
       data: createReviewDto,
@@ -40,24 +46,54 @@ export class ReviewService {
   }
 
   async update(id: string, dto: UpdateReviewDto) {
-    await this.getById(id);
-    return this.prisma.review.update({
+    const existing = await this.prisma.review.findUnique({
+      where: { id },
+      select: { beverageId: true, rating: true },
+    });
+    if (!existing) throw new NotFoundException('Review not found');
+    const updated = await this.prisma.review.update({
       where: { id },
       data: dto,
     });
+    if (dto.rating !== undefined && dto.rating !== existing.rating) {
+      const beverage = await this.prisma.beverage.findUnique({
+        where: { id: existing.beverageId },
+        select: { reviewCount: true, averageRating: true },
+      });
+      const count = beverage?.reviewCount ?? 0;
+      const prevAverage = beverage?.averageRating ?? 0;
+      if (count > 0) {
+        const newAverage =
+          (prevAverage * count - existing.rating + dto.rating) / count;
+        await this.prisma.beverage.update({
+          where: { id: existing.beverageId },
+          data: { averageRating: newAverage },
+        });
+      }
+    }
+    return updated;
   }
 
   async remove(id: string) {
     const review = await this.prisma.review.findUnique({
       where: { id },
-      select: { beverageId: true },
+      select: { beverageId: true, rating: true },
     });
     if (!review) throw new NotFoundException('Review not found');
+    const beverage = await this.prisma.beverage.findUnique({
+      where: { id: review.beverageId },
+      select: { reviewCount: true, averageRating: true },
+    });
+    const prevCount = beverage?.reviewCount ?? 0;
+    const prevAverage = beverage?.averageRating ?? 0;
     await this.prisma.reviewAnswer.deleteMany({ where: { reviewId: id } });
     await this.prisma.review.delete({ where: { id } });
+    const newCount = prevCount - 1;
+    const newAverage =
+      newCount <= 0 ? 0 : (prevAverage * prevCount - review.rating) / newCount;
     await this.prisma.beverage.update({
       where: { id: review.beverageId },
-      data: { reviewCount: { decrement: 1 } },
+      data: { reviewCount: Math.max(0, newCount), averageRating: newAverage },
     });
     return { deleted: true };
   }
