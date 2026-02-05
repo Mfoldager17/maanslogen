@@ -1,15 +1,20 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { getBeverageById, getAllTypes } from "@/lib/api-client";
+import { useParams, useRouter } from "next/navigation";
+import { getBeverageById, getAllTypes, deleteBeverage } from "@/lib/api-client";
 import { useFetchAll } from "@/lib/hooks";
-import { PageHeading, Card, Alert, AccentLink } from "@/app/components/ui";
-import { BackLink } from "@/app/components/layout";
+import { getApiError } from "@/lib/hooks/useApiError";
+import { PageHeading, Card, Alert, AccentLink, Button } from "@/app/components/ui";
+import { BackLink, IconTrash } from "@/app/components/layout";
 import { DetailList, DetailItem, LoadingState } from "@/app/components/data";
+import { useState } from "react";
 
 export function BeverageDetailClient() {
   const params = useParams();
+  const router = useRouter();
   const id = (params?.id as string) ?? "";
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const { data, loading, error } = useFetchAll(
     [() => getBeverageById({ path: { id } }), () => getAllTypes()],
@@ -43,12 +48,40 @@ export function BeverageDetailClient() {
     );
   }
 
+  async function onDelete() {
+    const label = `${brandName} – ${item?.name ?? ""}`;
+    if (!confirm(`Slet drikkevare "${label}"? Dette sletter også anmeldelser og attributværdier.`)) return;
+    setDeleting(true);
+    setDeleteError(null);
+    const res = await deleteBeverage({ path: { id } });
+    const err = getApiError(res);
+    setDeleting(false);
+    if (err) {
+      setDeleteError(err);
+      return;
+    }
+    router.push("/beverages");
+  }
+
   const images = item.images ?? [];
   const largeImage = images.find((img) => img.type === "LARGE") ?? images[0];
 
   return (
     <div>
       <BackLink href="/beverages">← Tilbage til drikkevarer</BackLink>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <Button
+          type="button"
+          variant="danger"
+          iconOnly
+          aria-label="Slet"
+          onClick={onDelete}
+          disabled={deleting}
+        >
+          <IconTrash className="h-5 w-5" />
+        </Button>
+      </div>
+      {deleteError && <Alert className="mb-4">{deleteError}</Alert>}
       <PageHeading>{brandName} – {item.name}</PageHeading>
 
       <Card className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">

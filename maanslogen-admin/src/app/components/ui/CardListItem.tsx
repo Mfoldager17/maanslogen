@@ -10,7 +10,7 @@ export function CardListItem({
 } & React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
-      className={`card-list-item flex items-center justify-between px-4 py-3 ${className}`.trim()}
+      className={`card-list-item flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between ${className}`.trim()}
       {...rest}
     >
       {children}

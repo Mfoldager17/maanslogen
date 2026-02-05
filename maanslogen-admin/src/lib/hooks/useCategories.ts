@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllCategories, createCategory, type BeverageCategory } from "@/lib/api-client";
+import { getAllCategories, createCategory, updateCategory, deleteCategory, type BeverageCategory } from "@/lib/api-client";
 import { getApiError } from "./useApiError";
 
 export function useCategories() {
@@ -49,6 +49,35 @@ export function useCategories() {
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
   }
 
+  async function handleDelete(id: string) {
+    setError(null);
+    const res = await deleteCategory({ path: { id } });
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return false;
+    }
+    setList((prev) => prev.filter((c) => c.id !== id));
+    return true;
+  }
+
+  async function handleUpdate(id: string, body: { name?: string; description?: string }) {
+    setSubmitting(true);
+    setError(null);
+    const res = await updateCategory({ path: { id }, body });
+    setSubmitting(false);
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return null;
+    }
+    if (res.data) {
+      setList((prev) => prev.map((c) => (c.id === id ? (res.data as BeverageCategory) : c)));
+      return res.data as BeverageCategory;
+    }
+    return null;
+  }
+
   return {
     list,
     loading,
@@ -59,5 +88,8 @@ export function useCategories() {
     setDescription,
     submitting,
     handleSubmit,
+    handleDelete,
+    handleUpdate,
+    load,
   };
 }

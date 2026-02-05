@@ -1,18 +1,21 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { getReviewById, getAllBeverages } from "@/lib/api-client";
+import { useParams, useRouter } from "next/navigation";
+import { getReviewById, getAllBeverages, deleteReview } from "@/lib/api-client";
 import type { Review } from "@/lib/api-client";
 import { useFetchAll } from "@/lib/hooks";
+import { getApiError } from "@/lib/hooks/useApiError";
 import {
   PageHeading,
   Card,
   SectionHeading,
   Alert,
   AccentLink,
+  Button,
 } from "@/app/components/ui";
-import { BackLink } from "@/app/components/layout";
+import { BackLink, IconTrash } from "@/app/components/layout";
 import { DetailList, DetailItem, LoadingState } from "@/app/components/data";
+import { useState } from "react";
 
 type ReviewWithAnswers = Review & {
   answers?: Array<{
@@ -25,7 +28,10 @@ type ReviewWithAnswers = Review & {
 
 export function ReviewDetailClient() {
   const params = useParams();
+  const router = useRouter();
   const id = (params?.id as string) ?? "";
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const { data, loading, error } = useFetchAll(
     [() => getReviewById({ path: { id } }), () => getAllBeverages()],
@@ -62,9 +68,36 @@ export function ReviewDetailClient() {
   const itemWithAnswers = item as ReviewWithAnswers;
   const answers = itemWithAnswers.answers ?? [];
 
+  async function onDelete() {
+    if (!confirm("Slet denne anmeldelse? Drikkevarens anmeldelsestælling opdateres.")) return;
+    setDeleting(true);
+    setDeleteError(null);
+    const res = await deleteReview({ path: { id } });
+    const err = getApiError(res);
+    setDeleting(false);
+    if (err) {
+      setDeleteError(err);
+      return;
+    }
+    router.push("/reviews");
+  }
+
   return (
     <div>
       <BackLink href="/reviews">← Tilbage til anmeldelser</BackLink>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <Button
+          type="button"
+          variant="danger"
+          iconOnly
+          aria-label="Slet"
+          onClick={onDelete}
+          disabled={deleting}
+        >
+          <IconTrash className="h-5 w-5" />
+        </Button>
+      </div>
+      {deleteError && <Alert className="mb-4">{deleteError}</Alert>}
       <PageHeading>
         {typeof item.title === "string" ? item.title : `Anmeldelse – ${item.rating}★`}
       </PageHeading>

@@ -16,12 +16,12 @@
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
   --radius: 12px;
   --radius-lg: 16px;
-  /* iPhone-agtig glas – mere transparent, mere blur */
-  --glass-bg: rgb(255 255 255 / 0.12);
-  --glass-bg-strong: rgb(255 255 255 / 0.45);
-  --glass-border: rgb(255 255 255 / 0.2);
-  --glass-blur: 32px;
-  --glass-saturate: 180%;
+  /* iPhone-agtig glas – tydelig transparens og kraftig blur */
+  --glass-bg: rgb(255 255 255 / 0.06);
+  --glass-bg-strong: rgb(255 255 255 / 0.18);
+  --glass-border: rgb(255 255 255 / 0.3);
+  --glass-blur: 80px;
+  --glass-saturate: 220%;
 }
 
 [data-theme="liquidglass"] body {
@@ -35,38 +35,99 @@
 
 [data-theme="liquidglass"] .glass {
   background: var(--glass-bg);
-  -webkit-backdrop-filter: saturate(160%) blur(32px);
-  backdrop-filter: saturate(160%) blur(32px);
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
 }
 
-/* Cards og elevated: først solid fallback (så det ikke er gennemsigtig uden blur) */
+/* Cards og elevated: tydelig liquid glass – gennemsigtig + kraftig blur + lidt farveskift som baggrunden */
 [data-theme="liquidglass"] .card,
 [data-theme="liquidglass"] .bg-elevated {
-  background: rgb(var(--color-bg-elevated));
-  border: 1px solid rgb(var(--color-border));
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.28) 0%, rgb(248 248 252 / 0.18) 50%, rgb(252 252 255 / 0.22) 100%);
+  border: 1px solid var(--glass-border);
+  isolation: isolate;
 }
 
-@supports (backdrop-filter: blur(32px)) or (-webkit-backdrop-filter: blur(32px)) {
+[data-theme="liquidglass"] .card,
+[data-theme="liquidglass"] .bg-elevated {
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   [data-theme="liquidglass"] .card,
   [data-theme="liquidglass"] .bg-elevated {
-    background: var(--glass-bg-strong);
-    -webkit-backdrop-filter: saturate(160%) blur(32px);
-    backdrop-filter: saturate(160%) blur(32px);
-    border: 1px solid var(--glass-border);
-    isolation: isolate;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.2) 0%, rgb(242 242 247 / 0.12) 50%, rgb(255 255 255 / 0.16) 100%);
   }
 }
 
-/* Dropdown-panel: eksplicit blur (ofte inde i overflow-hidden, så bliver synlig med isolation) */
-@supports (backdrop-filter: blur(32px)) or (-webkit-backdrop-filter: blur(32px)) {
-  [data-theme="liquidglass"] .dropdown-panel {
-    background: var(--glass-bg-strong);
-    -webkit-backdrop-filter: saturate(160%) blur(32px);
-    backdrop-filter: saturate(160%) blur(32px);
-    border: 1px solid var(--glass-border);
-    isolation: isolate;
-  }
+/* Dropdown-panel */
+[data-theme="liquidglass"] .dropdown-panel {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  isolation: isolate;
+}
+
+/* Inputs – liquid glass */
+[data-theme="liquidglass"] .input-theme {
+  background: rgb(255 255 255 / 0.25);
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+/* Card list item hover – gennemsigtig */
+[data-theme="liquidglass"] .card-list-item:hover {
+  background: rgb(255 255 255 / 0.25);
+}
+
+/* Side panel (sidebar) – liquid glass */
+[data-theme="liquidglass"] .drawer-panel {
+  background: var(--glass-bg-strong) !important;
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border-right: 1px solid var(--glass-border) !important;
+  isolation: isolate;
+}
+
+/* Knapper – liquid glass med farveskift som baggrunden */
+[data-theme="liquidglass"] .btn-accent {
+  background: linear-gradient(180deg, rgb(var(--color-accent-hover) / 0.95) 0%, rgb(var(--color-accent) / 0.88) 50%, rgb(var(--color-accent) / 0.82) 100%);
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border: none;
+  isolation: isolate;
+}
+[data-theme="liquidglass"] .btn-accent:hover:not(:disabled) {
+  background: linear-gradient(180deg, rgb(var(--color-accent-hover) / 1) 0%, rgb(var(--color-accent-hover) / 0.92) 50%, rgb(var(--color-accent) / 0.88) 100%);
+}
+[data-theme="liquidglass"] .btn-outline,
+[data-theme="liquidglass"] .btn-secondary {
+  background: linear-gradient(180deg, rgb(var(--color-accent) / 0.28) 0%, rgb(var(--color-accent) / 0.18) 50%, rgb(230 235 248 / 0.9) 100%);
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border: none;
+  color: rgb(var(--color-accent));
+  isolation: isolate;
+}
+[data-theme="liquidglass"] .btn-outline:hover,
+[data-theme="liquidglass"] .btn-secondary:hover {
+  background: linear-gradient(180deg, rgb(var(--color-accent) / 0.42) 0%, rgb(var(--color-accent) / 0.32) 50%, rgb(220 232 252 / 0.95) 100%);
+  color: rgb(var(--color-accent-hover));
+}
+[data-theme="liquidglass"] .btn-danger {
+  background: rgb(239 68 68 / 0.2);
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border: none;
+  color: rgb(185 28 28);
+  isolation: isolate;
+}
+[data-theme="liquidglass"] .btn-danger:hover:not(:disabled) {
+  background: rgb(239 68 68 / 0.35);
+  color: rgb(153 27 27);
 }
 
 /* Card-hover fjernet – kun .card-list-item har hover */

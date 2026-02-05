@@ -1,6 +1,7 @@
 export { Alert } from "./Alert";
 export { AccentLink } from "./AccentLink";
 export { Button } from "./Button";
+export { LinkButton } from "./LinkButton";
 export { Card } from "./Card";
 export { CollapsibleCard } from "./CollapsibleCard";
 export { CardList } from "./CardList";
@@ -10,3 +11,4 @@ export { Label } from "./Label";
 export { PageHeading } from "./PageHeading";
 export { SectionHeading } from "./SectionHeading";
 export { Select } from "./Select";
+export { StatusDot } from "./StatusDot";

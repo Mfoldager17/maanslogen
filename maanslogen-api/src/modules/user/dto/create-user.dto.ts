@@ -2,7 +2,7 @@
 import { IsString, IsOptional, IsEmail, IsArray, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { CreateImageDto } from '../../../common/dto/create-image.dto';
+import { CreateImageDto } from '../../image/dto/create-image.dto';
 
 export class CreateUserDto {
   @ApiProperty({ description: 'Unique username for the user', example: 'alice' })

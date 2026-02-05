@@ -13,7 +13,9 @@ import {
   Select,
   Alert,
   AccentLink,
+  LinkButton,
 } from "@/app/components/ui";
+import { IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useBeverages } from "@/lib/hooks";
 
@@ -54,8 +56,14 @@ export function BeveragesPageClient() {
     typesInFilterCategory,
     filteredList,
     handleSubmit,
+    handleDelete,
     beverageBrandName,
   } = useBeverages();
+
+  async function onDelete(id: string, label: string) {
+    if (!confirm(`Slet drikkevare "${label}"? Dette sletter også anmeldelser og attributværdier.`)) return;
+    await handleDelete(id);
+  }
 
   return (
     <div>
@@ -271,10 +279,21 @@ export function BeveragesPageClient() {
                       <span className="text-heading-muted ml-2 text-sm">({b.country})</span>
                     )}
                   </div>
-                  <span className="text-heading-muted text-xs">
-                    {b.averageRating != null ? `★ ${b.averageRating.toFixed(1)}` : ""}{" "}
-                    {b.reviewCount != null ? `(${b.reviewCount})` : ""}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-heading-muted text-xs">
+                      {b.averageRating != null ? `★ ${b.averageRating.toFixed(1)}` : ""}{" "}
+                      {b.reviewCount != null ? `(${b.reviewCount})` : ""}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="danger"
+                      iconOnly
+                      aria-label="Slet"
+                      onClick={() => onDelete(b.id ?? "", `${beverageBrandName(b)} – ${b.name ?? ""}`)}
+                    >
+                      <IconTrash className="h-5 w-5" />
+                    </Button>
+                  </div>
                 </CardListItem>
               ))}
             </CardList>

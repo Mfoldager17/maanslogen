@@ -1,7 +1,8 @@
 // src/attribute/attribute-definition.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateAttributeDefinitionDto } from './dto/create-attribute-definition.dto';
+import { CreateAttributeDefinitionDto } from './admin/dto/create-attribute-definition.dto';
+import { UpdateAttributeDefinitionDto } from './admin/dto/update-attribute-definition.dto';
 
 const includeRelations = {
   categories: { select: { id: true } },
@@ -92,5 +93,31 @@ export class AttributeDefinitionService {
       orderBy: { sortOrder: 'asc' },
     });
     return list.map(toResponse);
+  }
+
+  async update(id: string, dto: UpdateAttributeDefinitionDto) {
+    await this.getById(id);
+    const { categoryIds, typeIds, ...data } = dto;
+    const attr = await this.prisma.attributeDefinition.update({
+      where: { id },
+      data: {
+        ...data,
+        ...(categoryIds !== undefined
+          ? { categories: { set: categoryIds.map((id) => ({ id })) } }
+          : {}),
+        ...(typeIds !== undefined
+          ? { types: { set: typeIds.length ? typeIds.map((id) => ({ id })) : [] } }
+          : {}),
+      },
+      include: includeRelations,
+    });
+    return toResponse(attr);
+  }
+
+  async remove(id: string) {
+    await this.getById(id);
+    await this.prisma.beverageAttributeValue.deleteMany({ where: { attributeId: id } });
+    await this.prisma.attributeDefinition.delete({ where: { id } });
+    return { deleted: true };
   }
 }

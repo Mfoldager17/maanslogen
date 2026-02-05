@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { getAllTypes, getAllCategories, createType, type BeverageCategory, type BeverageType } from "@/lib/api-client";
+import { getAllTypes, getAllCategories, createType, updateType, deleteType, type BeverageCategory, type BeverageType } from "@/lib/api-client";
 import { getApiError } from "./useApiError";
 
 export function useTypes() {
@@ -57,6 +57,38 @@ export function useTypes() {
     if (createRes.data) setTypes((prev) => [...prev, createRes.data]);
   }
 
+  async function handleDelete(id: string) {
+    setError(null);
+    const res = await deleteType({ path: { id } });
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return false;
+    }
+    setTypes((prev) => prev.filter((t) => t.id !== id));
+    return true;
+  }
+
+  async function handleUpdate(
+    id: string,
+    body: { name?: string; categoryId?: string; description?: string; active?: boolean },
+  ) {
+    setSubmitting(true);
+    setError(null);
+    const res = await updateType({ path: { id }, body });
+    setSubmitting(false);
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return null;
+    }
+    if (res.data) {
+      setTypes((prev) => prev.map((t) => (t.id === id ? (res.data as BeverageType) : t)));
+      return res.data as BeverageType;
+    }
+    return null;
+  }
+
   const categoryMap = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c.name])), [categories]);
 
   return {
@@ -74,6 +106,9 @@ export function useTypes() {
     setActive,
     submitting,
     handleSubmit,
+    handleDelete,
+    handleUpdate,
+    load,
     categoryMap,
   };
 }

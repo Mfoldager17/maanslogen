@@ -114,6 +114,10 @@ export type Brand = {
      * Creation timestamp
      */
     createdAt: string;
+    /**
+     * IDs of categories this brand is allowed in (empty = all)
+     */
+    categoryIds: Array<string>;
 };
 
 export type Image = {
@@ -221,6 +225,35 @@ export type CreateBeverageDto = {
     images?: Array<CreateImageDto>;
 };
 
+export type UpdateBeverageDto = {
+    /**
+     * ID of the beverage type
+     */
+    beverageTypeId?: string;
+    /**
+     * ID of the brand
+     */
+    brandId?: string;
+    /**
+     * Name of the beverage
+     */
+    name?: string;
+    /**
+     * Country code where the beverage is from
+     */
+    country?: string;
+    /**
+     * Additional metadata as JSON object
+     */
+    metadata?: {
+        [key: string]: unknown;
+    };
+    /**
+     * List of images (e.g. thumbnail, large)
+     */
+    images?: Array<CreateImageDto>;
+};
+
 export type Review = {
     /**
      * Review ID
@@ -283,6 +316,29 @@ export type CreateReviewDto = {
     description?: string;
 };
 
+export type UpdateReviewDto = {
+    /**
+     * ID of the user creating the review
+     */
+    userId?: string;
+    /**
+     * ID of the beverage being reviewed
+     */
+    beverageId?: string;
+    /**
+     * Rating from 0 to 5
+     */
+    rating?: number;
+    /**
+     * Title of the review
+     */
+    title?: string;
+    /**
+     * Detailed review description
+     */
+    description?: string;
+};
+
 export type BeverageCategory = {
     /**
      * Category ID
@@ -298,6 +354,10 @@ export type BeverageCategory = {
     description?: {
         [key: string]: unknown;
     };
+    /**
+     * Category images (e.g. icon)
+     */
+    images?: Array<Image>;
 };
 
 export type CreateCategoryDto = {
@@ -309,6 +369,21 @@ export type CreateCategoryDto = {
      * The description of the beverage category
      */
     description: string;
+    /**
+     * List of images (e.g. icon)
+     */
+    images?: Array<CreateImageDto>;
+};
+
+export type UpdateCategoryDto = {
+    /**
+     * The name of the beverage category
+     */
+    name?: string;
+    /**
+     * The description of the beverage category
+     */
+    description?: string;
     /**
      * List of images (e.g. icon)
      */
@@ -363,6 +438,25 @@ export type CreateBeverageTypeDto = {
     active?: boolean;
 };
 
+export type UpdateBeverageTypeDto = {
+    /**
+     * Name of the beverage type
+     */
+    name?: string;
+    /**
+     * ID of the beverage category this type belongs to
+     */
+    categoryId?: string;
+    /**
+     * Description of the beverage type
+     */
+    description?: string;
+    /**
+     * Whether the beverage type is active
+     */
+    active?: boolean;
+};
+
 export type CreateBrandDto = {
     /**
      * Name of the brand
@@ -376,17 +470,40 @@ export type CreateBrandDto = {
      * Whether the brand is active
      */
     active?: boolean;
+    /**
+     * IDs of categories this brand is allowed in (empty = all)
+     */
+    categoryIds?: Array<string>;
+};
+
+export type UpdateBrandDto = {
+    /**
+     * Name of the brand
+     */
+    name?: string;
+    /**
+     * Description of the brand
+     */
+    description?: string;
+    /**
+     * Whether the brand is active
+     */
+    active?: boolean;
+    /**
+     * IDs of categories this brand is allowed in (empty = all)
+     */
+    categoryIds?: Array<string>;
 };
 
 export type CreateAttributeDefinitionDto = {
     /**
-     * ID of the beverage category
+     * IDs of beverage categories this attribute applies to
      */
-    categoryId: string;
+    categoryIds: Array<string>;
     /**
-     * ID of the beverage type (optional, null for category-wide attributes)
+     * IDs of beverage types (optional; empty = applies to all types in the selected categories)
      */
-    typeId?: string;
+    typeIds?: Array<string>;
     /**
      * Unique key identifier for the attribute
      */
@@ -415,15 +532,13 @@ export type AttributeDefinition = {
      */
     id: string;
     /**
-     * Category ID
+     * Category IDs this attribute applies to
      */
-    categoryId: string;
+    categoryIds: Array<string>;
     /**
-     * Beverage type ID (optional)
+     * Type IDs (optional; empty = all types in the categories)
      */
-    typeId?: {
-        [key: string]: unknown;
-    };
+    typeIds?: Array<string>;
     /**
      * Attribute key
      */
@@ -462,6 +577,116 @@ export type AttributeDefinition = {
     sortOrder?: {
         [key: string]: unknown;
     };
+};
+
+export type UpdateAttributeDefinitionDto = {
+    /**
+     * IDs of beverage categories this attribute applies to
+     */
+    categoryIds?: Array<string>;
+    /**
+     * IDs of beverage types (optional; empty = applies to all types in the selected categories)
+     */
+    typeIds?: Array<string>;
+    /**
+     * Unique key identifier for the attribute
+     */
+    attributeKey?: string;
+    /**
+     * Display name for the attribute
+     */
+    displayName?: string;
+    /**
+     * Data type of the attribute value
+     */
+    dataType?: 'string' | 'number' | 'boolean';
+    /**
+     * Whether this attribute can be used for filtering
+     */
+    filterable?: boolean;
+    /**
+     * Whether this attribute is required
+     */
+    required?: boolean;
+};
+
+export type CreateBeverageAttributeValueDto = {
+    /**
+     * ID of the beverage
+     */
+    beverageId: string;
+    /**
+     * ID of the attribute definition
+     */
+    attributeId: string;
+    /**
+     * String value (use if attribute dataType is string)
+     */
+    valueString?: string;
+    /**
+     * Number value (use if attribute dataType is number)
+     */
+    valueNumber?: number;
+    /**
+     * Boolean value (use if attribute dataType is boolean)
+     */
+    valueBoolean?: boolean;
+};
+
+export type BeverageAttributeValue = {
+    /**
+     * Attribute value ID
+     */
+    id: string;
+    /**
+     * Beverage ID
+     */
+    beverageId: string;
+    /**
+     * Attribute definition ID
+     */
+    attributeId: string;
+    /**
+     * String value
+     */
+    valueString?: {
+        [key: string]: unknown;
+    };
+    /**
+     * Number value
+     */
+    valueNumber?: {
+        [key: string]: unknown;
+    };
+    /**
+     * Boolean value
+     */
+    valueBoolean?: {
+        [key: string]: unknown;
+    };
+};
+
+export type UpdateBeverageAttributeValueDto = {
+    /**
+     * ID of the beverage
+     */
+    beverageId?: string;
+    /**
+     * ID of the attribute definition
+     */
+    attributeId?: string;
+    /**
+     * String value (use if attribute dataType is string)
+     */
+    valueString?: string;
+    /**
+     * Number value (use if attribute dataType is number)
+     */
+    valueNumber?: number;
+    /**
+     * Boolean value (use if attribute dataType is boolean)
+     */
+    valueBoolean?: boolean;
 };
 
 export type CreateQuestionDto = {
@@ -536,6 +761,39 @@ export type Question = {
      * Whether the question is required
      */
     required: boolean;
+};
+
+export type UpdateQuestionDto = {
+    /**
+     * ID of the beverage category
+     */
+    categoryId?: string;
+    /**
+     * ID of the beverage type (optional – question applies to all types in category if omitted)
+     */
+    typeId?: string;
+    /**
+     * Question text
+     */
+    questionText?: string;
+    /**
+     * Answer type
+     */
+    answerType?: 'text' | 'number' | 'select' | 'rating';
+    /**
+     * Options for select-type (e.g. array of choices)
+     */
+    options?: {
+        [key: string]: unknown;
+    };
+    /**
+     * Sort order (lower = first)
+     */
+    sortOrder?: number;
+    /**
+     * Whether the question is required
+     */
+    required?: boolean;
 };
 
 export type UserControllerGetAllData = {
@@ -636,6 +894,20 @@ export type UploadControllerPresignResponses = {
 
 export type UploadControllerPresignResponse = UploadControllerPresignResponses[keyof UploadControllerPresignResponses];
 
+export type UploadControllerCleanupEmptyBucketsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/upload/cleanup-empty-buckets';
+};
+
+export type UploadControllerCleanupEmptyBucketsResponses = {
+    /**
+     * Cleanup kørt med rapport
+     */
+    200: unknown;
+};
+
 export type BeverageAdminControllerGetAllData = {
     body?: never;
     path?: never;
@@ -675,6 +947,36 @@ export type BeverageAdminControllerCreateResponses = {
 
 export type BeverageAdminControllerCreateResponse = BeverageAdminControllerCreateResponses[keyof BeverageAdminControllerCreateResponses];
 
+export type BeverageAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Beverage ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverages/{id}';
+};
+
+export type BeverageAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BeverageAdminControllerRemoveResponses = {
+    /**
+     * Beverage deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type BeverageAdminControllerRemoveResponse = BeverageAdminControllerRemoveResponses[keyof BeverageAdminControllerRemoveResponses];
+
 export type BeverageAdminControllerGetByIdData = {
     body?: never;
     path: {
@@ -702,6 +1004,38 @@ export type BeverageAdminControllerGetByIdResponses = {
 };
 
 export type BeverageAdminControllerGetByIdResponse = BeverageAdminControllerGetByIdResponses[keyof BeverageAdminControllerGetByIdResponses];
+
+export type BeverageAdminControllerUpdateData = {
+    body: UpdateBeverageDto;
+    path: {
+        /**
+         * Beverage ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverages/{id}';
+};
+
+export type BeverageAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BeverageAdminControllerUpdateResponses = {
+    /**
+     * Beverage updated
+     */
+    200: Beverage;
+};
+
+export type BeverageAdminControllerUpdateResponse = BeverageAdminControllerUpdateResponses[keyof BeverageAdminControllerUpdateResponses];
 
 export type BeverageWebControllerGetAllData = {
     body?: never;
@@ -786,6 +1120,36 @@ export type ReviewAdminControllerCreateResponses = {
 
 export type ReviewAdminControllerCreateResponse = ReviewAdminControllerCreateResponses[keyof ReviewAdminControllerCreateResponses];
 
+export type ReviewAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Review ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{id}';
+};
+
+export type ReviewAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type ReviewAdminControllerRemoveResponses = {
+    /**
+     * Review deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type ReviewAdminControllerRemoveResponse = ReviewAdminControllerRemoveResponses[keyof ReviewAdminControllerRemoveResponses];
+
 export type ReviewAdminControllerGetByIdData = {
     body?: never;
     path: {
@@ -813,6 +1177,38 @@ export type ReviewAdminControllerGetByIdResponses = {
 };
 
 export type ReviewAdminControllerGetByIdResponse = ReviewAdminControllerGetByIdResponses[keyof ReviewAdminControllerGetByIdResponses];
+
+export type ReviewAdminControllerUpdateData = {
+    body: UpdateReviewDto;
+    path: {
+        /**
+         * Review ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{id}';
+};
+
+export type ReviewAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type ReviewAdminControllerUpdateResponses = {
+    /**
+     * Review updated
+     */
+    200: Review;
+};
+
+export type ReviewAdminControllerUpdateResponse = ReviewAdminControllerUpdateResponses[keyof ReviewAdminControllerUpdateResponses];
 
 export type ReviewWebControllerGetAllData = {
     body?: never;
@@ -897,6 +1293,40 @@ export type BeverageCategoryAdminControllerCreateResponses = {
 
 export type BeverageCategoryAdminControllerCreateResponse = BeverageCategoryAdminControllerCreateResponses[keyof BeverageCategoryAdminControllerCreateResponses];
 
+export type BeverageCategoryAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Category ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-categories/{id}';
+};
+
+export type BeverageCategoryAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+    /**
+     * Category has types or brands
+     */
+    409: unknown;
+};
+
+export type BeverageCategoryAdminControllerRemoveResponses = {
+    /**
+     * Category deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type BeverageCategoryAdminControllerRemoveResponse = BeverageCategoryAdminControllerRemoveResponses[keyof BeverageCategoryAdminControllerRemoveResponses];
+
 export type BeverageCategoryAdminControllerGetByIdData = {
     body?: never;
     path: {
@@ -924,6 +1354,38 @@ export type BeverageCategoryAdminControllerGetByIdResponses = {
 };
 
 export type BeverageCategoryAdminControllerGetByIdResponse = BeverageCategoryAdminControllerGetByIdResponses[keyof BeverageCategoryAdminControllerGetByIdResponses];
+
+export type BeverageCategoryAdminControllerUpdateData = {
+    body: UpdateCategoryDto;
+    path: {
+        /**
+         * Category ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-categories/{id}';
+};
+
+export type BeverageCategoryAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BeverageCategoryAdminControllerUpdateResponses = {
+    /**
+     * Category updated
+     */
+    200: BeverageCategory;
+};
+
+export type BeverageCategoryAdminControllerUpdateResponse = BeverageCategoryAdminControllerUpdateResponses[keyof BeverageCategoryAdminControllerUpdateResponses];
 
 export type BeverageCategoryWebControllerGetAllData = {
     body?: never;
@@ -1008,6 +1470,40 @@ export type BeverageTypeAdminControllerCreateResponses = {
 
 export type BeverageTypeAdminControllerCreateResponse = BeverageTypeAdminControllerCreateResponses[keyof BeverageTypeAdminControllerCreateResponses];
 
+export type BeverageTypeAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Beverage type ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-types/{id}';
+};
+
+export type BeverageTypeAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+    /**
+     * Type has beverages
+     */
+    409: unknown;
+};
+
+export type BeverageTypeAdminControllerRemoveResponses = {
+    /**
+     * Type deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type BeverageTypeAdminControllerRemoveResponse = BeverageTypeAdminControllerRemoveResponses[keyof BeverageTypeAdminControllerRemoveResponses];
+
 export type BeverageTypeAdminControllerGetByIdData = {
     body?: never;
     path: {
@@ -1035,6 +1531,38 @@ export type BeverageTypeAdminControllerGetByIdResponses = {
 };
 
 export type BeverageTypeAdminControllerGetByIdResponse = BeverageTypeAdminControllerGetByIdResponses[keyof BeverageTypeAdminControllerGetByIdResponses];
+
+export type BeverageTypeAdminControllerUpdateData = {
+    body: UpdateBeverageTypeDto;
+    path: {
+        /**
+         * Beverage type ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-types/{id}';
+};
+
+export type BeverageTypeAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BeverageTypeAdminControllerUpdateResponses = {
+    /**
+     * Type updated
+     */
+    200: BeverageType;
+};
+
+export type BeverageTypeAdminControllerUpdateResponse = BeverageTypeAdminControllerUpdateResponses[keyof BeverageTypeAdminControllerUpdateResponses];
 
 export type BeverageTypeWebControllerGetAllData = {
     body?: never;
@@ -1119,6 +1647,61 @@ export type BrandAdminControllerCreateResponses = {
 
 export type BrandAdminControllerCreateResponse = BrandAdminControllerCreateResponses[keyof BrandAdminControllerCreateResponses];
 
+export type BrandAdminControllerGetByCategoryData = {
+    body?: never;
+    path: {
+        /**
+         * Beverage category ID
+         */
+        categoryId: string;
+    };
+    query?: never;
+    url: '/api/admin/brands/category/{categoryId}';
+};
+
+export type BrandAdminControllerGetByCategoryResponses = {
+    /**
+     * List of brands
+     */
+    200: Array<Brand>;
+};
+
+export type BrandAdminControllerGetByCategoryResponse = BrandAdminControllerGetByCategoryResponses[keyof BrandAdminControllerGetByCategoryResponses];
+
+export type BrandAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Brand ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/brands/{id}';
+};
+
+export type BrandAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+    /**
+     * Brand has beverages
+     */
+    409: unknown;
+};
+
+export type BrandAdminControllerRemoveResponses = {
+    /**
+     * Brand deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type BrandAdminControllerRemoveResponse = BrandAdminControllerRemoveResponses[keyof BrandAdminControllerRemoveResponses];
+
 export type BrandAdminControllerGetByIdData = {
     body?: never;
     path: {
@@ -1146,6 +1729,38 @@ export type BrandAdminControllerGetByIdResponses = {
 };
 
 export type BrandAdminControllerGetByIdResponse = BrandAdminControllerGetByIdResponses[keyof BrandAdminControllerGetByIdResponses];
+
+export type BrandAdminControllerUpdateData = {
+    body: UpdateBrandDto;
+    path: {
+        /**
+         * Brand ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/brands/{id}';
+};
+
+export type BrandAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BrandAdminControllerUpdateResponses = {
+    /**
+     * Brand updated
+     */
+    200: Brand;
+};
+
+export type BrandAdminControllerUpdateResponse = BrandAdminControllerUpdateResponses[keyof BrandAdminControllerUpdateResponses];
 
 export type BrandWebControllerGetAllData = {
     body?: never;
@@ -1251,6 +1866,57 @@ export type AttributeDefinitionAdminControllerFindByCategoryResponses = {
 
 export type AttributeDefinitionAdminControllerFindByCategoryResponse = AttributeDefinitionAdminControllerFindByCategoryResponses[keyof AttributeDefinitionAdminControllerFindByCategoryResponses];
 
+export type AttributeDefinitionAdminControllerFindByTypeData = {
+    body?: never;
+    path: {
+        /**
+         * Beverage type ID
+         */
+        beverageTypeId: string;
+    };
+    query?: never;
+    url: '/api/admin/attributes/type/{beverageTypeId}';
+};
+
+export type AttributeDefinitionAdminControllerFindByTypeResponses = {
+    /**
+     * List of attribute definitions
+     */
+    200: Array<AttributeDefinition>;
+};
+
+export type AttributeDefinitionAdminControllerFindByTypeResponse = AttributeDefinitionAdminControllerFindByTypeResponses[keyof AttributeDefinitionAdminControllerFindByTypeResponses];
+
+export type AttributeDefinitionAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Attribute definition ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/attributes/{id}';
+};
+
+export type AttributeDefinitionAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type AttributeDefinitionAdminControllerRemoveResponses = {
+    /**
+     * Attribute definition deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type AttributeDefinitionAdminControllerRemoveResponse = AttributeDefinitionAdminControllerRemoveResponses[keyof AttributeDefinitionAdminControllerRemoveResponses];
+
 export type AttributeDefinitionAdminControllerGetByIdData = {
     body?: never;
     path: {
@@ -1278,6 +1944,38 @@ export type AttributeDefinitionAdminControllerGetByIdResponses = {
 };
 
 export type AttributeDefinitionAdminControllerGetByIdResponse = AttributeDefinitionAdminControllerGetByIdResponses[keyof AttributeDefinitionAdminControllerGetByIdResponses];
+
+export type AttributeDefinitionAdminControllerUpdateData = {
+    body: UpdateAttributeDefinitionDto;
+    path: {
+        /**
+         * Attribute definition ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/attributes/{id}';
+};
+
+export type AttributeDefinitionAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type AttributeDefinitionAdminControllerUpdateResponses = {
+    /**
+     * Attribute definition updated
+     */
+    200: AttributeDefinition;
+};
+
+export type AttributeDefinitionAdminControllerUpdateResponse = AttributeDefinitionAdminControllerUpdateResponses[keyof AttributeDefinitionAdminControllerUpdateResponses];
 
 export type AttributeDefinitionWebControllerFindAllData = {
     body?: never;
@@ -1343,6 +2041,161 @@ export type AttributeDefinitionWebControllerGetByIdResponses = {
 };
 
 export type AttributeDefinitionWebControllerGetByIdResponse = AttributeDefinitionWebControllerGetByIdResponses[keyof AttributeDefinitionWebControllerGetByIdResponses];
+
+export type BeverageAttributeValueAdminControllerCreateData = {
+    body: CreateBeverageAttributeValueDto;
+    path?: never;
+    query?: never;
+    url: '/api/admin/beverage-attributes';
+};
+
+export type BeverageAttributeValueAdminControllerCreateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+};
+
+export type BeverageAttributeValueAdminControllerCreateResponses = {
+    /**
+     * Attribute value created
+     */
+    201: BeverageAttributeValue;
+};
+
+export type BeverageAttributeValueAdminControllerCreateResponse = BeverageAttributeValueAdminControllerCreateResponses[keyof BeverageAttributeValueAdminControllerCreateResponses];
+
+export type BeverageAttributeValueAdminControllerFindAllForBeverageData = {
+    body?: never;
+    path: {
+        /**
+         * Beverage ID
+         */
+        beverageId: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-attributes/beverage/{beverageId}';
+};
+
+export type BeverageAttributeValueAdminControllerFindAllForBeverageResponses = {
+    /**
+     * List of attribute values
+     */
+    200: Array<BeverageAttributeValue>;
+};
+
+export type BeverageAttributeValueAdminControllerFindAllForBeverageResponse = BeverageAttributeValueAdminControllerFindAllForBeverageResponses[keyof BeverageAttributeValueAdminControllerFindAllForBeverageResponses];
+
+export type BeverageAttributeValueAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Attribute value ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-attributes/{id}';
+};
+
+export type BeverageAttributeValueAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BeverageAttributeValueAdminControllerRemoveResponses = {
+    /**
+     * Attribute value deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type BeverageAttributeValueAdminControllerRemoveResponse = BeverageAttributeValueAdminControllerRemoveResponses[keyof BeverageAttributeValueAdminControllerRemoveResponses];
+
+export type BeverageAttributeValueAdminControllerGetByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Attribute value ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-attributes/{id}';
+};
+
+export type BeverageAttributeValueAdminControllerGetByIdErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BeverageAttributeValueAdminControllerGetByIdResponses = {
+    /**
+     * Attribute value found
+     */
+    200: BeverageAttributeValue;
+};
+
+export type BeverageAttributeValueAdminControllerGetByIdResponse = BeverageAttributeValueAdminControllerGetByIdResponses[keyof BeverageAttributeValueAdminControllerGetByIdResponses];
+
+export type BeverageAttributeValueAdminControllerUpdateData = {
+    body: UpdateBeverageAttributeValueDto;
+    path: {
+        /**
+         * Attribute value ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/beverage-attributes/{id}';
+};
+
+export type BeverageAttributeValueAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type BeverageAttributeValueAdminControllerUpdateResponses = {
+    /**
+     * Attribute value updated
+     */
+    200: BeverageAttributeValue;
+};
+
+export type BeverageAttributeValueAdminControllerUpdateResponse = BeverageAttributeValueAdminControllerUpdateResponses[keyof BeverageAttributeValueAdminControllerUpdateResponses];
+
+export type BeverageAttributeValueWebControllerFindAllForBeverageData = {
+    body?: never;
+    path: {
+        /**
+         * Beverage ID
+         */
+        beverageId: string;
+    };
+    query?: never;
+    url: '/api/beverage-attributes/beverage/{beverageId}';
+};
+
+export type BeverageAttributeValueWebControllerFindAllForBeverageResponses = {
+    /**
+     * List of attribute values
+     */
+    200: Array<BeverageAttributeValue>;
+};
+
+export type BeverageAttributeValueWebControllerFindAllForBeverageResponse = BeverageAttributeValueWebControllerFindAllForBeverageResponses[keyof BeverageAttributeValueWebControllerFindAllForBeverageResponses];
 
 export type QuestionAdminControllerFindAllData = {
     body?: never;
@@ -1482,6 +2335,38 @@ export type QuestionAdminControllerGetByIdResponses = {
 };
 
 export type QuestionAdminControllerGetByIdResponse = QuestionAdminControllerGetByIdResponses[keyof QuestionAdminControllerGetByIdResponses];
+
+export type QuestionAdminControllerUpdateData = {
+    body: UpdateQuestionDto;
+    path: {
+        /**
+         * Question ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/questions/{id}';
+};
+
+export type QuestionAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type QuestionAdminControllerUpdateResponses = {
+    /**
+     * Question updated
+     */
+    200: Question;
+};
+
+export type QuestionAdminControllerUpdateResponse = QuestionAdminControllerUpdateResponses[keyof QuestionAdminControllerUpdateResponses];
 
 export type QuestionWebControllerFindAllData = {
     body?: never;

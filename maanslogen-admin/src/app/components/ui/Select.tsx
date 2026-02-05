@@ -9,7 +9,7 @@ export function Select({
   className?: string;
 } & React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select className={`input-theme ${className}`.trim()} {...rest}>
+    <select className={`input-theme w-full min-w-0 ${className}`.trim()} {...rest}>
       {children}
     </select>
   );

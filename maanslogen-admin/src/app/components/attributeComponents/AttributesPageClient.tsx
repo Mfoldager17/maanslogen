@@ -13,7 +13,9 @@ import {
   Select,
   Alert,
   AccentLink,
+  LinkButton,
 } from "@/app/components/ui";
+import { IconPencil, IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useAttributes } from "@/lib/hooks";
 
@@ -40,10 +42,16 @@ export function AttributesPageClient() {
     setRequired,
     submitting,
     handleSubmit,
+    handleDelete,
     categoryMap,
     typeMap,
     typesInSelectedCategories,
   } = useAttributes();
+
+  async function onDelete(id: string, displayName: string) {
+    if (!confirm(`Slet attributedefinition "${displayName}"? Dette sletter også alle tilknyttede attributværdier.`)) return;
+    await handleDelete(id);
+  }
 
   const categoryLabels = (a: { categoryIds?: string[]; categoryId?: string }) =>
     (a.categoryIds ?? (a.categoryId ? [a.categoryId] : []))
@@ -178,9 +186,20 @@ export function AttributesPageClient() {
                     {typeLabels(a) ? ` / ${typeLabels(a)}` : ""}
                   </span>
                 </div>
-                <span className="text-heading-muted text-xs">
-                  {a.filterable ? "Filterbar" : ""} {a.required ? "Påkrævet" : ""}
-                </span>
+                <div className="flex items-center gap-3">
+                  <LinkButton href={`/attributes/${encodeURIComponent(a.id ?? "")}/edit`} variant="secondary" iconOnly aria-label="Rediger">
+                    <IconPencil className="h-5 w-5" />
+                  </LinkButton>
+                  <Button
+                    type="button"
+                    variant="danger"
+                    iconOnly
+                    aria-label="Slet"
+                    onClick={() => onDelete(a.id ?? "", a.displayName ?? a.attributeKey ?? "")}
+                  >
+                    <IconTrash className="h-5 w-5" />
+                  </Button>
+                </div>
               </CardListItem>
             ))}
           </CardList>

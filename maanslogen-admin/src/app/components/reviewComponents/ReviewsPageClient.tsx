@@ -9,7 +9,10 @@ import {
   Select,
   Alert,
   AccentLink,
+  LinkButton,
+  Button,
 } from "@/app/components/ui";
+import { IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useReviews } from "@/lib/hooks";
 
@@ -31,13 +34,19 @@ export function ReviewsPageClient() {
     typesInCategory,
     beveragesFiltered,
     beverageLabel,
+    handleDelete,
   } = useReviews();
+
+  async function onDelete(id: string) {
+    if (!confirm("Slet denne anmeldelse? Drikkevarens anmeldelsestælling opdateres.")) return;
+    await handleDelete(id);
+  }
 
   return (
     <div>
       <PageHeading>Anmeldelser</PageHeading>
       <p className="text-heading-muted mb-6 text-sm">
-        Kun visning. Oprettelse og redigering sker via bruger-/drikke-flow.
+        Du kan slette anmeldelser herunder.
       </p>
 
       {error && <Alert className="mb-4">{error}</Alert>}
@@ -125,7 +134,18 @@ export function ReviewsPageClient() {
                       <p className="text-heading-muted mt-1 text-sm">{r.description}</p>
                     )}
                   </div>
-                  <span className="text-heading-muted shrink-0 text-xs">{r.userId}</span>
+                  <div className="flex shrink-0 items-center gap-3">
+                    <span className="text-heading-muted text-xs">{r.userId}</span>
+                    <Button
+                      type="button"
+                      variant="danger"
+                      iconOnly
+                      aria-label="Slet"
+                      onClick={() => onDelete(r.id ?? "")}
+                    >
+                      <IconTrash className="h-5 w-5" />
+                    </Button>
+                  </div>
                 </CardListItem>
               );
             })}

@@ -13,7 +13,9 @@ import {
   Select,
   Alert,
   AccentLink,
+  LinkButton,
 } from "@/app/components/ui";
+import { IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useQuestions, ANSWER_TYPES } from "@/lib/hooks";
 
@@ -181,18 +183,20 @@ export function QuestionsPageClient() {
                     {typeof q.typeId === "string" ? ` / ${typeMap[q.typeId] ?? q.typeId}` : " (hele kategorien)"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <span className="text-heading-muted text-xs">
                     {typeof q.sortOrder === "number" ? `#${q.sortOrder}` : ""}
                   </span>
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="danger"
+                    iconOnly
+                    aria-label="Slet"
                     onClick={() => q.id && handleDelete(q.id)}
                     disabled={deletingId === q.id}
-                    className="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-950/50"
+                    className="disabled:opacity-50"
                   >
-                    {deletingId === q.id ? "Sletter…" : "Slet"}
+                    <IconTrash className="h-5 w-5" />
                   </Button>
                 </div>
               </CardListItem>

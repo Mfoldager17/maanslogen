@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ImageType } from '../../../common/dto/create-image.dto';
+import { ImageType } from '../../image/dto/create-image.dto';
 
 export class PresignSlotDto {
   @ApiProperty({

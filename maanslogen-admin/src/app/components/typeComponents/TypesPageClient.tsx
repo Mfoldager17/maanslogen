@@ -13,7 +13,10 @@ import {
   Select,
   Alert,
   AccentLink,
+  LinkButton,
+  StatusDot,
 } from "@/app/components/ui";
+import { IconPencil, IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useTypes } from "@/lib/hooks";
 
@@ -33,8 +36,14 @@ export function TypesPageClient() {
     setActive,
     submitting,
     handleSubmit,
+    handleDelete,
     categoryMap,
   } = useTypes();
+
+  async function onDelete(id: string, typeName: string) {
+    if (!confirm(`Slet type "${typeName}"? Typer med drikkevarer kan ikke slettes.`)) return;
+    await handleDelete(id);
+  }
 
   return (
     <div>
@@ -95,7 +104,8 @@ export function TypesPageClient() {
           <CardList>
             {types.map((t) => (
               <CardListItem key={t.id}>
-                <div>
+                <div className="flex items-center gap-2">
+                  <StatusDot active={t.active ?? true} />
                   <AccentLink href={`/types/${encodeURIComponent(t.id ?? "")}`}>{t.name}</AccentLink>
                   <span className="text-heading-muted ml-2 text-sm">
                     {t.categoryId ? (categoryMap[t.categoryId] ?? t.categoryId) : ""}
@@ -104,14 +114,25 @@ export function TypesPageClient() {
                     <span className="text-heading-muted ml-2 text-sm">– {t.description}</span>
                   )}
                 </div>
-                <div className="flex items-center gap-3">
-                  <AccentLink
+                <div className="flex flex-wrap items-center gap-3">
+                  <LinkButton href={`/types/${encodeURIComponent(t.id ?? "")}/edit`} variant="secondary" iconOnly aria-label="Rediger">
+                    <IconPencil className="h-5 w-5" />
+                  </LinkButton>
+                  <LinkButton
                     href={`/questions?typeId=${encodeURIComponent(t.id ?? "")}${t.categoryId ? `&categoryId=${encodeURIComponent(t.categoryId)}` : ""}`}
-                    small
+                    variant="secondary"
                   >
                     Tilføj spørgsmål
-                  </AccentLink>
-                  <span className="text-heading-muted text-xs">{t.active ? "Aktiv" : "Inaktiv"}</span>
+                  </LinkButton>
+                  <Button
+                    type="button"
+                    variant="danger"
+                    iconOnly
+                    aria-label="Slet"
+                    onClick={() => onDelete(t.id ?? "", t.name ?? "")}
+                  >
+                    <IconTrash className="h-5 w-5" />
+                  </Button>
                 </div>
               </CardListItem>
             ))}

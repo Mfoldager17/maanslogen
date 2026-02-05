@@ -12,7 +12,10 @@ import {
   Label,
   Alert,
   AccentLink,
+  LinkButton,
+  StatusDot,
 } from "@/app/components/ui";
+import { IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useBrands } from "@/lib/hooks";
 
@@ -32,7 +35,13 @@ export function BrandsPageClient() {
     toggleCategoryId,
     submitting,
     handleSubmit,
+    handleDelete,
   } = useBrands();
+
+  async function onDelete(id: string, brandName: string) {
+    if (!confirm(`Slet mærke "${brandName}"? Kan ikke fortrydes. Mærker med drikkevarer kan ikke slettes.`)) return;
+    await handleDelete(id);
+  }
 
   return (
     <div>
@@ -122,7 +131,8 @@ export function BrandsPageClient() {
           <CardList>
             {list.map((b) => (
               <CardListItem key={b.id}>
-                <div>
+                <div className="flex items-center gap-2">
+                  <StatusDot active={b.active ?? true} />
                   <AccentLink href={`/brands/${encodeURIComponent(b.id ?? "")}`}>
                     {b.name}
                   </AccentLink>
@@ -135,9 +145,17 @@ export function BrandsPageClient() {
                     </span>
                   )}
                 </div>
-                <span className="text-heading-muted text-xs">
-                  {b.active ? "Aktiv" : "Inaktiv"}
-                </span>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="danger"
+                    iconOnly
+                    aria-label="Slet"
+                    onClick={() => onDelete(b.id ?? "", b.name ?? "")}
+                  >
+                    <IconTrash className="h-5 w-5" />
+                  </Button>
+                </div>
               </CardListItem>
             ))}
           </CardList>

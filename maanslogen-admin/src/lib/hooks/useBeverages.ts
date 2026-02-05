@@ -8,6 +8,7 @@ import {
   getAllBrands,
   getBrandsByCategory,
   createBeverage,
+  deleteBeverage,
   findAttributesByCategory,
   getApiBaseUrl,
   type Beverage,
@@ -273,6 +274,18 @@ export function useBeverages() {
       : (b as { brand?: string }).brand ?? "";
   }
 
+  async function handleDelete(id: string) {
+    setError(null);
+    const res = await deleteBeverage({ path: { id } });
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return false;
+    }
+    setList((prev) => prev.filter((b) => b.id !== id));
+    return true;
+  }
+
   return {
     list,
     types,
@@ -309,6 +322,7 @@ export function useBeverages() {
     typesInFilterCategory,
     filteredList,
     handleSubmit,
+    handleDelete,
     beverageBrandName,
   };
 }

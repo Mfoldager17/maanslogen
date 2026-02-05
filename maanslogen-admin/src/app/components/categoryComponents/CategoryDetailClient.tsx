@@ -1,21 +1,41 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { getCategoryById } from "@/lib/api-client";
+import { useParams, useRouter } from "next/navigation";
+import { getCategoryById, deleteCategory } from "@/lib/api-client";
 import { useFetch } from "@/lib/hooks";
-import { PageHeading, Card, Alert, AccentLink } from "@/app/components/ui";
-import { BackLink } from "@/app/components/layout";
+import { getApiError } from "@/lib/hooks/useApiError";
+import { PageHeading, Card, Alert, AccentLink, LinkButton, Button } from "@/app/components/ui";
+import { BackLink, IconPencil, IconTrash } from "@/app/components/layout";
 import { DetailList, DetailItem, LoadingState } from "@/app/components/data";
+import { useState } from "react";
 
 export function CategoryDetailClient() {
   const params = useParams();
+  const router = useRouter();
   const id = (params?.id as string) ?? "";
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const { data: item, loading, error } = useFetch(
     () => getCategoryById({ path: { id } }),
     [id],
     { enabled: !!id },
   );
+
+  async function onDelete() {
+    const name = item?.name ?? "kategori";
+    if (!confirm(`Slet kategori "${name}"? Kategorier med typer eller mærker kan ikke slettes.`)) return;
+    setDeleting(true);
+    setDeleteError(null);
+    const res = await deleteCategory({ path: { id } });
+    const err = getApiError(res);
+    setDeleting(false);
+    if (err) {
+      setDeleteError(err);
+      return;
+    }
+    router.push("/categories");
+  }
 
   if (loading) {
     return (
@@ -38,6 +58,15 @@ export function CategoryDetailClient() {
   return (
     <div>
       <BackLink href="/categories">← Tilbage til kategorier</BackLink>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <LinkButton href={`/categories/${id}/edit`} variant="secondary" iconOnly aria-label="Rediger">
+          <IconPencil className="h-5 w-5" />
+        </LinkButton>
+        <Button type="button" variant="danger" iconOnly aria-label="Slet" onClick={onDelete} disabled={deleting}>
+          <IconTrash className="h-5 w-5" />
+        </Button>
+      </div>
+      {deleteError && <Alert className="mb-4">{deleteError}</Alert>}
       <PageHeading>{item.name ?? "Kategori"}</PageHeading>
       <Card>
         <DetailList>
@@ -46,9 +75,9 @@ export function CategoryDetailClient() {
           <DetailItem label="Beskrivelse">{typeof item.description === "string" ? item.description : "—"}</DetailItem>
         </DetailList>
         <div className="mt-6">
-          <AccentLink href={`/questions?categoryId=${encodeURIComponent(item.id ?? "")}`} small>
+          <LinkButton href={`/questions?categoryId=${encodeURIComponent(item.id ?? "")}`} variant="secondary">
             Se spørgsmål for denne kategori →
-          </AccentLink>
+          </LinkButton>
         </div>
       </Card>
     </div>

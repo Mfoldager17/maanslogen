@@ -6,6 +6,7 @@ import {
   getAllBeverages,
   getAllTypes,
   getAllCategories,
+  deleteReview,
   type Review,
   type Beverage,
   type BeverageType,
@@ -24,30 +25,30 @@ export function useReviews() {
   const [typeId, setTypeId] = useState("");
   const [beverageId, setBeverageId] = useState("");
 
-  useEffect(() => {
-    let cancelled = false;
+  async function load() {
     setLoading(true);
     setError(null);
-    Promise.all([getAllReviews(), getAllBeverages(), getAllTypes(), getAllCategories()])
-      .then(([reviewsRes, bevRes, typesRes, catRes]) => {
-        if (cancelled) return;
-        const err = getApiError(reviewsRes);
-        if (err) {
-          setError(err);
-          setList([]);
-        } else {
-          setList(reviewsRes.data ?? []);
-        }
-        if (bevRes.data) setBeverages(bevRes.data);
-        if (typesRes.data) setTypes(typesRes.data);
-        if (catRes.data) setCategories(catRes.data);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+    const [reviewsRes, bevRes, typesRes, catRes] = await Promise.all([
+      getAllReviews(),
+      getAllBeverages(),
+      getAllTypes(),
+      getAllCategories(),
+    ]);
+    const err = getApiError(reviewsRes);
+    if (err) {
+      setError(err);
+      setList([]);
+    } else {
+      setList(reviewsRes.data ?? []);
+    }
+    if (bevRes.data) setBeverages(bevRes.data);
+    if (typesRes.data) setTypes(typesRes.data);
+    if (catRes.data) setCategories(catRes.data);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    load();
   }, []);
 
   const typeMap = useMemo(() => Object.fromEntries(types.map((t) => [t.id, t])), [types]);
@@ -92,6 +93,18 @@ export function useReviews() {
     return `${brandName} – ${b.name ?? ""}${typeName ? ` (${typeName})` : ""}`;
   }
 
+  async function handleDelete(id: string) {
+    setError(null);
+    const res = await deleteReview({ path: { id } });
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return false;
+    }
+    setList((prev) => prev.filter((r) => r.id !== id));
+    return true;
+  }
+
   return {
     list,
     beverages,
@@ -111,5 +124,7 @@ export function useReviews() {
     typesInCategory,
     beveragesFiltered,
     beverageLabel,
+    handleDelete,
+    load,
   };
 }
