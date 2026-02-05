@@ -8,3 +8,4 @@ export * from "./typeComponents";
 export * from "./reviewComponents";
 export * from "./attributeComponents";
 export * from "./brandComponents";
+export * from "./cronComponents";

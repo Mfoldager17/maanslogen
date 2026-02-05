@@ -19,7 +19,11 @@ import { EmptyState, LoadingState } from "@/app/components/data";
 import { useCategories } from "@/lib/hooks";
 
 export function CategoriesPageClient() {
-  const { list, loading, error, name, setName, description, setDescription, submitting, handleSubmit, handleDelete } = useCategories();
+  const { list, loading, error, name, setName, description, setDescription, icon, setIcon, submitting, handleSubmit, handleDelete } = useCategories();
+
+  /** Kun én emoji (inkl. modifier, ZWJ) – samme som API. */
+  const isEmojiOnly = (s: string) => /^\p{Extended_Pictographic}(\p{Emoji_Modifier}|\u{200D}\p{Extended_Pictographic})*$/u.test(s.trim());
+  const iconError = icon.trim() && !isEmojiOnly(icon) ? "Kun én emoji" : null;
 
   async function onDelete(id: string, categoryName: string) {
     if (!confirm(`Slet kategori "${categoryName}"? Kategorier med typer eller mærker kan ikke slettes.`)) return;
@@ -42,6 +46,23 @@ export function CategoriesPageClient() {
                 placeholder="fx Øl"
               />
             </div>
+            <div className="w-20">
+              <Label>Icon (emoji)</Label>
+              <Input
+                type="text"
+                value={icon}
+                onChange={(e) => setIcon(e.target.value)}
+                placeholder="🍺"
+                maxLength={8}
+                aria-invalid={!!iconError}
+                aria-describedby={iconError ? "icon-error" : undefined}
+              />
+              {iconError && (
+                <span id="icon-error" className="text-foreground-muted mt-0.5 block text-xs" role="alert">
+                  {iconError}
+                </span>
+              )}
+            </div>
             <div className="min-w-[200px] flex-1">
               <Label>Beskrivelse</Label>
               <Input
@@ -52,7 +73,7 @@ export function CategoriesPageClient() {
               />
             </div>
             <div className="flex items-end">
-              <Button type="submit" disabled={submitting || !name.trim()}>
+              <Button type="submit" disabled={submitting || !name.trim() || !!iconError}>
                 {submitting ? "Opretter…" : "Opret"}
               </Button>
             </div>
@@ -72,7 +93,6 @@ export function CategoriesPageClient() {
           <CardList>
             {list.map((c) => {
               const iconImage = c.images?.find((img) => img.type === "ICON") ?? c.images?.[0];
-              // ICON type: url is often the icon itself (e.g. emoji), not a link. Only use img for real URLs.
               const isImageUrl = iconImage?.url && (iconImage.url.startsWith("http") || iconImage.url.startsWith("/"));
               return (
               <CardListItem key={c.id}>

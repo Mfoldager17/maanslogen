@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
+import { ImageType } from '../image/dto/create-image.dto';
 import { CreateCategoryDto } from './admin/dto/create-category.dto';
 import { UpdateCategoryDto } from './admin/dto/update-category.dto';
 
@@ -27,7 +28,7 @@ export class BeverageCategoryService {
   }
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const { images, ...categoryData } = createCategoryDto;
+    const { images, icon, ...categoryData } = createCategoryDto;
     const entity = await this.prisma.beverageCategory.create({
       data: {
         ...categoryData,
@@ -46,39 +47,47 @@ export class BeverageCategoryService {
       },
       include: { images: true },
     });
-    if (images?.length) {
-      await this.uploadService.confirmUploads(images.map((img) => img.url));
+    if (icon) {
+      await this.prisma.image.create({
+        data: {
+          categoryId: entity.id,
+          type: ImageType.ICON,
+          url: icon,
+        },
+      });
     }
-    return entity;
+    if (images?.length) {
+      const uploadUrls = images.map((img) => img.url).filter((url) => url.startsWith('http'));
+      if (uploadUrls.length) await this.uploadService.confirmUploads(uploadUrls);
+    }
+    return this.getById(entity.id);
   }
 
   async update(id: string, dto: UpdateCategoryDto) {
     await this.getById(id);
-    const { images, ...categoryData } = dto;
-    const entity = await this.prisma.beverageCategory.update({
-      where: { id },
-      data: {
-        ...categoryData,
-        ...(images?.length
-          ? {
-              images: {
-                deleteMany: {},
-                create: images.map((img) => ({
-                  url: img.url,
-                  type: img.type,
-                  width: img.width,
-                  height: img.height,
-                })),
-              },
-            }
-          : {}),
-      },
-      include: { images: true },
-    });
-    if (images?.length) {
-      await this.uploadService.confirmUploads(images.map((img) => img.url));
+    const { images, icon, ...categoryData } = dto;
+    const hasIcon = icon !== undefined;
+    const hasImages = images && images.length > 0;
+    if (hasIcon || hasImages) {
+      await this.prisma.image.deleteMany({ where: { categoryId: id } });
+      const toCreate: Array<{ url: string; type: ImageType; width?: number; height?: number }> = [];
+      if (hasIcon) toCreate.push({ type: ImageType.ICON, url: icon });
+      if (hasImages) toCreate.push(...images!.map((img) => ({ url: img.url, type: img.type, width: img.width, height: img.height })));
+      await this.prisma.beverageCategory.update({
+        where: { id },
+        data: {
+          ...categoryData,
+          images: { create: toCreate.map((img) => ({ url: img.url, type: img.type, width: img.width, height: img.height })) },
+        },
+      });
+      if (hasImages) {
+        const uploadUrls = images!.map((img) => img.url).filter((url) => url.startsWith('http'));
+        if (uploadUrls.length) await this.uploadService.confirmUploads(uploadUrls);
+      }
+    } else {
+      await this.prisma.beverageCategory.update({ where: { id }, data: categoryData });
     }
-    return entity;
+    return this.getById(id);
   }
 
   async remove(id: string) {

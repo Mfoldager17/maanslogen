@@ -10,6 +10,7 @@ export function useCategories() {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [icon, setIcon] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   async function load() {
@@ -36,7 +37,11 @@ export function useCategories() {
     setSubmitting(true);
     setError(null);
     const createRes = await createCategory({
-      body: { name: name.trim(), description: description.trim() || "" },
+      body: {
+        name: name.trim(),
+        description: description.trim() || "",
+        icon: icon.trim() || undefined,
+      },
     });
     setSubmitting(false);
     const createErr = getApiError(createRes);
@@ -46,6 +51,7 @@ export function useCategories() {
     }
     setName("");
     setDescription("");
+    setIcon("");
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
   }
 
@@ -86,6 +92,8 @@ export function useCategories() {
     setName,
     description,
     setDescription,
+    icon,
+    setIcon,
     submitting,
     handleSubmit,
     handleDelete,

@@ -22,22 +22,36 @@ export function CategoryEditClient() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [icon, setIcon] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const isEmojiOnly = (s: string) => /^\p{Extended_Pictographic}(\p{Emoji_Modifier}|\u{200D}\p{Extended_Pictographic})*$/u.test(s.trim());
+  const iconError = icon.trim() && !isEmojiOnly(icon) ? "Kun én emoji" : null;
+
   useEffect(() => {
     if (item) {
-      setName((item as { name?: string }).name ?? "");
-      setDescription((item as { description?: string }).description ?? "");
+      const i = item as { name?: string; description?: string; images?: Array<{ type: string; url: string }> };
+      setName(i.name ?? "");
+      setDescription(i.description ?? "");
+      const iconImage = i.images?.find((img) => img.type === "ICON");
+      setIcon(iconImage?.url ?? "");
     }
   }, [item]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || iconError) return;
     setSubmitting(true);
     setSubmitError(null);
-    const res = await updateCategory({ path: { id }, body: { name: name.trim(), description: description.trim() || undefined } });
+    const res = await updateCategory({
+      path: { id },
+      body: {
+        name: name.trim(),
+        description: description.trim() || undefined,
+        icon: icon.trim() || undefined,
+      } as Parameters<typeof updateCategory>[0]["body"],
+    });
     setSubmitting(false);
     const err = getApiError(res);
     if (err) {
@@ -76,12 +90,29 @@ export function CategoryEditClient() {
             <Label htmlFor="cat-name">Navn</Label>
             <Input id="cat-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="fx Øl" />
           </div>
+          <div className="flex w-20 flex-col gap-1">
+            <Label htmlFor="cat-icon">Icon (emoji)</Label>
+            <Input
+              id="cat-icon"
+              type="text"
+              value={icon}
+              onChange={(e) => setIcon(e.target.value)}
+              placeholder="🍺"
+              maxLength={8}
+              aria-invalid={!!iconError}
+            />
+            {iconError && (
+              <span className="text-foreground-muted mt-0.5 block text-xs" role="alert">
+                {iconError}
+              </span>
+            )}
+          </div>
           <div className="flex min-w-[200px] flex-1 flex-col gap-1">
             <Label htmlFor="cat-desc">Beskrivelse</Label>
             <Input id="cat-desc" type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Valgfri" />
           </div>
           <div className="flex w-full items-center gap-3 sm:w-auto">
-            <Button type="submit" disabled={submitting || !name.trim()}>
+            <Button type="submit" disabled={submitting || !name.trim() || !!iconError}>
               {submitting ? "Gemmer…" : "Gem"}
             </Button>
             <LinkButton href={`/categories/${id}`} variant="secondary">Annuller</LinkButton>

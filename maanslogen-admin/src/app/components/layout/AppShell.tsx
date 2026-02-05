@@ -14,6 +14,7 @@ import {
   IconListBullets,
   IconQuestionMarkCircle,
   IconStar,
+  IconClock,
 } from "./NavIcons";
 
 const nav = [
@@ -25,6 +26,7 @@ const nav = [
   { href: "/attributes", label: "Attribute", icon: IconListBullets },
   { href: "/questions", label: "Spørgsmål", icon: IconQuestionMarkCircle },
   { href: "/reviews", label: "Anmeldelser", icon: IconStar },
+  { href: "/cron", label: "Planlagte jobs", icon: IconClock },
 ] as const;
 
 function MenuIcon({ open }: { open: boolean }) {

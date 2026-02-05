@@ -287,8 +287,9 @@ export class UploadService {
 
   /**
    * Deletes from S3 and DB any PendingUpload that has expired (presigned URL was never claimed).
+   * Returnerer antal slettede rækker (til test/manuel kørsel).
    */
-  async cleanupExpiredPendingUploads(): Promise<void> {
+  async cleanupExpiredPendingUploads(): Promise<{ deleted: number }> {
     const expired = await this.prisma.pendingUpload.findMany({
       where: { expiresAt: { lt: new Date() } },
     });
@@ -302,6 +303,7 @@ export class UploadService {
       }
       await this.prisma.pendingUpload.delete({ where: { id: row.id } });
     }
+    return { deleted: expired.length };
   }
 
   @Cron('0 */12 * * *') // Hver 12. time (fx 00:00 og 12:00)
