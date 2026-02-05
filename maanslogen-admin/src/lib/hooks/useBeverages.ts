@@ -9,6 +9,7 @@ import {
   getBrandsByCategory,
   createBeverage,
   findAttributesByCategory,
+  getApiBaseUrl,
   type Beverage,
   type BeverageType,
   type BeverageCategory,
@@ -26,11 +27,6 @@ function defAppliesToType(
   const t = def.typeId as string | undefined;
   return t == null || t === "" || (typeof t === "string" && t === beverageTypeId);
 }
-
-const API_BASE =
-  typeof window !== "undefined"
-    ? (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000")
-    : "http://localhost:3000";
 
 type ImageSlot = { url: string; type: "THUMBNAIL" | "LARGE"; width: number; height: number };
 
@@ -205,7 +201,7 @@ export function useBeverages() {
     let images: ImageSlot[] = [];
     if (imageFile) {
       try {
-        const presignRes = await fetch(`${API_BASE}/api/admin/upload/presign/beverage-images`, {
+        const presignRes = await fetch(`${getApiBaseUrl()}/api/admin/upload/presign/beverage-images`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ uploads: [{ type: "THUMBNAIL" }, { type: "LARGE" }] }),

@@ -2,18 +2,35 @@
  * Configure generated API client and re-export SDK + types.
  * Generated from OpenAPI/Swagger. Run:
  *   npm run generate:api         — from local openapi.json
- *   npm run generate:api:live    — from running API (http://localhost:3000/swagger-json)
+ *   npm run generate:api:live    — from running API (http://localhost:9090/api/swagger-json)
  * After adding endpoints/models in the API, run generate:api:live; new functions and types
  * are then available here automatically (no manual exports needed).
  */
 import { client } from "./api/client.gen";
 
-const baseUrl =
-  (typeof window !== "undefined"
-    ? process.env.NEXT_PUBLIC_API_URL
-    : process.env.NEXT_PUBLIC_API_URL) || "http://localhost:3000";
+// I browser: brug URL fra server (window.__MAANSLOGEN_API_URL__), ellers fallback til public API når origin er mathiasfoldager.com.
+const PUBLIC_API_URL = "https://maanslogen-dev-api.mathiasfoldager.com";
 
+function resolveBaseUrl(): string {
+  if (typeof window === "undefined") {
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:9090";
+  }
+  // Når admin kører på mathiasfoldager.com, brug altid public API (ignorer injiceret localhost/192.168)
+  if (window.location.hostname.endsWith("mathiasfoldager.com")) {
+    return PUBLIC_API_URL;
+  }
+  const injected = (window as unknown as { __MAANSLOGEN_API_URL__?: string }).__MAANSLOGEN_API_URL__;
+  if (injected) return injected;
+  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:9090";
+}
+
+const baseUrl = resolveBaseUrl();
 client.setConfig({ baseUrl: baseUrl as `${string}://${string}` });
+
+/** API base URL (bruger runtime-værdi fra .env.dev i Docker). */
+export function getApiBaseUrl(): string {
+  return resolveBaseUrl();
+}
 
 // Nice aliases (optional – you can also use the generated names from the export * below)
 export {

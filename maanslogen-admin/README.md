@@ -13,10 +13,10 @@ Next.js-admin til Maanslogen API. Her kan du administrere kategorier, beverage-t
 npm install
 ```
 
-Opret `.env.local` hvis API ikke kører på localhost:3000:
+Opret `.env.local` hvis API ikke kører på localhost:9090:
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:9090
 ```
 
 ## Kør udvikling
@@ -25,7 +25,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 npm run dev
 ```
 
-Åbn [http://localhost:3001](http://localhost:3001) (Next.js bruger 3001 når 3000 er optaget).
+Åbn [http://localhost:9091](http://localhost:9091) (admin lytter på 9091).
 
 ## API-klient (autogenereret)
 
@@ -36,8 +36,8 @@ Klienten er **autogenereret** med [@hey-api/openapi-ts](https://www.npmjs.com/pa
 
 Efter ændringer i API’et:
 
-1. Opdater `openapi.json` (fx hent fra kørende API: `curl http://localhost:3000/swagger-json > openapi.json`), eller
-2. Kør `npm run generate:api:live` mens API kører på localhost:3000.
+1. Opdater `openapi.json` (fx hent fra kørende API: `curl http://localhost:9090/api/swagger-json > openapi.json`), eller
+2. Kør `npm run generate:api:live` mens API kører på localhost:9090.
 
 Derefter:
 
@@ -55,4 +55,4 @@ Dette genbygger `src/lib/api/` med de nye endpoints. `src/lib/api-client.ts` sæ
 | `npm run build` | Byg til produktion |
 | `npm run start` | Start produktionsserver |
 | `npm run generate:api` | Generer API-klient fra `openapi.json` (lokal fil) |
-| `npm run generate:api:live` | Generer API-klient fra kørende API (localhost:3000) |
+| `npm run generate:api:live` | Generer API-klient fra kørende API (localhost:9090) |

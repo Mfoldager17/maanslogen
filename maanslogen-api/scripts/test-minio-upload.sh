@@ -6,7 +6,7 @@
 # Brug: ./scripts/test-minio-upload.sh [base URL]
 
 set -e
-API_URL="${1:-http://localhost:3000}"
+API_URL="${1:-http://localhost:9090}"
 json() { node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); $1"; }
 
 echo "1. Henter beverage type id..."
