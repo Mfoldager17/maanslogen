@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Image" ADD COLUMN "width" INTEGER;
+ALTER TABLE "Image" ADD COLUMN "height" INTEGER;

@@ -1,0 +1,27 @@
+# Eksempel: docker-compose på Pi til maanslogen (dev) med .env.dev.
+# Kopiér til Pi som docker-compose.yml og opret .env.dev ud fra .env.dev.example.
+
+version: "3.9"
+
+services:
+  maanslogen-api:
+    image: 192.168.0.122:5000/maanslogen-api:dev
+    container_name: maanslogen-api-dev
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    env_file:
+      - .env.dev
+    environment:
+      - PORT=9090
+
+  maanslogen-admin:
+    image: 192.168.0.122:5000/maanslogen-admin:dev
+    container_name: maanslogen-admin-dev
+    restart: unless-stopped
+    ports:
+      - "9091:9091"
+    env_file:
+      - .env.dev
+    environment:
+      - PORT=9091

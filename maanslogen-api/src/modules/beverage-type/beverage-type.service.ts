@@ -8,14 +8,14 @@ export class BeverageTypeService {
 
   async getAll() {
     return this.prisma.beverageType.findMany({
-      include: { attributes: true, questions: true },
+      include: { attributeDefinitions: true, questions: true },
     });
   }
 
   async getById(id: string) {
     return this.prisma.beverageType.findUnique({
       where: { id },
-      include: { attributes: true, questions: true },
+      include: { attributeDefinitions: true, questions: true },
     });
   }
 

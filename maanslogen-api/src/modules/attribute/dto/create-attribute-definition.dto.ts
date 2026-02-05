@@ -1,16 +1,19 @@
 // src/attribute/dto/create-attribute-definition.dto.ts
-import { IsString, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, IsBoolean, IsOptional, IsArray, ArrayMinSize } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAttributeDefinitionDto {
-  @ApiProperty({ description: 'ID of the beverage category', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @IsString()
-  categoryId: string;
+  @ApiProperty({ description: 'IDs of beverage categories this attribute applies to', example: ['123e4567-e89b-12d3-a456-426614174000'], type: [String], minItems: 1 })
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  categoryIds: string[];
 
-  @ApiProperty({ description: 'ID of the beverage type (optional, null for category-wide attributes)', example: '123e4567-e89b-12d3-a456-426614174000', required: false })
+  @ApiProperty({ description: 'IDs of beverage types (optional; empty = applies to all types in the selected categories)', example: [], type: [String], required: false })
   @IsOptional()
-  @IsString()
-  typeId?: string;
+  @IsArray()
+  @IsString({ each: true })
+  typeIds?: string[];
 
   @ApiProperty({ description: 'Unique key identifier for the attribute', example: 'abv' })
   @IsString()

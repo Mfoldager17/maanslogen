@@ -25,6 +25,78 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+### Billeder (MinIO / S3)
+
+Billeder uploades via **presigned URLs**: frontend henter upload-URLs fra API’et, uploader direkte til MinIO, og bruger derefter de returnerede URLs ved oprettelse af Beverage/User/Category/Type.
+
+**Flow:**  
+1. Kald presign med **context** (bucket og mappesti sættes i backend):  
+   - `POST /upload/presign/beverage-images` – til beverage-billeder  
+   - `POST /upload/presign/user-profile` – til brugerprofil  
+   - `POST /upload/presign/category-icons` – til kategorier  
+   Body: `{ "uploads": [ { "type": "THUMBNAIL" }, { "type": "LARGE" } ] }`  
+2. For hver slot: **PUT** fil til `uploadUrl` (body = fil, header `Content-Type: image/jpeg` eller tilsvarende)  
+3. Opret entitet (f.eks. `POST /beverages`) med `images: [ { "url": "<url fra step 1>", "type": "THUMBNAIL" }, ... ]`  
+
+Hvis brugeren aldrig opretter entiteten, bliver uploadet stående i S3. API’et holder styr på “pending” uploads (fra presign) og fjerner dem fra listen, når du opretter beverage/user/category med de pågældende URLs (`confirmUploads`). En **cron-job** hver 12. time sletter objekter i S3 (og rækker i `PendingUpload`) for uploads, der er udløbet (15 min) og aldrig blev bekræftet – så forældreløse billeder ryger automatisk. Bucketen oprettes automatisk ved første presign, hvis den ikke findes (backend styrer context, så det er sikkert).
+
+**Env (MinIO):**
+
+| Variable           | Påkrævet | Beskrivelse |
+|-------------------|----------|-------------|
+| `MINIO_ENDPOINT`  | Ja       | Host (evt. med port), fx `localhost:9000` eller `maanslogen-images.mathiasfoldager.com` |
+| `MINIO_USE_SSL`   | Ja       | `true` eller `false` |
+| `MINIO_ACCESS_KEY`| Ja       | MinIO access key |
+| `MINIO_SECRET_KEY`| Ja       | MinIO secret key |
+| `MINIO_BUCKET`    | Nej      | Default bucket (default: `maanslogen-dev`) |
+| `MINIO_PUBLIC_URL`| Nej      | Public base URL til filer (ellers bruges `http(s)://MINIO_ENDPOINT/MINIO_BUCKET`) |
+| `MINIO_REGION`    | Nej      | Region, fx `eu-north-1` |
+
+**Eksempel: MinIO lokalt (port 9000):**
+
+```env
+MINIO_ENDPOINT=localhost:9000
+MINIO_USE_SSL=false
+MINIO_ACCESS_KEY=din-access-key
+MINIO_SECRET_KEY=din-secret-key
+MINIO_BUCKET=maanslogen-dev
+```
+
+**Eksempel: MinIO bag proxy** (fx `maanslogen-images.mathiasfoldager.com`):
+
+```env
+MINIO_ENDPOINT=maanslogen-images.mathiasfoldager.com
+MINIO_USE_SSL=true
+MINIO_ACCESS_KEY=din-access-key
+MINIO_SECRET_KEY=din-secret-key
+MINIO_BUCKET=maanslogen-images
+MINIO_PUBLIC_URL=https://maanslogen-images.mathiasfoldager.com/maanslogen-images
+```
+
+Så peger API’et på MinIO via proxy-domænet, og de billed-URL’er der returneres, kan åbnes i browseren via samme domæne (så længe proxy’en serverer bucket-indholdet der).
+
+**Good to go – checkliste**
+
+1. **Env** – sæt `MINIO_ENDPOINT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY` (og evt. `MINIO_BUCKET`) i `.env`.
+2. **Bucket** – oprettes automatisk ved første presign, hvis den ikke findes (default fra `MINIO_BUCKET`).
+3. **Database** – kør `npx prisma migrate deploy` (eller `migrate dev`) så `PendingUpload` har `bucket`.
+4. **Test** – start API (`npm run start:dev`), sørg for at MinIO kører, og kør:
+   ```bash
+   chmod +x scripts/test-minio-upload.sh
+   ./scripts/test-minio-upload.sh
+   ```
+   Scriptet (kræver Node.js og curl): henter beverage type → presigned URL → uploader testbillede → opretter beverage med billed-URL. Ved succes står der ✅ i slutningen.
+
+Alternativt: brug **Swagger** på `http://localhost:9090/api/swagger` – test fx `POST /upload/presign/beverage-images` og `POST /beverages`. Til fil-upload til `uploadUrl`: `curl -X PUT "<uploadUrl>" -H "Content-Type: image/png" --data-binary @fil.png`.
+
+### Admin og Swagger JSON
+
+**Next.js-admin** ligger i `maanslogen/maanslogen-admin` og bruger denne API. Adminen genererer en typet API-klient fra OpenAPI/Swagger.
+
+- **Swagger UI:** `http://localhost:9090/api/swagger`
+- **Swagger JSON (til klientgenerering):** `http://localhost:9090/api/swagger-json`  
+  I adminen: `npm run generate:api:live` (når API kører) genererer typer og klient i `src/lib/api` fra dette endpoint.
+
 ## Project setup
 
 ```bash

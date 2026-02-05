@@ -1,5 +1,6 @@
-import { IsString, IsEnum } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsEnum, IsOptional, IsInt, Min, Max } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export enum ImageType {
   THUMBNAIL = 'THUMBNAIL',
@@ -20,4 +21,20 @@ export class CreateImageDto {
   })
   @IsEnum(ImageType)
   type: ImageType;
+
+  @ApiPropertyOptional({ description: 'Bredde (px)', minimum: 1, maximum: 4096 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(4096)
+  width?: number;
+
+  @ApiPropertyOptional({ description: 'Højde (px)', minimum: 1, maximum: 4096 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(4096)
+  height?: number;
 }
