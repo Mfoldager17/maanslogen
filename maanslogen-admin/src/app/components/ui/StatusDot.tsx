@@ -17,7 +17,7 @@ export function StatusDot({
         className={`inline-block h-2.5 w-2.5 rounded-full ${active ? "bg-green-500" : "bg-red-500"}`}
       />
       <span
-        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded border border-[rgb(var(--color-border))] bg-[rgb(var(--color-bg-elevated))] px-2 py-1 text-xs font-medium text-[rgb(var(--color-fg))] opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100"
+        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded border border-border bg-background-elevated px-2 py-1 text-xs font-medium text-foreground opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100"
         aria-hidden
       >
         {label}

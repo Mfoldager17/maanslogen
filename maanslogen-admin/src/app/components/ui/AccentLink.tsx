@@ -17,7 +17,7 @@ export function AccentLink({
   return (
     <Link
       href={href}
-      className={`font-medium text-[rgb(var(--color-accent))] hover:underline ${size} ${className}`.trim()}
+      className={`font-medium text-accent hover:underline ${size} ${className}`.trim()}
       {...rest}
     >
       {children}

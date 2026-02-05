@@ -13,7 +13,7 @@ export function BackLink({
   return (
     <Link
       href={href}
-      className={`text-heading-muted mb-4 inline-block text-sm hover:underline ${className}`.trim()}
+      className={`text-foreground-muted mb-4 inline-block text-sm hover:underline ${className}`.trim()}
       {...rest}
     >
       {children}

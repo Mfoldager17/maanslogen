@@ -104,7 +104,7 @@ export function TypeEditClient() {
               id="type-active"
               checked={active}
               onChange={(e) => setActive(e.target.checked)}
-              className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+              className="rounded border-border text-accent focus:ring-accent"
             />
             <Label htmlFor="type-active" className="mb-0 text-sm">Aktiv</Label>
           </div>

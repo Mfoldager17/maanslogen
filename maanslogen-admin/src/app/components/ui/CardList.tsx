@@ -9,7 +9,15 @@ export function CardList({
   className?: string;
 } & React.HTMLAttributes<HTMLUListElement>) {
   return (
-    <ul className={`card overflow-hidden ${className}`.trim()} {...rest}>
+    <ul
+      className={[
+        "overflow-hidden border border-border rounded-lg shadow-sm bg-background-elevated",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...rest}
+    >
       {children}
     </ul>
   );

@@ -51,7 +51,7 @@ export function QuestionsPageClient() {
   return (
     <div>
       <PageHeading>Spørgsmål (til anmeldelser)</PageHeading>
-      <p className="text-heading-muted mb-6 text-sm">
+      <p className="text-foreground-muted mb-6 text-sm">
         Spørgsmål kan knyttes til en kategori (gælder alle typer) eller til en bestemt type. Du kan også tilføje spørgsmål direkte fra{" "}
         <AccentLink href="/categories" small>Kategorier</AccentLink> eller{" "}
         <AccentLink href="/types" small>Typer</AccentLink> via &quot;Tilføj spørgsmål&quot;.
@@ -114,7 +114,7 @@ export function QuestionsPageClient() {
               id="required"
               checked={required}
               onChange={(e) => setRequired(e.target.checked)}
-              className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+              className="rounded border-border text-accent focus:ring-accent"
             />
             <Label htmlFor="required" className="mb-0 text-sm">Påkrævet</Label>
           </div>
@@ -152,9 +152,9 @@ export function QuestionsPageClient() {
               type="checkbox"
               checked={onlyCategoryWide}
               onChange={(e) => setOnlyCategoryWide(e.target.checked)}
-              className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+              className="rounded border-border text-accent focus:ring-accent"
             />
-            <span className="text-heading-muted text-sm">Kun hele kategorien</span>
+            <span className="text-foreground-muted text-sm">Kun hele kategorien</span>
           </label>
         </div>
       </section>
@@ -175,16 +175,16 @@ export function QuestionsPageClient() {
                   <AccentLink href={`/questions/${encodeURIComponent(q.id ?? "")}`}>
                     {q.questionText}
                   </AccentLink>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     ({q.answerType}{q.required ? ", påkrævet" : ""})
                   </span>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     {q.categoryId ? (categoryMap[q.categoryId] ?? q.categoryId) : ""}
                     {typeof q.typeId === "string" ? ` / ${typeMap[q.typeId] ?? q.typeId}` : " (hele kategorien)"}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-heading-muted text-xs">
+                  <span className="text-foreground-muted text-xs">
                     {typeof q.sortOrder === "number" ? `#${q.sortOrder}` : ""}
                   </span>
                   <Button

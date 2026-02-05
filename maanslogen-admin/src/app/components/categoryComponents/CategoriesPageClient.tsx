@@ -88,7 +88,7 @@ export function CategoriesPageClient() {
                       {iconImage.url}
                     </span>
                   ) : (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-[rgb(var(--color-bg-hover))] text-[rgb(var(--color-fg-muted))]" aria-hidden>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-background-hover text-foreground-muted" aria-hidden>
                       —
                     </span>
                   )}
@@ -97,7 +97,7 @@ export function CategoriesPageClient() {
                       {c.name}
                     </AccentLink>
                     {typeof c.description === "string" && c.description && (
-                      <span className="text-heading-muted ml-2 text-sm">{c.description}</span>
+                      <span className="text-foreground-muted ml-2 text-sm">{c.description}</span>
                     )}
                   </div>
                 </div>

@@ -121,7 +121,7 @@ export function BeveragesPageClient() {
               ))}
             </Select>
             {showBrandsFilteredHint && (
-              <p className="text-heading-muted mt-1 text-xs">
+              <p className="text-foreground-muted mt-1 text-xs">
                 Viser kun mærker tilladt i denne kategori
               </p>
             )}
@@ -153,7 +153,7 @@ export function BeveragesPageClient() {
                     id={`attr-${def.id}`}
                     checked={(attributeValues[def.id] as boolean | undefined) ?? false}
                     onChange={(e) => setAttributeValue(def.id, e.target.checked)}
-                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                    className="h-4 w-4 rounded border border-border"
                   />
                   <Label htmlFor={`attr-${def.id}`} className="mb-0!">
                     {def.displayName}
@@ -194,9 +194,9 @@ export function BeveragesPageClient() {
               className="text-sm"
             />
             {imageFile && (
-              <span className="text-heading-muted ml-2 text-xs">{imageFile.name}</span>
+              <span className="text-foreground-muted ml-2 text-xs">{imageFile.name}</span>
             )}
-            <p className="text-heading-muted mt-1 text-xs">
+            <p className="text-foreground-muted mt-1 text-xs">
               Ét billede – skaleres automatisk til thumbnail (200×200) og stor version (800×800). JPEG, PNG, WebP eller GIF.
             </p>
           </div>
@@ -262,7 +262,7 @@ export function BeveragesPageClient() {
           </EmptyState>
         ) : (
           <>
-            <p className="text-heading-muted mb-2 text-sm">
+            <p className="text-foreground-muted mb-2 text-sm">
               Viser {filteredList.length} drikke{filteredList.length !== 1 ? "varer" : "vare"}
             </p>
             <CardList>
@@ -272,15 +272,15 @@ export function BeveragesPageClient() {
                     <AccentLink href={`/beverages/${encodeURIComponent(b.id ?? "")}`}>
                       {beverageBrandName(b)} – {b.name}
                     </AccentLink>
-                    <span className="text-heading-muted ml-2 text-sm">
+                    <span className="text-foreground-muted ml-2 text-sm">
                       {b.beverageTypeId ? (typeMap[b.beverageTypeId] ?? b.beverageTypeId) : ""}
                     </span>
                     {b.country && (
-                      <span className="text-heading-muted ml-2 text-sm">({b.country})</span>
+                      <span className="text-foreground-muted ml-2 text-sm">({b.country})</span>
                     )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-heading-muted text-xs">
+                    <span className="text-foreground-muted text-xs">
                       {b.averageRating != null ? `★ ${b.averageRating.toFixed(1)}` : ""}{" "}
                       {b.reviewCount != null ? `(${b.reviewCount})` : ""}
                     </span>

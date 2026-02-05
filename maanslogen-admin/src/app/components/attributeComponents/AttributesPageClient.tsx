@@ -78,7 +78,7 @@ export function AttributesPageClient() {
                     type="checkbox"
                     checked={categoryIds.includes(c.id)}
                     onChange={() => toggleCategoryId(c.id)}
-                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                    className="h-4 w-4 rounded border border-border"
                   />
                   <span className="text-sm">{c.name}</span>
                 </label>
@@ -94,7 +94,7 @@ export function AttributesPageClient() {
                     type="checkbox"
                     checked={typeIds.includes(t.id)}
                     onChange={() => toggleTypeId(t.id)}
-                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                    className="h-4 w-4 rounded border border-border"
                   />
                   <span className="text-sm">{t.name}</span>
                 </label>
@@ -136,18 +136,18 @@ export function AttributesPageClient() {
                 type="checkbox"
                 checked={filterable}
                 onChange={(e) => setFilterable(e.target.checked)}
-                className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+                className="rounded border-border text-accent focus:ring-accent"
               />
-              <span className="text-heading-muted text-sm">Filterbar</span>
+              <span className="text-foreground-muted text-sm">Filterbar</span>
             </label>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={required}
                 onChange={(e) => setRequired(e.target.checked)}
-                className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+                className="rounded border-border text-accent focus:ring-accent"
               />
-              <span className="text-heading-muted text-sm">Påkrævet</span>
+              <span className="text-foreground-muted text-sm">Påkrævet</span>
             </label>
           </div>
           <div className="flex w-full items-end sm:w-auto">
@@ -178,10 +178,10 @@ export function AttributesPageClient() {
                   <AccentLink href={`/attributes/${encodeURIComponent(a.id ?? "")}`}>
                     {a.displayName}
                   </AccentLink>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     ({a.attributeKey}, {a.dataType})
                   </span>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     {categoryLabels(a)}
                     {typeLabels(a) ? ` / ${typeLabels(a)}` : ""}
                   </span>

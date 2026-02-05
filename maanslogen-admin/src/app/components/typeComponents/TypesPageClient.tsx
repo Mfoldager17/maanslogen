@@ -79,7 +79,7 @@ export function TypesPageClient() {
                 id="active"
                 checked={active}
                 onChange={(e) => setActive(e.target.checked)}
-                className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+                className="rounded border-border text-accent focus:ring-accent"
               />
               <Label htmlFor="active" className="mb-0 text-sm">Aktiv</Label>
             </div>
@@ -107,11 +107,11 @@ export function TypesPageClient() {
                 <div className="flex items-center gap-2">
                   <StatusDot active={t.active ?? true} />
                   <AccentLink href={`/types/${encodeURIComponent(t.id ?? "")}`}>{t.name}</AccentLink>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     {t.categoryId ? (categoryMap[t.categoryId] ?? t.categoryId) : ""}
                   </span>
                   {typeof t.description === "string" && t.description && (
-                    <span className="text-heading-muted ml-2 text-sm">– {t.description}</span>
+                    <span className="text-foreground-muted ml-2 text-sm">– {t.description}</span>
                   )}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">

@@ -45,7 +45,7 @@ export function ReviewsPageClient() {
   return (
     <div>
       <PageHeading>Anmeldelser</PageHeading>
-      <p className="text-heading-muted mb-6 text-sm">
+      <p className="text-foreground-muted mb-6 text-sm">
         Du kan slette anmeldelser herunder.
       </p>
 
@@ -110,7 +110,7 @@ export function ReviewsPageClient() {
         </EmptyState>
       ) : (
         <>
-          <p className="text-heading-muted mb-2 text-sm">
+          <p className="text-foreground-muted mb-2 text-sm">
             Viser {filteredReviews.length} anmeldelse{filteredReviews.length !== 1 ? "r" : ""}
           </p>
           <CardList>
@@ -124,18 +124,18 @@ export function ReviewsPageClient() {
                       {typeof r.title === "string" && r.title ? ` – ${r.title}` : ""}
                     </AccentLink>
                     {beverage && (
-                      <p className="text-heading-muted mt-1 text-sm">
+                      <p className="text-foreground-muted mt-1 text-sm">
                         <AccentLink href={`/beverages/${r.beverageId}`} small>
                           {beverageLabel(beverage)}
                         </AccentLink>
                       </p>
                     )}
                     {typeof r.description === "string" && r.description && (
-                      <p className="text-heading-muted mt-1 text-sm">{r.description}</p>
+                      <p className="text-foreground-muted mt-1 text-sm">{r.description}</p>
                     )}
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
-                    <span className="text-heading-muted text-xs">{r.userId}</span>
+                    <span className="text-foreground-muted text-xs">{r.userId}</span>
                     <Button
                       type="button"
                       variant="danger"

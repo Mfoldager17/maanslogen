@@ -10,7 +10,13 @@ export function CardListItem({
 } & React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
-      className={`card-list-item flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between ${className}`.trim()}
+      className={[
+        "flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/60 last:border-b-0 transition-colors duration-150",
+        "hover:bg-background-hover",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
       {...rest}
     >
       {children}

@@ -125,12 +125,12 @@ export function ReviewDetailClient() {
             {answers.map((a) => (
               <li
                 key={a.id ?? a.questionId}
-                className="border-b border-[rgb(var(--color-border))] pb-4 last:border-0 last:pb-0"
+                className="border-b border-border pb-4 last:border-0 last:pb-0"
               >
-                <p className="text-heading-muted mb-1 text-sm font-medium">
+                <p className="text-foreground-muted mb-1 text-sm font-medium">
                   {a.question?.questionText ?? "Spørgsmål"}
                 </p>
-                <p className="text-heading">
+                <p className="text-foreground">
                   {typeof a.answer === "string" || typeof a.answer === "number" ? a.answer : "—"}
                 </p>
               </li>

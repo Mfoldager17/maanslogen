@@ -45,7 +45,13 @@ function MenuIcon({ open }: { open: boolean }) {
 const DESKTOP_BREAKPOINT = 768;
 const THEME_STORAGE_KEY = "maanslogen-admin-theme";
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  initialTheme = "",
+}: {
+  children: React.ReactNode;
+  initialTheme?: string;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
   const pathname = usePathname();
@@ -87,7 +93,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <motion.button
         type="button"
         aria-label="Luk menu"
-        className="fixed inset-0 z-30 bg-black/40 md:hidden"
+        className="fixed inset-0 z-30 md:hidden"
         initial={false}
         animate={{ opacity: sidebarOpen ? 1 : 0 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
@@ -97,8 +103,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar: Framer Motion for width-animation (skuffe) på mobil og desktop */}
       <motion.aside
-        className="drawer-panel shrink-0 border-r border-theme bg-elevated
-          fixed inset-y-0 left-0 z-40 overflow-hidden shadow-theme-sm
+        className="
+          shrink-0
+          border-r border-border
+           shadow-sm
+          fixed inset-y-0 left-0 z-40 overflow-hidden
           md:relative md:inset-auto md:top-0 md:bottom-0 md:left-0 md:right-auto md:shadow-none
         "
         initial={false}
@@ -117,7 +126,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="flex min-h-10 min-w-10 items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:ring-2 focus:ring-[rgb(var(--color-accent))]"
+              className="flex min-h-10 min-w-10 items-center justify-center rounded text-foreground hover:bg-background-hover focus:ring-2 focus:ring-accent"
               aria-label="Åbn menu"
             >
               <MenuIcon open={false} />
@@ -132,19 +141,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Fuld sidebar: på mobil altid i DOM (skuffe-animation), på desktop kun når udvidet */}
         {(isMobile || sidebarOpen) && (
-          <div className="flex h-full w-64 flex-col gap-1 p-4 pt-6 md:sticky md:top-0 md:pt-4">
+          <div className="flex h-full w-64 flex-col gap-1 p-4 pt-6 md:sticky md:top-0 md:pt-4 bg-background/50 backdrop-blur-md">
             <div className="mb-4 flex items-center justify-between px-2">
               <span className="truncate text-lg font-semibold">Maanslogen Admin</span>
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                className="hidden min-h-9 min-w-9 touch-manipulation items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:ring-2 focus:ring-[rgb(var(--color-accent))] md:flex"
+                className="hidden min-h-9 min-w-9 touch-manipulation items-center justify-center rounded text-foreground hover:bg-background-hover focus:ring-2 focus:ring-accent md:flex"
                 aria-label="Luk menu"
               >
                 <MenuIcon open={true} />
               </button>
             </div>
-            <ThemeSwitcher />
+            <ThemeSwitcher initialTheme={initialTheme} />
             <nav className="mt-4 flex flex-col gap-1">
               {nav.map(({ href, label, icon }) => (
                 <NavLink key={href} href={href} label={label} icon={icon} />
@@ -155,11 +164,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </motion.aside>
 
       {/* Top bar kun på mobil – menu-knap + titel */}
-      <div className="fixed left-0 right-0 top-0 z-20 flex min-h-14 items-center gap-3 border-b border-theme bg-elevated px-4 shadow-theme-sm md:hidden">
+      <div className="fixed left-0 right-0 top-0 z-20 flex min-h-14 items-center gap-3 border-b border-border bg-background-elevated/50 backdrop-blur-md px-4 shadow-sm md:hidden">
         <button
           type="button"
           onClick={() => setSidebarOpen((o) => !o)}
-          className="flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-theme text-[rgb(var(--color-fg))] hover:bg-[rgb(var(--color-bg-hover))] focus:ring-2 focus:ring-[rgb(var(--color-accent))]"
+          className="flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded text-foreground hover:bg-background-hover focus:ring-2 focus:ring-accent"
           aria-label={sidebarOpen ? "Luk menu" : "Åbn menu"}
           aria-expanded={sidebarOpen}
         >
