@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AttributeDefinitionAdminControllerCreateData, AttributeDefinitionAdminControllerCreateErrors, AttributeDefinitionAdminControllerCreateResponses, AttributeDefinitionAdminControllerFindAllData, AttributeDefinitionAdminControllerFindAllResponses, AttributeDefinitionAdminControllerFindByCategoryData, AttributeDefinitionAdminControllerFindByCategoryResponses, AttributeDefinitionAdminControllerGetByIdData, AttributeDefinitionAdminControllerGetByIdErrors, AttributeDefinitionAdminControllerGetByIdResponses, AttributeDefinitionWebControllerFindAllData, AttributeDefinitionWebControllerFindAllResponses, AttributeDefinitionWebControllerFindByCategoryData, AttributeDefinitionWebControllerFindByCategoryResponses, AttributeDefinitionWebControllerGetByIdData, AttributeDefinitionWebControllerGetByIdErrors, AttributeDefinitionWebControllerGetByIdResponses, BeverageAdminControllerCreateData, BeverageAdminControllerCreateErrors, BeverageAdminControllerCreateResponses, BeverageAdminControllerGetAllData, BeverageAdminControllerGetAllResponses, BeverageAdminControllerGetByIdData, BeverageAdminControllerGetByIdErrors, BeverageAdminControllerGetByIdResponses, BeverageCategoryAdminControllerCreateData, BeverageCategoryAdminControllerCreateErrors, BeverageCategoryAdminControllerCreateResponses, BeverageCategoryAdminControllerGetAllData, BeverageCategoryAdminControllerGetAllResponses, BeverageCategoryAdminControllerGetByIdData, BeverageCategoryAdminControllerGetByIdErrors, BeverageCategoryAdminControllerGetByIdResponses, BeverageCategoryWebControllerGetAllData, BeverageCategoryWebControllerGetAllResponses, BeverageCategoryWebControllerGetByIdData, BeverageCategoryWebControllerGetByIdErrors, BeverageCategoryWebControllerGetByIdResponses, BeverageTypeAdminControllerCreateData, BeverageTypeAdminControllerCreateErrors, BeverageTypeAdminControllerCreateResponses, BeverageTypeAdminControllerGetAllData, BeverageTypeAdminControllerGetAllResponses, BeverageTypeAdminControllerGetByIdData, BeverageTypeAdminControllerGetByIdErrors, BeverageTypeAdminControllerGetByIdResponses, BeverageTypeWebControllerGetAllData, BeverageTypeWebControllerGetAllResponses, BeverageTypeWebControllerGetByIdData, BeverageTypeWebControllerGetByIdErrors, BeverageTypeWebControllerGetByIdResponses, BeverageWebControllerGetAllData, BeverageWebControllerGetAllResponses, BeverageWebControllerGetByIdData, BeverageWebControllerGetByIdErrors, BeverageWebControllerGetByIdResponses, BrandAdminControllerCreateData, BrandAdminControllerCreateErrors, BrandAdminControllerCreateResponses, BrandAdminControllerGetAllData, BrandAdminControllerGetAllResponses, BrandAdminControllerGetByIdData, BrandAdminControllerGetByIdErrors, BrandAdminControllerGetByIdResponses, BrandWebControllerGetAllData, BrandWebControllerGetAllResponses, BrandWebControllerGetByIdData, BrandWebControllerGetByIdErrors, BrandWebControllerGetByIdResponses, QuestionAdminControllerCreateData, QuestionAdminControllerCreateErrors, QuestionAdminControllerCreateResponses, QuestionAdminControllerFindAllData, QuestionAdminControllerFindAllResponses, QuestionAdminControllerFindByCategoryData, QuestionAdminControllerFindByCategoryResponses, QuestionAdminControllerFindByTypeData, QuestionAdminControllerFindByTypeResponses, QuestionAdminControllerGetByIdData, QuestionAdminControllerGetByIdErrors, QuestionAdminControllerGetByIdResponses, QuestionAdminControllerRemoveData, QuestionAdminControllerRemoveErrors, QuestionAdminControllerRemoveResponses, QuestionWebControllerFindAllData, QuestionWebControllerFindAllResponses, QuestionWebControllerFindByCategoryData, QuestionWebControllerFindByCategoryResponses, QuestionWebControllerFindByTypeData, QuestionWebControllerFindByTypeResponses, QuestionWebControllerGetByIdData, QuestionWebControllerGetByIdErrors, QuestionWebControllerGetByIdResponses, ReviewAdminControllerCreateData, ReviewAdminControllerCreateErrors, ReviewAdminControllerCreateResponses, ReviewAdminControllerGetAllData, ReviewAdminControllerGetAllResponses, ReviewAdminControllerGetByIdData, ReviewAdminControllerGetByIdErrors, ReviewAdminControllerGetByIdResponses, ReviewWebControllerGetAllData, ReviewWebControllerGetAllResponses, ReviewWebControllerGetByIdData, ReviewWebControllerGetByIdErrors, ReviewWebControllerGetByIdResponses, UploadControllerPresignData, UploadControllerPresignErrors, UploadControllerPresignResponses, UserControllerCreateData, UserControllerCreateErrors, UserControllerCreateResponses, UserControllerGetAllData, UserControllerGetAllResponses } from './types.gen';
+import type { AttributeDefinitionAdminControllerCreateData, AttributeDefinitionAdminControllerCreateErrors, AttributeDefinitionAdminControllerCreateResponses, AttributeDefinitionAdminControllerFindAllData, AttributeDefinitionAdminControllerFindAllResponses, AttributeDefinitionAdminControllerFindByCategoryData, AttributeDefinitionAdminControllerFindByCategoryResponses, AttributeDefinitionAdminControllerFindByTypeData, AttributeDefinitionAdminControllerFindByTypeResponses, AttributeDefinitionAdminControllerGetByIdData, AttributeDefinitionAdminControllerGetByIdErrors, AttributeDefinitionAdminControllerGetByIdResponses, AttributeDefinitionAdminControllerRemoveData, AttributeDefinitionAdminControllerRemoveErrors, AttributeDefinitionAdminControllerRemoveResponses, AttributeDefinitionAdminControllerUpdateData, AttributeDefinitionAdminControllerUpdateErrors, AttributeDefinitionAdminControllerUpdateResponses, AttributeDefinitionWebControllerFindAllData, AttributeDefinitionWebControllerFindAllResponses, AttributeDefinitionWebControllerFindByCategoryData, AttributeDefinitionWebControllerFindByCategoryResponses, AttributeDefinitionWebControllerGetByIdData, AttributeDefinitionWebControllerGetByIdErrors, AttributeDefinitionWebControllerGetByIdResponses, BeverageAdminControllerCreateData, BeverageAdminControllerCreateErrors, BeverageAdminControllerCreateResponses, BeverageAdminControllerGetAllData, BeverageAdminControllerGetAllResponses, BeverageAdminControllerGetByIdData, BeverageAdminControllerGetByIdErrors, BeverageAdminControllerGetByIdResponses, BeverageAdminControllerRemoveData, BeverageAdminControllerRemoveErrors, BeverageAdminControllerRemoveResponses, BeverageAdminControllerUpdateData, BeverageAdminControllerUpdateErrors, BeverageAdminControllerUpdateResponses, BeverageAttributeValueAdminControllerCreateData, BeverageAttributeValueAdminControllerCreateErrors, BeverageAttributeValueAdminControllerCreateResponses, BeverageAttributeValueAdminControllerFindAllForBeverageData, BeverageAttributeValueAdminControllerFindAllForBeverageResponses, BeverageAttributeValueAdminControllerGetByIdData, BeverageAttributeValueAdminControllerGetByIdErrors, BeverageAttributeValueAdminControllerGetByIdResponses, BeverageAttributeValueAdminControllerRemoveData, BeverageAttributeValueAdminControllerRemoveErrors, BeverageAttributeValueAdminControllerRemoveResponses, BeverageAttributeValueAdminControllerUpdateData, BeverageAttributeValueAdminControllerUpdateErrors, BeverageAttributeValueAdminControllerUpdateResponses, BeverageAttributeValueWebControllerFindAllForBeverageData, BeverageAttributeValueWebControllerFindAllForBeverageResponses, BeverageCategoryAdminControllerCreateData, BeverageCategoryAdminControllerCreateErrors, BeverageCategoryAdminControllerCreateResponses, BeverageCategoryAdminControllerGetAllData, BeverageCategoryAdminControllerGetAllResponses, BeverageCategoryAdminControllerGetByIdData, BeverageCategoryAdminControllerGetByIdErrors, BeverageCategoryAdminControllerGetByIdResponses, BeverageCategoryAdminControllerRemoveData, BeverageCategoryAdminControllerRemoveErrors, BeverageCategoryAdminControllerRemoveResponses, BeverageCategoryAdminControllerUpdateData, BeverageCategoryAdminControllerUpdateErrors, BeverageCategoryAdminControllerUpdateResponses, BeverageCategoryWebControllerGetAllData, BeverageCategoryWebControllerGetAllResponses, BeverageCategoryWebControllerGetByIdData, BeverageCategoryWebControllerGetByIdErrors, BeverageCategoryWebControllerGetByIdResponses, BeverageTypeAdminControllerCreateData, BeverageTypeAdminControllerCreateErrors, BeverageTypeAdminControllerCreateResponses, BeverageTypeAdminControllerGetAllData, BeverageTypeAdminControllerGetAllResponses, BeverageTypeAdminControllerGetByIdData, BeverageTypeAdminControllerGetByIdErrors, BeverageTypeAdminControllerGetByIdResponses, BeverageTypeAdminControllerRemoveData, BeverageTypeAdminControllerRemoveErrors, BeverageTypeAdminControllerRemoveResponses, BeverageTypeAdminControllerUpdateData, BeverageTypeAdminControllerUpdateErrors, BeverageTypeAdminControllerUpdateResponses, BeverageTypeWebControllerGetAllData, BeverageTypeWebControllerGetAllResponses, BeverageTypeWebControllerGetByIdData, BeverageTypeWebControllerGetByIdErrors, BeverageTypeWebControllerGetByIdResponses, BeverageWebControllerGetAllData, BeverageWebControllerGetAllResponses, BeverageWebControllerGetByIdData, BeverageWebControllerGetByIdErrors, BeverageWebControllerGetByIdResponses, BrandAdminControllerCreateData, BrandAdminControllerCreateErrors, BrandAdminControllerCreateResponses, BrandAdminControllerGetAllData, BrandAdminControllerGetAllResponses, BrandAdminControllerGetByCategoryData, BrandAdminControllerGetByCategoryResponses, BrandAdminControllerGetByIdData, BrandAdminControllerGetByIdErrors, BrandAdminControllerGetByIdResponses, BrandAdminControllerRemoveData, BrandAdminControllerRemoveErrors, BrandAdminControllerRemoveResponses, BrandAdminControllerUpdateData, BrandAdminControllerUpdateErrors, BrandAdminControllerUpdateResponses, BrandWebControllerGetAllData, BrandWebControllerGetAllResponses, BrandWebControllerGetByIdData, BrandWebControllerGetByIdErrors, BrandWebControllerGetByIdResponses, QuestionAdminControllerCreateData, QuestionAdminControllerCreateErrors, QuestionAdminControllerCreateResponses, QuestionAdminControllerFindAllData, QuestionAdminControllerFindAllResponses, QuestionAdminControllerFindByCategoryData, QuestionAdminControllerFindByCategoryResponses, QuestionAdminControllerFindByTypeData, QuestionAdminControllerFindByTypeResponses, QuestionAdminControllerGetByIdData, QuestionAdminControllerGetByIdErrors, QuestionAdminControllerGetByIdResponses, QuestionAdminControllerRemoveData, QuestionAdminControllerRemoveErrors, QuestionAdminControllerRemoveResponses, QuestionAdminControllerUpdateData, QuestionAdminControllerUpdateErrors, QuestionAdminControllerUpdateResponses, QuestionWebControllerFindAllData, QuestionWebControllerFindAllResponses, QuestionWebControllerFindByCategoryData, QuestionWebControllerFindByCategoryResponses, QuestionWebControllerFindByTypeData, QuestionWebControllerFindByTypeResponses, QuestionWebControllerGetByIdData, QuestionWebControllerGetByIdErrors, QuestionWebControllerGetByIdResponses, ReviewAdminControllerCreateData, ReviewAdminControllerCreateErrors, ReviewAdminControllerCreateResponses, ReviewAdminControllerGetAllData, ReviewAdminControllerGetAllResponses, ReviewAdminControllerGetByIdData, ReviewAdminControllerGetByIdErrors, ReviewAdminControllerGetByIdResponses, ReviewAdminControllerRemoveData, ReviewAdminControllerRemoveErrors, ReviewAdminControllerRemoveResponses, ReviewAdminControllerUpdateData, ReviewAdminControllerUpdateErrors, ReviewAdminControllerUpdateResponses, ReviewWebControllerGetAllData, ReviewWebControllerGetAllResponses, ReviewWebControllerGetByIdData, ReviewWebControllerGetByIdErrors, ReviewWebControllerGetByIdResponses, UploadControllerCleanupEmptyBucketsData, UploadControllerCleanupEmptyBucketsResponses, UploadControllerCleanupExpiredPendingData, UploadControllerCleanupExpiredPendingResponses, UploadControllerGetCronJobsData, UploadControllerGetCronJobsResponses, UploadControllerPresignData, UploadControllerPresignErrors, UploadControllerPresignResponses, UserControllerCreateData, UserControllerCreateErrors, UserControllerCreateResponses, UserControllerGetAllData, UserControllerGetAllResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -61,6 +61,27 @@ export const uploadControllerPresign = <ThrowOnError extends boolean = false>(op
 });
 
 /**
+ * Kør cleanup af udløbne PendingUploads (test)
+ *
+ * Sletter udløbne PendingUpload-rækker fra DB og de tilhørende objekter fra S3. Samme job som cron kører hver 12. time. Returnerer antal slettede.
+ */
+export const uploadControllerCleanupExpiredPending = <ThrowOnError extends boolean = false>(options?: Options<UploadControllerCleanupExpiredPendingData, ThrowOnError>) => (options?.client ?? client).get<UploadControllerCleanupExpiredPendingResponses, unknown, ThrowOnError>({ url: '/api/admin/upload/cleanup-expired-pending', ...options });
+
+/**
+ * Liste over planlagte cron-jobs
+ *
+ * Returnerer oversigt over alle cron-jobs (schedule, beskrivelse). Matcher @Cron-dekoratorerne i UploadService.
+ */
+export const uploadControllerGetCronJobs = <ThrowOnError extends boolean = false>(options?: Options<UploadControllerGetCronJobsData, ThrowOnError>) => (options?.client ?? client).get<UploadControllerGetCronJobsResponses, unknown, ThrowOnError>({ url: '/api/admin/upload/cron-jobs', ...options });
+
+/**
+ * Slet tomme buckets (test)
+ *
+ * Kører sletning af tomme S3/MinIO-buckets med det samme. Returnerer rapport: hvilke buckets der blev slettet, hvilke der springes over (default / har objekter), og evt. fejl.
+ */
+export const uploadControllerCleanupEmptyBuckets = <ThrowOnError extends boolean = false>(options?: Options<UploadControllerCleanupEmptyBucketsData, ThrowOnError>) => (options?.client ?? client).get<UploadControllerCleanupEmptyBucketsResponses, unknown, ThrowOnError>({ url: '/api/admin/upload/cleanup-empty-buckets', ...options });
+
+/**
  * [Admin] Get all beverages
  */
 export const beverageAdminControllerGetAll = <ThrowOnError extends boolean = false>(options?: Options<BeverageAdminControllerGetAllData, ThrowOnError>) => (options?.client ?? client).get<BeverageAdminControllerGetAllResponses, unknown, ThrowOnError>({ url: '/api/admin/beverages', ...options });
@@ -78,9 +99,26 @@ export const beverageAdminControllerCreate = <ThrowOnError extends boolean = fal
 });
 
 /**
+ * [Admin] Delete beverage
+ */
+export const beverageAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<BeverageAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<BeverageAdminControllerRemoveResponses, BeverageAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/beverages/{id}', ...options });
+
+/**
  * [Admin] Get beverage by ID
  */
 export const beverageAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageAdminControllerGetByIdResponses, BeverageAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/beverages/{id}', ...options });
+
+/**
+ * [Admin] Update beverage
+ */
+export const beverageAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<BeverageAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<BeverageAdminControllerUpdateResponses, BeverageAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/beverages/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * [Web] Get all beverages (public)
@@ -110,9 +148,26 @@ export const reviewAdminControllerCreate = <ThrowOnError extends boolean = false
 });
 
 /**
+ * [Admin] Delete review
+ */
+export const reviewAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<ReviewAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<ReviewAdminControllerRemoveResponses, ReviewAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/reviews/{id}', ...options });
+
+/**
  * [Admin] Get review by ID
  */
 export const reviewAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<ReviewAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<ReviewAdminControllerGetByIdResponses, ReviewAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/reviews/{id}', ...options });
+
+/**
+ * [Admin] Update review
+ */
+export const reviewAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<ReviewAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<ReviewAdminControllerUpdateResponses, ReviewAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/reviews/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * [Web] Get all reviews (public)
@@ -142,9 +197,26 @@ export const beverageCategoryAdminControllerCreate = <ThrowOnError extends boole
 });
 
 /**
+ * [Admin] Delete beverage category
+ */
+export const beverageCategoryAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<BeverageCategoryAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<BeverageCategoryAdminControllerRemoveResponses, BeverageCategoryAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/beverage-categories/{id}', ...options });
+
+/**
  * [Admin] Get category by ID
  */
 export const beverageCategoryAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageCategoryAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageCategoryAdminControllerGetByIdResponses, BeverageCategoryAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/beverage-categories/{id}', ...options });
+
+/**
+ * [Admin] Update beverage category
+ */
+export const beverageCategoryAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<BeverageCategoryAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<BeverageCategoryAdminControllerUpdateResponses, BeverageCategoryAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/beverage-categories/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * [Web] Get all beverage categories (public)
@@ -174,9 +246,26 @@ export const beverageTypeAdminControllerCreate = <ThrowOnError extends boolean =
 });
 
 /**
+ * [Admin] Delete beverage type
+ */
+export const beverageTypeAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<BeverageTypeAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<BeverageTypeAdminControllerRemoveResponses, BeverageTypeAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/beverage-types/{id}', ...options });
+
+/**
  * [Admin] Get beverage type by ID
  */
 export const beverageTypeAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageTypeAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageTypeAdminControllerGetByIdResponses, BeverageTypeAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/beverage-types/{id}', ...options });
+
+/**
+ * [Admin] Update beverage type
+ */
+export const beverageTypeAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<BeverageTypeAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<BeverageTypeAdminControllerUpdateResponses, BeverageTypeAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/beverage-types/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * [Web] Get all beverage types (public)
@@ -206,9 +295,31 @@ export const brandAdminControllerCreate = <ThrowOnError extends boolean = false>
 });
 
 /**
+ * [Admin] Get brands allowed in this category
+ */
+export const brandAdminControllerGetByCategory = <ThrowOnError extends boolean = false>(options: Options<BrandAdminControllerGetByCategoryData, ThrowOnError>) => (options.client ?? client).get<BrandAdminControllerGetByCategoryResponses, unknown, ThrowOnError>({ url: '/api/admin/brands/category/{categoryId}', ...options });
+
+/**
+ * [Admin] Delete brand
+ */
+export const brandAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<BrandAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<BrandAdminControllerRemoveResponses, BrandAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/brands/{id}', ...options });
+
+/**
  * [Admin] Get brand by ID
  */
 export const brandAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BrandAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BrandAdminControllerGetByIdResponses, BrandAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/brands/{id}', ...options });
+
+/**
+ * [Admin] Update brand
+ */
+export const brandAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<BrandAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<BrandAdminControllerUpdateResponses, BrandAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/brands/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * [Web] Get all brands (public)
@@ -243,9 +354,31 @@ export const attributeDefinitionAdminControllerCreate = <ThrowOnError extends bo
 export const attributeDefinitionAdminControllerFindByCategory = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerFindByCategoryData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionAdminControllerFindByCategoryResponses, unknown, ThrowOnError>({ url: '/api/admin/attributes/category/{categoryId}', ...options });
 
 /**
+ * [Admin] Get attribute definitions that apply to a beverage type
+ */
+export const attributeDefinitionAdminControllerFindByType = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerFindByTypeData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionAdminControllerFindByTypeResponses, unknown, ThrowOnError>({ url: '/api/admin/attributes/type/{beverageTypeId}', ...options });
+
+/**
+ * [Admin] Delete attribute definition
+ */
+export const attributeDefinitionAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<AttributeDefinitionAdminControllerRemoveResponses, AttributeDefinitionAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/attributes/{id}', ...options });
+
+/**
  * [Admin] Get attribute definition by ID
  */
 export const attributeDefinitionAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionAdminControllerGetByIdResponses, AttributeDefinitionAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/attributes/{id}', ...options });
+
+/**
+ * [Admin] Update attribute definition
+ */
+export const attributeDefinitionAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<AttributeDefinitionAdminControllerUpdateResponses, AttributeDefinitionAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/attributes/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * [Web] Get all attribute definitions (public)
@@ -261,6 +394,50 @@ export const attributeDefinitionWebControllerFindByCategory = <ThrowOnError exte
  * [Web] Get attribute definition by ID (public)
  */
 export const attributeDefinitionWebControllerGetById = <ThrowOnError extends boolean = false>(options: Options<AttributeDefinitionWebControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<AttributeDefinitionWebControllerGetByIdResponses, AttributeDefinitionWebControllerGetByIdErrors, ThrowOnError>({ url: '/api/attributes/{id}', ...options });
+
+/**
+ * [Admin] Create beverage attribute value
+ */
+export const beverageAttributeValueAdminControllerCreate = <ThrowOnError extends boolean = false>(options: Options<BeverageAttributeValueAdminControllerCreateData, ThrowOnError>) => (options.client ?? client).post<BeverageAttributeValueAdminControllerCreateResponses, BeverageAttributeValueAdminControllerCreateErrors, ThrowOnError>({
+    url: '/api/admin/beverage-attributes',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * [Admin] Get attribute values for a beverage
+ */
+export const beverageAttributeValueAdminControllerFindAllForBeverage = <ThrowOnError extends boolean = false>(options: Options<BeverageAttributeValueAdminControllerFindAllForBeverageData, ThrowOnError>) => (options.client ?? client).get<BeverageAttributeValueAdminControllerFindAllForBeverageResponses, unknown, ThrowOnError>({ url: '/api/admin/beverage-attributes/beverage/{beverageId}', ...options });
+
+/**
+ * [Admin] Delete beverage attribute value
+ */
+export const beverageAttributeValueAdminControllerRemove = <ThrowOnError extends boolean = false>(options: Options<BeverageAttributeValueAdminControllerRemoveData, ThrowOnError>) => (options.client ?? client).delete<BeverageAttributeValueAdminControllerRemoveResponses, BeverageAttributeValueAdminControllerRemoveErrors, ThrowOnError>({ url: '/api/admin/beverage-attributes/{id}', ...options });
+
+/**
+ * [Admin] Get attribute value by ID
+ */
+export const beverageAttributeValueAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<BeverageAttributeValueAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<BeverageAttributeValueAdminControllerGetByIdResponses, BeverageAttributeValueAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/beverage-attributes/{id}', ...options });
+
+/**
+ * [Admin] Update beverage attribute value
+ */
+export const beverageAttributeValueAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<BeverageAttributeValueAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<BeverageAttributeValueAdminControllerUpdateResponses, BeverageAttributeValueAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/beverage-attributes/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * [Web] Get attribute values for a beverage (public)
+ */
+export const beverageAttributeValueWebControllerFindAllForBeverage = <ThrowOnError extends boolean = false>(options: Options<BeverageAttributeValueWebControllerFindAllForBeverageData, ThrowOnError>) => (options.client ?? client).get<BeverageAttributeValueWebControllerFindAllForBeverageResponses, unknown, ThrowOnError>({ url: '/api/beverage-attributes/beverage/{beverageId}', ...options });
 
 /**
  * [Admin] Get all questions
@@ -298,6 +475,18 @@ export const questionAdminControllerRemove = <ThrowOnError extends boolean = fal
  * [Admin] Get question by ID
  */
 export const questionAdminControllerGetById = <ThrowOnError extends boolean = false>(options: Options<QuestionAdminControllerGetByIdData, ThrowOnError>) => (options.client ?? client).get<QuestionAdminControllerGetByIdResponses, QuestionAdminControllerGetByIdErrors, ThrowOnError>({ url: '/api/admin/questions/{id}', ...options });
+
+/**
+ * [Admin] Update question
+ */
+export const questionAdminControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<QuestionAdminControllerUpdateData, ThrowOnError>) => (options.client ?? client).patch<QuestionAdminControllerUpdateResponses, QuestionAdminControllerUpdateErrors, ThrowOnError>({
+    url: '/api/admin/questions/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * [Web] Get all questions (public)

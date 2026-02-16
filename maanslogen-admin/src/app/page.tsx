@@ -5,7 +5,7 @@ export default function HomePage() {
   return (
     <div>
       <PageHeading>Velkommen til Maanslogen Admin</PageHeading>
-      <p className="text-heading-muted mb-8">
+      <p className="text-foreground-muted mb-8">
         Her kan du administrere kategorier, typer, drikke, attributedefinitioner og
         se anmeldelser.
       </p>
@@ -21,10 +21,10 @@ export default function HomePage() {
           <Link
             key={href}
             href={href}
-            className="card block p-5 transition-shadow"
+            className="block p-5 transition-shadow border border-border rounded-lg shadow-sm bg-background-elevated"
           >
-            <h2 className="text-heading font-semibold">{label}</h2>
-            <p className="text-heading-muted mt-1 text-sm">{desc}</p>
+            <h2 className="text-foreground font-semibold">{label}</h2>
+            <p className="text-foreground-muted mt-1 text-sm">{desc}</p>
           </Link>
         ))}
       </div>

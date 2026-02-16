@@ -10,7 +10,7 @@ export function SectionHeading({
 } & React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h2
-      className={`text-heading mb-4 text-lg font-medium ${className}`.trim()}
+      className={`text-foreground mb-4 text-lg font-medium ${className}`.trim()}
       {...rest}
     >
       {children}

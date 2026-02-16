@@ -11,10 +11,10 @@ export function DetailItem({
 }) {
   return (
     <div>
-      <dt className="text-heading-muted text-sm font-medium">{label}</dt>
+      <dt className="text-foreground-muted text-sm font-medium">{label}</dt>
       <dd
         className={
-          mono ? "text-heading font-mono text-sm" : "text-heading"
+          mono ? "text-foreground font-mono text-sm" : "text-foreground"
         }
       >
         {children}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllBrands, getAllCategories, brandAdminControllerCreate, type Brand } from "@/lib/api-client";
+import { getAllBrands, getAllCategories, createBrand, deleteBrand, type Brand } from "@/lib/api-client";
 import { getApiError } from "./useApiError";
 
 export function useBrands() {
@@ -43,13 +43,13 @@ export function useBrands() {
     if (!name.trim()) return;
     setSubmitting(true);
     setError(null);
-    const createRes = await brandAdminControllerCreate({
+    const createRes = await createBrand({
       body: {
         name: name.trim(),
         description: description.trim() || undefined,
         active,
         categoryIds: categoryIds.length ? categoryIds : undefined,
-      } as unknown as Parameters<typeof brandAdminControllerCreate>[0]["body"],
+      },
     });
     setSubmitting(false);
     const createErr = getApiError(createRes);
@@ -61,6 +61,18 @@ export function useBrands() {
     setDescription("");
     setCategoryIds([]);
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
+  }
+
+  async function handleDelete(id: string) {
+    setError(null);
+    const res = await deleteBrand({ path: { id } });
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return false;
+    }
+    setList((prev) => prev.filter((b) => b.id !== id));
+    return true;
   }
 
   return {
@@ -78,5 +90,7 @@ export function useBrands() {
     toggleCategoryId,
     submitting,
     handleSubmit,
+    handleDelete,
+    load,
   };
 }

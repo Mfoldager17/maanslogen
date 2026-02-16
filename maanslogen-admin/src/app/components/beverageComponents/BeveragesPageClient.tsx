@@ -9,11 +9,15 @@ import {
   CollapsibleCard,
   Button,
   Input,
+  TextField,
+  SelectField,
   Label,
-  Select,
   Alert,
   AccentLink,
+  LinkButton,
+  FilterBar,
 } from "@/app/components/ui";
+import { IconPencil, IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useBeverages } from "@/lib/hooks";
 
@@ -54,8 +58,14 @@ export function BeveragesPageClient() {
     typesInFilterCategory,
     filteredList,
     handleSubmit,
+    handleDelete,
     beverageBrandName,
   } = useBeverages();
+
+  async function onDelete(id: string, label: string) {
+    if (!confirm(`Slet drikkevare "${label}"? Dette sletter også anmeldelser og attributværdier.`)) return;
+    await handleDelete(id);
+  }
 
   return (
     <div>
@@ -64,78 +74,62 @@ export function BeveragesPageClient() {
       <CollapsibleCard title="Opret ny drikke" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-wrap gap-4">
-          <div>
-            <Label>Kategori</Label>
-            <Select
-              value={createCategoryId}
-              onChange={(e) => setCreateCategoryId(e.target.value)}
-            >
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label>Type</Label>
-            <Select
-              value={beverageTypeId}
-              onChange={(e) => setBeverageTypeId(e.target.value)}
-              disabled={!createCategoryId || typesInCreateCategory.length === 0}
-            >
-              <option value="">
-                {createCategoryId
-                  ? typesInCreateCategory.length === 0
-                    ? "Ingen typer i kategorien"
-                    : "Vælg type"
-                  : "Vælg kategori først"}
-              </option>
-              {typesInCreateCategory.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label>Mærke</Label>
-            <Select
-              value={brandId}
-              onChange={(e) => setBrandId(e.target.value)}
-              disabled={!createCategoryId}
-            >
-              <option value="">
-                {createCategoryId
-                  ? brandsInCreateCategory.length === 0
-                    ? "Ingen mærker tilladt i denne kategori"
-                    : "Vælg mærke"
-                  : "Vælg kategori først"}
-              </option>
-              {brandsInCreateCategory.map((br) => (
-                <option key={br.id} value={br.id}>{br.name}</option>
-              ))}
-            </Select>
-            {showBrandsFilteredHint && (
-              <p className="text-heading-muted mt-1 text-xs">
-                Viser kun mærker tilladt i denne kategori
-              </p>
-            )}
-          </div>
-          <div>
-            <Label>Navn</Label>
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="fx Pilsner"
-            />
-          </div>
-          <div>
-            <Label>Land</Label>
-            <Input
-              type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              placeholder="fx DK"
-            />
-          </div>
+          <SelectField
+            label="Kategori"
+            value={createCategoryId}
+            onChange={(e) => setCreateCategoryId(e.target.value)}
+          >
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </SelectField>
+          <SelectField
+            label="Type"
+            value={beverageTypeId}
+            onChange={(e) => setBeverageTypeId(e.target.value)}
+            disabled={!createCategoryId || typesInCreateCategory.length === 0}
+          >
+            <option value="">
+              {createCategoryId
+                ? typesInCreateCategory.length === 0
+                  ? "Ingen typer i kategorien"
+                  : "Vælg type"
+                : "Vælg kategori først"}
+            </option>
+            {typesInCreateCategory.map((t) => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </SelectField>
+          <SelectField
+            label="Mærke"
+            value={brandId}
+            onChange={(e) => setBrandId(e.target.value)}
+            disabled={!createCategoryId}
+            helperText={showBrandsFilteredHint ? "Viser kun mærker tilladt i denne kategori" : undefined}
+          >
+            <option value="">
+              {createCategoryId
+                ? brandsInCreateCategory.length === 0
+                  ? "Ingen mærker tilladt i denne kategori"
+                  : "Vælg mærke"
+                : "Vælg kategori først"}
+            </option>
+            {brandsInCreateCategory.map((br) => (
+              <option key={br.id} value={br.id}>{br.name}</option>
+            ))}
+          </SelectField>
+          <TextField
+            label="Navn"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="fx Pilsner"
+          />
+          <TextField
+            label="Land"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            placeholder="fx DK"
+          />
           {attributeDefinitions.map((def) => (
             <div key={def.id}>
               {def.dataType === "boolean" ? (
@@ -145,7 +139,7 @@ export function BeveragesPageClient() {
                     id={`attr-${def.id}`}
                     checked={(attributeValues[def.id] as boolean | undefined) ?? false}
                     onChange={(e) => setAttributeValue(def.id, e.target.checked)}
-                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                    className="h-4 w-4 rounded border border-border"
                   />
                   <Label htmlFor={`attr-${def.id}`} className="mb-0!">
                     {def.displayName}
@@ -153,26 +147,26 @@ export function BeveragesPageClient() {
                   </Label>
                 </div>
               ) : (
-                <>
-                  <Label htmlFor={`attr-${def.id}`}>
-                    {def.displayName}
-                    {def.required && <span className="text-red-500"> *</span>}
-                  </Label>
-                  <Input
-                    id={`attr-${def.id}`}
-                    type={def.dataType === "number" ? "number" : "text"}
-                    value={String((attributeValues[def.id] as string | number | undefined) ?? "")}
-                    onChange={(e) => {
-                      if (def.dataType === "number") {
-                        const v = e.target.value;
-                        setAttributeValue(def.id, v === "" ? undefined : Number(v));
-                      } else {
-                        setAttributeValue(def.id, e.target.value);
-                      }
-                    }}
-                    placeholder={def.required ? "Påkrævet" : "Valgfrit"}
-                  />
-                </>
+                <TextField
+                  label={
+                    <>
+                      {def.displayName}
+                      {def.required && <span className="text-red-500"> *</span>}
+                    </>
+                  }
+                  id={`attr-${def.id}`}
+                  type={def.dataType === "number" ? "number" : "text"}
+                  value={String((attributeValues[def.id] as string | number | undefined) ?? "")}
+                  onChange={(e) => {
+                    if (def.dataType === "number") {
+                      const v = e.target.value;
+                      setAttributeValue(def.id, v === "" ? undefined : Number(v));
+                    } else {
+                      setAttributeValue(def.id, e.target.value);
+                    }
+                  }}
+                  placeholder={def.required ? "Påkrævet" : "Valgfrit"}
+                />
               )}
             </div>
           ))}
@@ -186,13 +180,13 @@ export function BeveragesPageClient() {
               className="text-sm"
             />
             {imageFile && (
-              <span className="text-heading-muted ml-2 text-xs">{imageFile.name}</span>
+              <span className="text-foreground-muted ml-2 text-xs">{imageFile.name}</span>
             )}
-            <p className="text-heading-muted mt-1 text-xs">
+            <p className="text-foreground-muted mt-1 text-xs">
               Ét billede – skaleres automatisk til thumbnail (200×200) og stor version (800×800). JPEG, PNG, WebP eller GIF.
             </p>
           </div>
-          <div className="flex items-end">
+          <div className="flex items-center">
             <Button
               type="submit"
               disabled={submitting || !brandId || !name.trim() || !beverageTypeId}
@@ -206,43 +200,41 @@ export function BeveragesPageClient() {
 
       {error && <Alert className="mb-4">{error}</Alert>}
 
-      <section className="mb-6">
-        <SectionHeading className="mb-3">Filtre</SectionHeading>
-        <div className="flex flex-wrap items-end gap-4">
-          <div>
-            <Label>Kategori</Label>
-            <Select
-              value={filterCategoryId}
-              onChange={(e) => {
-                setFilterCategoryId(e.target.value);
-                setFilterTypeId("");
-              }}
-              className="text-sm"
-            >
-              <option value="">Alle kategorier</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label>Type</Label>
-            <Select
-              value={filterTypeId}
-              onChange={(e) => setFilterTypeId(e.target.value)}
-              className="text-sm"
-            >
-              <option value="">Alle typer</option>
-              {typesInFilterCategory.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                  {categoryMap[t.categoryId ?? ""] ? ` (${categoryMap[t.categoryId ?? ""]})` : ""}
-                </option>
-              ))}
-            </Select>
-          </div>
-        </div>
-      </section>
+      <FilterBar
+        className="mb-6"
+        hasActiveFilters={!!filterCategoryId || !!filterTypeId}
+        onClear={() => {
+          setFilterCategoryId("");
+          setFilterTypeId("");
+        }}
+      >
+        <FilterBar.Field
+          label="Kategori"
+          value={filterCategoryId}
+          onChange={(e) => {
+            setFilterCategoryId(e.target.value);
+            setFilterTypeId("");
+          }}
+        >
+          <option value="">Alle kategorier</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </FilterBar.Field>
+        <FilterBar.Field
+          label="Type"
+          value={filterTypeId}
+          onChange={(e) => setFilterTypeId(e.target.value)}
+        >
+          <option value="">Alle typer</option>
+          {typesInFilterCategory.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+              {categoryMap[t.categoryId ?? ""] ? ` (${categoryMap[t.categoryId ?? ""]})` : ""}
+            </option>
+          ))}
+        </FilterBar.Field>
+      </FilterBar>
 
       <section>
         <SectionHeading>Eksisterende drikke</SectionHeading>
@@ -254,7 +246,7 @@ export function BeveragesPageClient() {
           </EmptyState>
         ) : (
           <>
-            <p className="text-heading-muted mb-2 text-sm">
+            <p className="text-foreground-muted mb-2 text-sm">
               Viser {filteredList.length} drikke{filteredList.length !== 1 ? "varer" : "vare"}
             </p>
             <CardList>
@@ -264,17 +256,36 @@ export function BeveragesPageClient() {
                     <AccentLink href={`/beverages/${encodeURIComponent(b.id ?? "")}`}>
                       {beverageBrandName(b)} – {b.name}
                     </AccentLink>
-                    <span className="text-heading-muted ml-2 text-sm">
+                    <span className="text-foreground-muted ml-2 text-sm">
                       {b.beverageTypeId ? (typeMap[b.beverageTypeId] ?? b.beverageTypeId) : ""}
                     </span>
                     {b.country && (
-                      <span className="text-heading-muted ml-2 text-sm">({b.country})</span>
+                      <span className="text-foreground-muted ml-2 text-sm">({b.country})</span>
                     )}
                   </div>
-                  <span className="text-heading-muted text-xs">
-                    {b.averageRating != null ? `★ ${b.averageRating.toFixed(1)}` : ""}{" "}
-                    {b.reviewCount != null ? `(${b.reviewCount})` : ""}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-foreground-muted text-xs">
+                      {b.averageRating != null ? `★ ${b.averageRating.toFixed(1)}` : ""}{" "}
+                      {b.reviewCount != null ? `(${b.reviewCount})` : ""}
+                    </span>
+                    <LinkButton
+                      href={`/beverages/${encodeURIComponent(b.id ?? "")}/edit`}
+                      variant="secondary"
+                      iconOnly
+                      aria-label="Rediger"
+                    >
+                      <IconPencil className="h-5 w-5" />
+                    </LinkButton>
+                    <Button
+                      type="button"
+                      variant="danger"
+                      iconOnly
+                      aria-label="Slet"
+                      onClick={() => onDelete(b.id ?? "", `${beverageBrandName(b)} – ${b.name ?? ""}`)}
+                    >
+                      <IconTrash className="h-5 w-5" />
+                    </Button>
+                  </div>
                 </CardListItem>
               ))}
             </CardList>

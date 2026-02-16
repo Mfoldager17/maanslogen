@@ -9,7 +9,7 @@ export function EmptyState({
   className?: string;
 } & React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={`text-heading-muted ${className}`.trim()} {...rest}>
+    <p className={`text-foreground-muted ${className}`.trim()} {...rest}>
       {children}
     </p>
   );

@@ -20,16 +20,23 @@ export function CollapsibleCard({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className={`card overflow-hidden ${className}`.trim()}>
+    <div
+      className={[
+        "overflow-hidden border border-border rounded-lg shadow-sm bg-background-elevated",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="rounded-theme flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:opacity-90 focus:outline-none focus:ring-0"
+        className="rounded flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:opacity-90 focus:outline-none focus:ring-0"
         aria-expanded={open}
       >
         <span className="font-medium">{title}</span>
         <svg
-          className="h-5 w-5 shrink-0 text-[rgb(var(--color-fg-muted))] transition-transform duration-200 ease-out"
+          className="h-5 w-5 shrink-0 text-foreground-muted transition-transform duration-200 ease-out"
           style={{ transform: open ? "rotate(180deg)" : undefined }}
           fill="none"
           viewBox="0 0 24 24"
@@ -49,7 +56,7 @@ export function CollapsibleCard({
         }}
       >
         <div className="min-h-0 overflow-hidden">
-          <div className="border-t border-[rgb(var(--color-border))] p-6 pt-4">{children}</div>
+          <div className="border-t border-border p-6 pt-4">{children}</div>
         </div>
       </div>
     </div>

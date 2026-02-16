@@ -15,7 +15,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
-import { ImageType } from '../../common/dto/create-image.dto';
+import { ImageType } from '../image/dto/create-image.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 export interface PresignSlot {
@@ -261,9 +261,35 @@ export class UploadService {
   }
 
   /**
-   * Deletes from S3 and DB any PendingUpload that has expired (presigned URL was never claimed).
+   * Registrerer billed-URL'er i PendingUpload så cleanup-jobbet sletter dem fra S3 når expiresAt er passeret.
+   * Bruges fx når en beverage slettes – billederne ryddes op i bucketen uden at blive slettet med det samme.
    */
-  async cleanupExpiredPendingUploads(): Promise<void> {
+  async registerImagesForPendingCleanup(
+    urls: string[],
+    expiresInDays = 7,
+  ): Promise<void> {
+    if (urls.length === 0) return;
+    const pairs = urls
+      .map((url) => this.urlToBucketAndKey(url))
+      .filter((p): p is { bucket: string; key: string } => p !== null);
+    if (pairs.length === 0) return;
+    const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+    for (const { bucket, key } of pairs) {
+      await this.prisma.pendingUpload.upsert({
+        where: {
+          bucket_key: { bucket, key },
+        },
+        create: { bucket, key, expiresAt },
+        update: { expiresAt },
+      });
+    }
+  }
+
+  /**
+   * Deletes from S3 and DB any PendingUpload that has expired (presigned URL was never claimed).
+   * Returnerer antal slettede rækker (til test/manuel kørsel).
+   */
+  async cleanupExpiredPendingUploads(): Promise<{ deleted: number }> {
     const expired = await this.prisma.pendingUpload.findMany({
       where: { expiresAt: { lt: new Date() } },
     });
@@ -277,6 +303,7 @@ export class UploadService {
       }
       await this.prisma.pendingUpload.delete({ where: { id: row.id } });
     }
+    return { deleted: expired.length };
   }
 
   @Cron('0 */12 * * *') // Hver 12. time (fx 00:00 og 12:00)

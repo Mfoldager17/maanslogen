@@ -1,7 +1,15 @@
 import type { ReactNode } from "react";
 
 const cardClass = (padding: boolean, className: string) =>
-  `card ${padding ? "p-6" : ""} ${className}`.trim();
+  [
+    "border border-border rounded-lg shadow-sm",
+    "bg-background-elevated",
+    padding ? "p-6" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
 
 type CardProps = {
   children: ReactNode;

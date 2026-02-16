@@ -10,7 +10,7 @@ export function PageHeading({
 } & React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h1
-      className={`text-heading mb-6 text-2xl font-semibold ${className}`.trim()}
+      className={`text-foreground mb-6 text-2xl font-semibold ${className}`.trim()}
       {...rest}
     >
       {children}

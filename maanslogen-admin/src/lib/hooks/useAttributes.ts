@@ -6,6 +6,8 @@ import {
   getAllCategories,
   getAllTypes,
   createAttribute,
+  updateAttribute,
+  deleteAttribute,
   type AttributeDefinition,
   type BeverageCategory,
   type BeverageType,
@@ -95,6 +97,46 @@ export function useAttributes() {
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
   }
 
+  async function handleDelete(id: string) {
+    setError(null);
+    const res = await deleteAttribute({ path: { id } });
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return false;
+    }
+    setList((prev) => prev.filter((a) => a.id !== id));
+    return true;
+  }
+
+  async function handleUpdate(
+    id: string,
+    body: {
+      categoryIds?: string[];
+      typeIds?: string[];
+      attributeKey?: string;
+      displayName?: string;
+      dataType?: "string" | "number" | "boolean";
+      filterable?: boolean;
+      required?: boolean;
+    },
+  ) {
+    setSubmitting(true);
+    setError(null);
+    const res = await updateAttribute({ path: { id }, body: body as Parameters<typeof updateAttribute>[0]["body"] });
+    setSubmitting(false);
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return null;
+    }
+    if (res.data) {
+      setList((prev) => prev.map((a) => (a.id === id ? (res.data as AttributeDefinition) : a)));
+      return res.data as AttributeDefinition;
+    }
+    return null;
+  }
+
   const categoryMap = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c.name])), [categories]);
   const typeMap = useMemo(() => Object.fromEntries(types.map((t) => [t.id, t.name])), [types]);
   const typesInSelectedCategories = categoryIds.length
@@ -125,6 +167,9 @@ export function useAttributes() {
     setRequired,
     submitting,
     handleSubmit,
+    handleDelete,
+    handleUpdate,
+    load,
     categoryMap,
     typeMap,
     typesInSelectedCategories,

@@ -3,7 +3,7 @@ import { QuestionsPageClient } from "@/app/components/questionComponents";
 
 export default function QuestionsPage() {
   return (
-    <Suspense fallback={<div className="text-heading-muted">Henter…</div>}>
+    <Suspense fallback={<div className="text-foreground-muted">Henter…</div>}>
       <QuestionsPageClient />
     </Suspense>
   );

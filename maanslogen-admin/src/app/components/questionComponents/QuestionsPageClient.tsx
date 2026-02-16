@@ -8,12 +8,14 @@ import {
   CardListItem,
   CollapsibleCard,
   Button,
-  Input,
+  TextField,
+  SelectField,
   Label,
-  Select,
   Alert,
   AccentLink,
+  LinkButton,
 } from "@/app/components/ui";
+import { IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useQuestions, ANSWER_TYPES } from "@/lib/hooks";
 
@@ -49,7 +51,7 @@ export function QuestionsPageClient() {
   return (
     <div>
       <PageHeading>Spørgsmål (til anmeldelser)</PageHeading>
-      <p className="text-heading-muted mb-6 text-sm">
+      <p className="text-foreground-muted mb-6 text-sm">
         Spørgsmål kan knyttes til en kategori (gælder alle typer) eller til en bestemt type. Du kan også tilføje spørgsmål direkte fra{" "}
         <AccentLink href="/categories" small>Kategorier</AccentLink> eller{" "}
         <AccentLink href="/types" small>Typer</AccentLink> via &quot;Tilføj spørgsmål&quot;.
@@ -58,65 +60,62 @@ export function QuestionsPageClient() {
       <CollapsibleCard title="Tilføj spørgsmål" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-wrap gap-4">
-          <div>
-            <Label>Kategori</Label>
-            <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label>Type (valgfri)</Label>
-            <Select value={typeId} onChange={(e) => setTypeId(e.target.value)}>
-              <option value="">Alle typer i kategorien</option>
-              {types.filter((t) => t.categoryId === categoryId).map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </Select>
-          </div>
-          <div className="min-w-60 flex-1">
-            <Label>Spørgsmålstekst</Label>
-            <Input
-              type="text"
-              value={questionText}
-              onChange={(e) => setQuestionText(e.target.value)}
-              placeholder="fx Hvordan er aromaen?"
-            />
-          </div>
-          <div>
-            <Label>Svar-type</Label>
-            <Select
-              value={answerType}
-              onChange={(e) => setAnswerType(e.target.value as (typeof ANSWER_TYPES)[number])}
-            >
-              {ANSWER_TYPES.map((a) => (
-                <option key={a} value={a}>{a}</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label>Rækkefølge</Label>
-            <Input
-              type="number"
-              min={0}
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="w-20"
-              placeholder="0"
-            />
-          </div>
+          <SelectField
+            label="Kategori"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+          >
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </SelectField>
+          <SelectField
+            label="Type (valgfri)"
+            value={typeId}
+            onChange={(e) => setTypeId(e.target.value)}
+          >
+            <option value="">Alle typer i kategorien</option>
+            {types.filter((t) => t.categoryId === categoryId).map((t) => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </SelectField>
+          <TextField
+            label="Spørgsmålstekst"
+            className="min-w-60 flex-1"
+            value={questionText}
+            onChange={(e) => setQuestionText(e.target.value)}
+            placeholder="fx Hvordan er aromaen?"
+          />
+          <SelectField
+            label="Svar-type"
+            id="answer-type"
+            value={answerType}
+            onChange={(e) => setAnswerType(e.target.value as (typeof ANSWER_TYPES)[number])}
+          >
+            {ANSWER_TYPES.map((a) => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </SelectField>
+          <TextField
+            label="Rækkefølge"
+            type="number"
+            min={0}
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="w-20"
+            placeholder="0"
+          />
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="required"
               checked={required}
               onChange={(e) => setRequired(e.target.checked)}
-              className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+              className="rounded border-border text-accent focus:ring-accent"
             />
             <Label htmlFor="required" className="mb-0 text-sm">Påkrævet</Label>
           </div>
-          <div className="flex w-full items-end sm:w-auto">
+          <div className="flex w-full items-center sm:w-auto">
             <Button
               type="submit"
               disabled={submitting || !categoryId || !questionText.trim()}
@@ -133,26 +132,36 @@ export function QuestionsPageClient() {
       <section className="mb-6">
         <div className="mb-4 flex flex-wrap items-center gap-4">
           <SectionHeading className="mb-0">Filtre</SectionHeading>
-          <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="text-sm">
+          <SelectField
+            label="Kategori"
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            selectClassName="text-sm"
+          >
             <option value="">Alle kategorier</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
-          </Select>
-          <Select value={typeId} onChange={(e) => setTypeId(e.target.value)} className="text-sm">
+          </SelectField>
+          <SelectField
+            label="Type"
+            value={typeId}
+            onChange={(e) => setTypeId(e.target.value)}
+            selectClassName="text-sm"
+          >
             <option value="">Alle typer</option>
             {types.filter((t) => !categoryId || t.categoryId === categoryId).map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
-          </Select>
+          </SelectField>
           <label className="flex cursor-pointer items-center gap-2">
             <input
               type="checkbox"
               checked={onlyCategoryWide}
               onChange={(e) => setOnlyCategoryWide(e.target.checked)}
-              className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+              className="rounded border-border text-accent focus:ring-accent"
             />
-            <span className="text-heading-muted text-sm">Kun hele kategorien</span>
+            <span className="text-foreground-muted text-sm">Kun hele kategorien</span>
           </label>
         </div>
       </section>
@@ -173,26 +182,28 @@ export function QuestionsPageClient() {
                   <AccentLink href={`/questions/${encodeURIComponent(q.id ?? "")}`}>
                     {q.questionText}
                   </AccentLink>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     ({q.answerType}{q.required ? ", påkrævet" : ""})
                   </span>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     {q.categoryId ? (categoryMap[q.categoryId] ?? q.categoryId) : ""}
                     {typeof q.typeId === "string" ? ` / ${typeMap[q.typeId] ?? q.typeId}` : " (hele kategorien)"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-heading-muted text-xs">
+                <div className="flex items-center gap-3">
+                  <span className="text-foreground-muted text-xs">
                     {typeof q.sortOrder === "number" ? `#${q.sortOrder}` : ""}
                   </span>
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="danger"
+                    iconOnly
+                    aria-label="Slet"
                     onClick={() => q.id && handleDelete(q.id)}
                     disabled={deletingId === q.id}
-                    className="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-950/50"
+                    className="disabled:opacity-50"
                   >
-                    {deletingId === q.id ? "Sletter…" : "Slet"}
+                    <IconTrash className="h-5 w-5" />
                   </Button>
                 </div>
               </CardListItem>

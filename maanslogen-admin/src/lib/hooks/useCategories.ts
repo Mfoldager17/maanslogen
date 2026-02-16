@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllCategories, createCategory, type BeverageCategory } from "@/lib/api-client";
+import { getAllCategories, createCategory, updateCategory, deleteCategory, type BeverageCategory } from "@/lib/api-client";
 import { getApiError } from "./useApiError";
 
 export function useCategories() {
@@ -10,6 +10,7 @@ export function useCategories() {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [icon, setIcon] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   async function load() {
@@ -36,7 +37,11 @@ export function useCategories() {
     setSubmitting(true);
     setError(null);
     const createRes = await createCategory({
-      body: { name: name.trim(), description: description.trim() || "" },
+      body: {
+        name: name.trim(),
+        description: description.trim() || "",
+        icon: icon.trim() || undefined,
+      },
     });
     setSubmitting(false);
     const createErr = getApiError(createRes);
@@ -46,7 +51,37 @@ export function useCategories() {
     }
     setName("");
     setDescription("");
+    setIcon("");
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
+  }
+
+  async function handleDelete(id: string) {
+    setError(null);
+    const res = await deleteCategory({ path: { id } });
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return false;
+    }
+    setList((prev) => prev.filter((c) => c.id !== id));
+    return true;
+  }
+
+  async function handleUpdate(id: string, body: { name?: string; description?: string }) {
+    setSubmitting(true);
+    setError(null);
+    const res = await updateCategory({ path: { id }, body });
+    setSubmitting(false);
+    const err = getApiError(res);
+    if (err) {
+      setError(err);
+      return null;
+    }
+    if (res.data) {
+      setList((prev) => prev.map((c) => (c.id === id ? (res.data as BeverageCategory) : c)));
+      return res.data as BeverageCategory;
+    }
+    return null;
   }
 
   return {
@@ -57,7 +92,12 @@ export function useCategories() {
     setName,
     description,
     setDescription,
+    icon,
+    setIcon,
     submitting,
     handleSubmit,
+    handleDelete,
+    handleUpdate,
+    load,
   };
 }

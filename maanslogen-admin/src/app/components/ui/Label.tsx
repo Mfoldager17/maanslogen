@@ -13,7 +13,7 @@ export function Label({
   return (
     <label
       htmlFor={htmlFor}
-      className={`text-heading-muted mb-1 block text-sm font-medium ${className}`.trim()}
+      className={`text-foreground-muted mb-1 block text-sm font-medium ${className}`.trim()}
       {...rest}
     >
       {children}

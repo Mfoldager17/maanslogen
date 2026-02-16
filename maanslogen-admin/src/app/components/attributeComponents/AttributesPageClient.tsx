@@ -8,12 +8,14 @@ import {
   CardListItem,
   CollapsibleCard,
   Button,
-  Input,
+  TextField,
+  SelectField,
   Label,
-  Select,
   Alert,
   AccentLink,
+  LinkButton,
 } from "@/app/components/ui";
+import { IconPencil, IconTrash } from "@/app/components/layout";
 import { EmptyState, LoadingState } from "@/app/components/data";
 import { useAttributes } from "@/lib/hooks";
 
@@ -40,10 +42,16 @@ export function AttributesPageClient() {
     setRequired,
     submitting,
     handleSubmit,
+    handleDelete,
     categoryMap,
     typeMap,
     typesInSelectedCategories,
   } = useAttributes();
+
+  async function onDelete(id: string, displayName: string) {
+    if (!confirm(`Slet attributedefinition "${displayName}"? Dette sletter også alle tilknyttede attributværdier.`)) return;
+    await handleDelete(id);
+  }
 
   const categoryLabels = (a: { categoryIds?: string[]; categoryId?: string }) =>
     (a.categoryIds ?? (a.categoryId ? [a.categoryId] : []))
@@ -70,7 +78,7 @@ export function AttributesPageClient() {
                     type="checkbox"
                     checked={categoryIds.includes(c.id)}
                     onChange={() => toggleCategoryId(c.id)}
-                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                    className="h-4 w-4 rounded border border-border"
                   />
                   <span className="text-sm">{c.name}</span>
                 </label>
@@ -86,63 +94,55 @@ export function AttributesPageClient() {
                     type="checkbox"
                     checked={typeIds.includes(t.id)}
                     onChange={() => toggleTypeId(t.id)}
-                    className="input-theme h-4 w-4 rounded border-[rgb(var(--color-border))]"
+                    className="h-4 w-4 rounded border border-border"
                   />
                   <span className="text-sm">{t.name}</span>
                 </label>
               ))}
             </div>
           </div>
-          <div>
-            <Label>Attribut-nøgle</Label>
-            <Input
-              type="text"
-              value={attributeKey}
-              onChange={(e) => setAttributeKey(e.target.value)}
-              placeholder="fx abv"
-            />
-          </div>
-          <div>
-            <Label>Visningsnavn</Label>
-            <Input
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="fx Alkohol %"
-            />
-          </div>
-          <div>
-            <Label>Datatype</Label>
-            <Select
-              value={dataType}
-              onChange={(e) => setDataType(e.target.value as "string" | "number" | "boolean")}
-            >
-              <option value="string">string</option>
-              <option value="number">number</option>
-              <option value="boolean">boolean</option>
-            </Select>
-          </div>
+          <TextField
+            label="Attribut-nøgle"
+            value={attributeKey}
+            onChange={(e) => setAttributeKey(e.target.value)}
+            placeholder="fx abv"
+          />
+          <TextField
+            label="Visningsnavn"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="fx Alkohol %"
+          />
+          <SelectField
+            label="Datatype"
+            value={dataType}
+            onChange={(e) => setDataType(e.target.value as "string" | "number" | "boolean")}
+          >
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="boolean">boolean</option>
+          </SelectField>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={filterable}
                 onChange={(e) => setFilterable(e.target.checked)}
-                className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+                className="rounded border-border text-accent focus:ring-accent"
               />
-              <span className="text-heading-muted text-sm">Filterbar</span>
+              <span className="text-foreground-muted text-sm">Filterbar</span>
             </label>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={required}
                 onChange={(e) => setRequired(e.target.checked)}
-                className="rounded border-[rgb(var(--color-border))] text-[rgb(var(--color-accent))] focus:ring-[rgb(var(--color-accent))]"
+                className="rounded border-border text-accent focus:ring-accent"
               />
-              <span className="text-heading-muted text-sm">Påkrævet</span>
+              <span className="text-foreground-muted text-sm">Påkrævet</span>
             </label>
           </div>
-          <div className="flex w-full items-end sm:w-auto">
+          <div className="flex w-full items-center sm:w-auto">
             <Button
               type="submit"
               disabled={submitting || categoryIds.length === 0 || !attributeKey.trim() || !displayName.trim()}
@@ -170,17 +170,28 @@ export function AttributesPageClient() {
                   <AccentLink href={`/attributes/${encodeURIComponent(a.id ?? "")}`}>
                     {a.displayName}
                   </AccentLink>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     ({a.attributeKey}, {a.dataType})
                   </span>
-                  <span className="text-heading-muted ml-2 text-sm">
+                  <span className="text-foreground-muted ml-2 text-sm">
                     {categoryLabels(a)}
                     {typeLabels(a) ? ` / ${typeLabels(a)}` : ""}
                   </span>
                 </div>
-                <span className="text-heading-muted text-xs">
-                  {a.filterable ? "Filterbar" : ""} {a.required ? "Påkrævet" : ""}
-                </span>
+                <div className="flex items-center gap-3">
+                  <LinkButton href={`/attributes/${encodeURIComponent(a.id ?? "")}/edit`} variant="secondary" iconOnly aria-label="Rediger">
+                    <IconPencil className="h-5 w-5" />
+                  </LinkButton>
+                  <Button
+                    type="button"
+                    variant="danger"
+                    iconOnly
+                    aria-label="Slet"
+                    onClick={() => onDelete(a.id ?? "", a.displayName ?? a.attributeKey ?? "")}
+                  >
+                    <IconTrash className="h-5 w-5" />
+                  </Button>
+                </div>
               </CardListItem>
             ))}
           </CardList>

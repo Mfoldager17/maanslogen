@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
+import { CreateQuestionDto } from './admin/dto/create-question.dto';
+import { UpdateQuestionDto } from './admin/dto/update-question.dto';
 
 @Injectable()
 export class QuestionService {
@@ -58,6 +59,16 @@ export class QuestionService {
     });
     if (!question) throw new NotFoundException('Question not found');
     return question;
+  }
+
+  async update(id: string, dto: UpdateQuestionDto) {
+    await this.getById(id);
+    const data: { questionText?: string; answerType?: string; options?: object; sortOrder?: number; required?: boolean; categoryId?: string; typeId?: string | null } = { ...dto };
+    if (dto.typeId === '') (data as { typeId: null }).typeId = null;
+    return this.prisma.question.update({
+      where: { id },
+      data,
+    });
   }
 
   findAll() {

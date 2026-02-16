@@ -81,6 +81,78 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
     return { uploads };
   }
 
+  @Get('cleanup-expired-pending')
+  @ApiOperation({
+    summary: 'Kør cleanup af udløbne PendingUploads (test)',
+    description:
+      'Sletter udløbne PendingUpload-rækker fra DB og de tilhørende objekter fra S3. Samme job som cron kører hver 12. time. Returnerer antal slettede.',
+  })
+  @ApiResponse({ status: 200, description: 'Cleanup kørt', schema: { type: 'object', properties: { ok: { type: 'boolean' }, deleted: { type: 'number' } } } })
+  async cleanupExpiredPending() {
+    const result = await this.uploadService.cleanupExpiredPendingUploads();
+    return { ok: true, deleted: result.deleted };
+  }
+
+  @Get('cron-jobs')
+  @ApiOperation({
+    summary: 'Liste over planlagte cron-jobs',
+    description:
+      'Returnerer oversigt over alle cron-jobs (schedule, beskrivelse). Matcher @Cron-dekoratorerne i UploadService.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Liste over cron-jobs',
+    schema: {
+      type: 'object',
+      properties: {
+        jobs: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              name: { type: 'string' },
+              schedule: { type: 'string', description: 'Cron-udtryk (min time dag måned ugedag)' },
+              description: { type: 'string' },
+              enabled: { type: 'boolean', description: 'Om jobbet kører (evt. betinget af env)' },
+            },
+          },
+        },
+      },
+    },
+  })
+  getCronJobs() {
+    const testEmptyBucketsEnabled = process.env.CRON_EMPTY_BUCKETS_EVERY_2MIN === 'true';
+    return {
+      jobs: [
+        {
+          id: 'cleanup-expired-pending',
+          name: 'Cleanup udløbne PendingUploads',
+          schedule: '0 */12 * * *',
+          scheduleHuman: 'Hver 12. time (00:00, 12:00)',
+          description: 'Sletter udløbne PendingUpload-rækker og tilhørende objekter i S3.',
+          enabled: true,
+        },
+        {
+          id: 'weekly-empty-buckets',
+          name: 'Slet tomme buckets',
+          schedule: '0 3 * * 0',
+          scheduleHuman: 'Hver søndag kl. 03:00',
+          description: 'Sletter tomme S3-buckets (undtagen maanslogen-dev).',
+          enabled: true,
+        },
+        {
+          id: 'test-empty-buckets-2min',
+          name: 'Slet tomme buckets (test)',
+          schedule: '*/2 * * * *',
+          scheduleHuman: 'Hver 2. minut',
+          description: 'Kun aktiv når CRON_EMPTY_BUCKETS_EVERY_2MIN=true. Til test.',
+          enabled: testEmptyBucketsEnabled,
+        },
+      ],
+    };
+  }
+
   @Get('cleanup-empty-buckets')
   @ApiOperation({
     summary: 'Slet tomme buckets (test)',
