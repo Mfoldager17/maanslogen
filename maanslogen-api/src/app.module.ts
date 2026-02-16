@@ -11,6 +11,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { AttributeDefinitionModule } from './modules/attribute/attribute-definition.module';
 import { QuestionModule } from './modules/question/question.module';
 import { BeverageAttributeValueModule } from './modules/beverage-attribute/beverage-attribute-value.module';
+import { ArrangementModule } from './modules/arrangement/arrangement.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { BeverageAttributeValueModule } from './modules/beverage-attribute/bever
     AttributeDefinitionModule,
     BeverageAttributeValueModule,
     QuestionModule,
+    ArrangementModule,
   ],
   controllers: [],
   providers: [],

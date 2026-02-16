@@ -16,8 +16,5 @@ coverage
 *.log
 Dockerfile
 .dockerignore
-# Undlad at kopiere lokale build-artefakter – Prisma læser prisma.config.ts i stedet
-prisma.config.js
-prisma.config.js.map
-prisma.config.d.ts
+# prisma.config.js kopieres med – bruges af Prisma CLI (migrate, generate)
 tsconfig.build.tsbuildinfo

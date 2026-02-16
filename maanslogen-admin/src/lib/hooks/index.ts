@@ -8,3 +8,4 @@ export { useTypes } from "./useTypes";
 export { useReviews } from "./useReviews";
 export { useAttributes } from "./useAttributes";
 export { useBrands } from "./useBrands";
+export { useArrangements, useArrangementById } from "./useArrangements";

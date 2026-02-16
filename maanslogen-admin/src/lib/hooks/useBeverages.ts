@@ -268,6 +268,10 @@ export function useBeverages() {
     if (createRes.data) setList((prev) => [...prev, createRes.data]);
   }
 
+  function addBeverageToList(beverage: Beverage) {
+    setList((prev) => [...prev, beverage]);
+  }
+
   function beverageBrandName(b: Beverage): string {
     return typeof b.brand === "object" && b.brand?.name != null
       ? b.brand.name
@@ -323,6 +327,7 @@ export function useBeverages() {
     filteredList,
     handleSubmit,
     handleDelete,
+    addBeverageToList,
     beverageBrandName,
   };
 }

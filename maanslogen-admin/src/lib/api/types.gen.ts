@@ -804,6 +804,107 @@ export type UpdateQuestionDto = {
     required?: boolean;
 };
 
+export type ArrangementBeverageItem = {
+    /**
+     * Join record ID
+     */
+    id: string;
+    /**
+     * Order in the list (0, 1, 2, …)
+     */
+    sortOrder: number;
+    /**
+     * Beverage
+     */
+    beverage: Beverage;
+};
+
+export type Arrangement = {
+    /**
+     * Arrangement ID
+     */
+    id: string;
+    /**
+     * Arrangement type
+     */
+    type: 'TASTING';
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description?: {
+        [key: string]: unknown;
+    };
+    /**
+     * Creator user ID
+     */
+    createdById: string;
+    /**
+     * Creation timestamp
+     */
+    createdAt: string;
+    /**
+     * Last update timestamp
+     */
+    updatedAt: string;
+    /**
+     * Beverages in order (when included)
+     */
+    beverages?: Array<ArrangementBeverageItem>;
+};
+
+export type ArrangementBeverageItemDto = {
+    /**
+     * Beverage ID
+     */
+    beverageId: string;
+    /**
+     * Order in the list (0, 1, 2, …)
+     */
+    sortOrder: number;
+};
+
+export type CreateArrangementDto = {
+    /**
+     * Arrangement type
+     */
+    type: 'TASTING';
+    /**
+     * Name of the arrangement
+     */
+    name: string;
+    /**
+     * Optional description
+     */
+    description?: string;
+    /**
+     * ID of the user creating the arrangement
+     */
+    createdById: string;
+    /**
+     * Beverages in order (sortOrder determines display order)
+     */
+    beverages: Array<ArrangementBeverageItemDto>;
+};
+
+export type UpdateArrangementDto = {
+    /**
+     * Name of the arrangement
+     */
+    name?: string;
+    /**
+     * Description
+     */
+    description?: string;
+    /**
+     * Beverages in order (replaces existing list)
+     */
+    beverages?: Array<ArrangementBeverageItemDto>;
+};
+
 export type UserControllerGetAllData = {
     body?: never;
     path?: never;
@@ -2510,3 +2611,176 @@ export type QuestionWebControllerGetByIdResponses = {
 };
 
 export type QuestionWebControllerGetByIdResponse = QuestionWebControllerGetByIdResponses[keyof QuestionWebControllerGetByIdResponses];
+
+export type ArrangementAdminControllerGetAllData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/arrangements';
+};
+
+export type ArrangementAdminControllerGetAllResponses = {
+    /**
+     * List of arrangements
+     */
+    200: Array<Arrangement>;
+};
+
+export type ArrangementAdminControllerGetAllResponse = ArrangementAdminControllerGetAllResponses[keyof ArrangementAdminControllerGetAllResponses];
+
+export type ArrangementAdminControllerCreateData = {
+    body: CreateArrangementDto;
+    path?: never;
+    query?: never;
+    url: '/api/admin/arrangements';
+};
+
+export type ArrangementAdminControllerCreateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+};
+
+export type ArrangementAdminControllerCreateResponses = {
+    /**
+     * Arrangement created
+     */
+    201: Arrangement;
+};
+
+export type ArrangementAdminControllerCreateResponse = ArrangementAdminControllerCreateResponses[keyof ArrangementAdminControllerCreateResponses];
+
+export type ArrangementAdminControllerRemoveData = {
+    body?: never;
+    path: {
+        /**
+         * Arrangement ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/arrangements/{id}';
+};
+
+export type ArrangementAdminControllerRemoveErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type ArrangementAdminControllerRemoveResponses = {
+    /**
+     * Arrangement deleted
+     */
+    200: {
+        deleted?: boolean;
+    };
+};
+
+export type ArrangementAdminControllerRemoveResponse = ArrangementAdminControllerRemoveResponses[keyof ArrangementAdminControllerRemoveResponses];
+
+export type ArrangementAdminControllerGetByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Arrangement ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/arrangements/{id}';
+};
+
+export type ArrangementAdminControllerGetByIdErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type ArrangementAdminControllerGetByIdResponses = {
+    /**
+     * Arrangement found
+     */
+    200: Arrangement;
+};
+
+export type ArrangementAdminControllerGetByIdResponse = ArrangementAdminControllerGetByIdResponses[keyof ArrangementAdminControllerGetByIdResponses];
+
+export type ArrangementAdminControllerUpdateData = {
+    body: UpdateArrangementDto;
+    path: {
+        /**
+         * Arrangement ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/arrangements/{id}';
+};
+
+export type ArrangementAdminControllerUpdateErrors = {
+    /**
+     * Invalid input
+     */
+    400: unknown;
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type ArrangementAdminControllerUpdateResponses = {
+    /**
+     * Arrangement updated
+     */
+    200: Arrangement;
+};
+
+export type ArrangementAdminControllerUpdateResponse = ArrangementAdminControllerUpdateResponses[keyof ArrangementAdminControllerUpdateResponses];
+
+export type ArrangementWebControllerGetAllData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/arrangements';
+};
+
+export type ArrangementWebControllerGetAllResponses = {
+    /**
+     * List of arrangements
+     */
+    200: Array<Arrangement>;
+};
+
+export type ArrangementWebControllerGetAllResponse = ArrangementWebControllerGetAllResponses[keyof ArrangementWebControllerGetAllResponses];
+
+export type ArrangementWebControllerGetByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Arrangement ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/arrangements/{id}';
+};
+
+export type ArrangementWebControllerGetByIdErrors = {
+    /**
+     * Not found
+     */
+    404: unknown;
+};
+
+export type ArrangementWebControllerGetByIdResponses = {
+    /**
+     * Arrangement found
+     */
+    200: Arrangement;
+};
+
+export type ArrangementWebControllerGetByIdResponse = ArrangementWebControllerGetByIdResponses[keyof ArrangementWebControllerGetByIdResponses];
