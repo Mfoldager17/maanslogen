@@ -1,11 +1,22 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBrandDto } from './admin/dto/create-brand.dto';
 import { UpdateBrandDto } from './admin/dto/update-brand.dto';
 
 const includeCategories = { categories: { select: { id: true } } };
 
-function toResponse(brand: { id: string; name: string; description?: string | null; active: boolean; createdAt: Date; categories: { id: string }[] }) {
+function toResponse(brand: {
+  id: string;
+  name: string;
+  description?: string | null;
+  active: boolean;
+  createdAt: Date;
+  categories: { id: string }[];
+}) {
   return {
     ...brand,
     categoryIds: brand.categories.map((c) => c.id),
@@ -39,7 +50,9 @@ export class BrandService {
     const brand = await this.prisma.brand.create({
       data: {
         ...data,
-        categories: categoryIds.length ? { connect: categoryIds.map((id) => ({ id })) } : undefined,
+        categories: categoryIds.length
+          ? { connect: categoryIds.map((id) => ({ id })) }
+          : undefined,
       },
       include: includeCategories,
     });

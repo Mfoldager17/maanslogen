@@ -12,6 +12,7 @@ export interface ArrangementBeverageItem {
   beverage: {
     id: string;
     name: string;
+    beverageTypeId?: string;
     brand?: { name: string };
     averageRating?: number;
     reviewCount?: number;
@@ -42,6 +43,31 @@ export interface UpdateArrangementBody {
   name?: string;
   description?: string;
   beverages?: { beverageId: string; sortOrder: number }[];
+}
+
+export interface ReviewAnswerItem {
+  questionId: string;
+  answer: string;
+}
+
+export interface CreateReviewWithAnswersBody {
+  userId: string;
+  beverageId: string;
+  rating: number;
+  title?: string;
+  description?: string;
+  answers?: ReviewAnswerItem[];
+}
+
+export interface TastingReview {
+  id: string;
+  userId: string;
+  beverageId: string;
+  rating: number;
+  title?: string | null;
+  description?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const base = () => getApiBaseUrl();
@@ -91,4 +117,18 @@ export async function updateArrangement(id: string, body: UpdateArrangementBody)
 export async function deleteArrangement(id: string): Promise<{ data?: { deleted: boolean }; error?: { message?: string } }> {
   const res = await fetch(`${base()}/api/admin/arrangements/${encodeURIComponent(id)}`, { method: "DELETE" });
   return handleRes<{ deleted: boolean }>(res);
+}
+
+export async function createReviewWithAnswers(body: CreateReviewWithAnswersBody): Promise<{ data?: TastingReview; error?: { message?: string } }> {
+  const res = await fetch(`${base()}/api/admin/reviews`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleRes<TastingReview>(res);
+}
+
+export async function getReviewsByUser(userId: string): Promise<{ data?: TastingReview[]; error?: { message?: string } }> {
+  const res = await fetch(`${base()}/api/admin/reviews/user/${encodeURIComponent(userId)}`);
+  return handleRes<TastingReview[]>(res);
 }

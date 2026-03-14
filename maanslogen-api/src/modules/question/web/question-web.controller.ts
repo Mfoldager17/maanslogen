@@ -10,7 +10,11 @@ export class QuestionWebController {
 
   @Get()
   @ApiOperation({ summary: '[Web] Get all questions (public)' })
-  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of questions',
+    type: [Question],
+  })
   findAll() {
     return this.service.findAll();
   }
@@ -18,7 +22,11 @@ export class QuestionWebController {
   @Get('category/:categoryId')
   @ApiOperation({ summary: '[Web] Get questions by category (public)' })
   @ApiParam({ name: 'categoryId', description: 'Beverage category ID' })
-  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of questions',
+    type: [Question],
+  })
   findByCategory(@Param('categoryId') categoryId: string) {
     return this.service.findByCategory(categoryId);
   }
@@ -26,7 +34,11 @@ export class QuestionWebController {
   @Get('type/:typeId')
   @ApiOperation({ summary: '[Web] Get questions by type (public)' })
   @ApiParam({ name: 'typeId', description: 'Beverage type ID' })
-  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of questions',
+    type: [Question],
+  })
   findByType(@Param('typeId') typeId: string) {
     return this.service.findByType(typeId);
   }

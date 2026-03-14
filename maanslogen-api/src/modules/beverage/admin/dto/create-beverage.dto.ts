@@ -1,28 +1,51 @@
 // src/modules/beverage/admin/dto/create-beverage.dto.ts
-import { IsString, IsOptional, IsObject, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsObject,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateImageDto } from '../../../image/dto/create-image.dto';
 
 export class CreateBeverageDto {
-  @ApiProperty({ description: 'ID of the beverage type', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({
+    description: 'ID of the beverage type',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
   @IsString()
   beverageTypeId: string;
 
-  @ApiProperty({ description: 'ID of the brand', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({
+    description: 'ID of the brand',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
   @IsString()
   brandId: string;
 
-  @ApiProperty({ description: 'Name of the beverage', example: 'Classic Lager' })
+  @ApiProperty({
+    description: 'Name of the beverage',
+    example: 'Classic Lager',
+  })
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'Country code where the beverage is from', example: 'DK', required: false })
+  @ApiProperty({
+    description: 'Country code where the beverage is from',
+    example: 'DK',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   country?: string;
 
-  @ApiProperty({ description: 'Additional metadata as JSON object', example: { notes: 'Light and refreshing' }, required: false })
+  @ApiProperty({
+    description: 'Additional metadata as JSON object',
+    example: { notes: 'Light and refreshing' },
+    required: false,
+  })
   @IsOptional()
   @IsObject()
   metadata?: object;

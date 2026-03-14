@@ -10,16 +10,30 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all users', description: 'Retrieve a list of all users' })
-  @ApiResponse({ status: 200, description: 'List of users retrieved successfully', type: [User] })
+  @ApiOperation({
+    summary: 'Get all users',
+    description: 'Retrieve a list of all users',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of users retrieved successfully',
+    type: [User],
+  })
   getAll() {
     return this.userService.getAll();
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new user', description: 'Create a new user account' })
+  @ApiOperation({
+    summary: 'Create a new user',
+    description: 'Create a new user account',
+  })
   @ApiBody({ type: CreateUserDto, description: 'User data to create' })
-  @ApiResponse({ status: 201, description: 'User created successfully', type: User })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: User,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);

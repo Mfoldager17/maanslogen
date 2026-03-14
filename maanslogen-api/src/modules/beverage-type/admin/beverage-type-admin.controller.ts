@@ -1,5 +1,19 @@
-import { Body, Controller, Get, Param, Post, Patch, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Patch,
+  Delete,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { BeverageTypeService } from '../beverage-type.service';
 import { CreateBeverageTypeDto } from './dto/create-beverage-type.dto';
 import { UpdateBeverageTypeDto } from './dto/update-beverage-type.dto';
@@ -12,7 +26,11 @@ export class BeverageTypeAdminController {
 
   @Get()
   @ApiOperation({ summary: '[Admin] Get all beverage types' })
-  @ApiResponse({ status: 200, description: 'List of types', type: [BeverageType] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of types',
+    type: [BeverageType],
+  })
   getAll() {
     return this.service.getAll();
   }
@@ -49,7 +67,11 @@ export class BeverageTypeAdminController {
   @Delete(':id')
   @ApiOperation({ summary: '[Admin] Delete beverage type' })
   @ApiParam({ name: 'id', description: 'Beverage type ID' })
-  @ApiResponse({ status: 200, description: 'Type deleted', schema: { type: 'object', properties: { deleted: { type: 'boolean' } } } })
+  @ApiResponse({
+    status: 200,
+    description: 'Type deleted',
+    schema: { type: 'object', properties: { deleted: { type: 'boolean' } } },
+  })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 409, description: 'Type has beverages' })
   remove(@Param('id') id: string) {

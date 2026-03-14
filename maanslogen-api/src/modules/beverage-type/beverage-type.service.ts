@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBeverageTypeDto } from './admin/dto/create-beverage-type.dto';
 import { UpdateBeverageTypeDto } from './admin/dto/update-beverage-type.dto';
@@ -43,7 +47,9 @@ export class BeverageTypeService {
     });
     if (!type) throw new NotFoundException('Beverage type not found');
     if (type._count.beverages > 0) {
-      throw new ConflictException('Cannot delete beverage type that has beverages');
+      throw new ConflictException(
+        'Cannot delete beverage type that has beverages',
+      );
     }
     await this.prisma.beverageType.delete({ where: { id } });
     return { deleted: true };

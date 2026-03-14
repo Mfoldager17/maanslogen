@@ -36,6 +36,9 @@ export class Arrangement {
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
 
-  @ApiPropertyOptional({ description: 'Beverages in order (when included)', type: [ArrangementBeverageItem] })
+  @ApiPropertyOptional({
+    description: 'Beverages in order (when included)',
+    type: [ArrangementBeverageItem],
+  })
   beverages?: ArrangementBeverageItem[];
 }
