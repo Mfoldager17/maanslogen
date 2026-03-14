@@ -10,7 +10,10 @@ const pool = new Pool({
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  log:
+    process.env.NODE_ENV === 'development'
+      ? ['query', 'error', 'warn']
+      : ['error'],
 });
 
 async function main() {
@@ -123,10 +126,18 @@ async function main() {
 
   // Brands (tilladte kategorier: øl-mærker → Øl)
   const brandCarlsberg = await prisma.brand.create({
-    data: { name: 'Carlsberg', description: 'Dansk bryggeri', categories: { connect: { id: beerCategory.id } } },
+    data: {
+      name: 'Carlsberg',
+      description: 'Dansk bryggeri',
+      categories: { connect: { id: beerCategory.id } },
+    },
   });
   const brandMikkeller = await prisma.brand.create({
-    data: { name: 'Mikkeller', description: 'Dansk mikrobryggeri', categories: { connect: { id: beerCategory.id } } },
+    data: {
+      name: 'Mikkeller',
+      description: 'Dansk mikrobryggeri',
+      categories: { connect: { id: beerCategory.id } },
+    },
   });
 
   // Beverages

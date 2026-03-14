@@ -20,7 +20,9 @@ async function bootstrap() {
     /^https:\/\/[a-z0-9-]+\.mathiasfoldager\.com$/, // evt. andre subdomains
   ];
   if (process.env.CORS_ORIGINS) {
-    corsOrigins.push(...process.env.CORS_ORIGINS.split(',').map((s) => s.trim()));
+    corsOrigins.push(
+      ...process.env.CORS_ORIGINS.split(',').map((s) => s.trim()),
+    );
   }
   app.enableCors({
     origin: corsOrigins,
@@ -28,17 +30,26 @@ async function bootstrap() {
   });
 
   // Tillad Private Network Access: når admin kører på https (offentlig) og kalder API på privat IP (192.168.x.x)
-  app.use((_req: { method: string }, res: { setHeader: (name: string, value: string) => void; end?: () => void }, next: () => void) => {
-    res.setHeader('Access-Control-Allow-Private-Network', 'true');
-    next();
-  });
+  app.use(
+    (
+      _req: { method: string },
+      res: {
+        setHeader: (name: string, value: string) => void;
+        end?: () => void;
+      },
+      next: () => void,
+    ) => {
+      res.setHeader('Access-Control-Allow-Private-Network', 'true');
+      next();
+    },
+  );
 
   // Opsæt Swagger
   const config = new DocumentBuilder()
     .setTitle('Maanslogen API')
     .setDescription('API til Maanslogen admin og frontend')
     .setVersion('1.0')
-    .addBearerAuth() 
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

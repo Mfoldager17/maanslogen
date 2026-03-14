@@ -1,5 +1,19 @@
-import { Body, Controller, Get, Param, Post, Patch, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Patch,
+  Delete,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { ReviewService } from '../review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -17,6 +31,18 @@ export class ReviewAdminController {
     return this.reviewService.getAll();
   }
 
+  @Get('user/:userId')
+  @ApiOperation({ summary: '[Admin] Get reviews by user' })
+  @ApiParam({ name: 'userId', description: 'User ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of reviews for user',
+    type: [Review],
+  })
+  getByUser(@Param('userId') userId: string) {
+    return this.reviewService.getByUser(userId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: '[Admin] Get review by ID' })
   @ApiParam({ name: 'id', description: 'Review ID' })
@@ -31,6 +57,10 @@ export class ReviewAdminController {
   @ApiBody({ type: CreateReviewDto })
   @ApiResponse({ status: 201, description: 'Review created', type: Review })
   @ApiResponse({ status: 400, description: 'Invalid input' })
+  @ApiResponse({
+    status: 409,
+    description: 'Review already exists for this user/beverage',
+  })
   create(@Body() createReviewDto: CreateReviewDto) {
     return this.reviewService.create(createReviewDto);
   }
@@ -49,7 +79,11 @@ export class ReviewAdminController {
   @Delete(':id')
   @ApiOperation({ summary: '[Admin] Delete review' })
   @ApiParam({ name: 'id', description: 'Review ID' })
-  @ApiResponse({ status: 200, description: 'Review deleted', schema: { type: 'object', properties: { deleted: { type: 'boolean' } } } })
+  @ApiResponse({
+    status: 200,
+    description: 'Review deleted',
+    schema: { type: 'object', properties: { deleted: { type: 'boolean' } } },
+  })
   @ApiResponse({ status: 404, description: 'Not found' })
   remove(@Param('id') id: string) {
     return this.reviewService.remove(id);

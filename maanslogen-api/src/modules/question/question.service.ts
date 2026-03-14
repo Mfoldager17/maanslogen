@@ -63,7 +63,15 @@ export class QuestionService {
 
   async update(id: string, dto: UpdateQuestionDto) {
     await this.getById(id);
-    const data: { questionText?: string; answerType?: string; options?: object; sortOrder?: number; required?: boolean; categoryId?: string; typeId?: string | null } = { ...dto };
+    const data: {
+      questionText?: string;
+      answerType?: string;
+      options?: object;
+      sortOrder?: number;
+      required?: boolean;
+      categoryId?: string;
+      typeId?: string | null;
+    } = { ...dto };
     if (dto.typeId === '') (data as { typeId: null }).typeId = null;
     return this.prisma.question.update({
       where: { id },

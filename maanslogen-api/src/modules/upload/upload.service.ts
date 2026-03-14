@@ -40,12 +40,13 @@ export interface PresignResult {
 const PROTECTED_BUCKET_CLEANUP = 'maanslogen-dev';
 
 /** Default dimensioner per type (width x height) når slot ikke angiver width/height. */
-const DEFAULT_DIMENSIONS: Record<ImageType, { width: number; height: number }> = {
-  [ImageType.THUMBNAIL]: { width: 200, height: 200 },
-  [ImageType.LARGE]: { width: 800, height: 800 },
-  [ImageType.PROFILE]: { width: 400, height: 400 },
-  [ImageType.ICON]: { width: 64, height: 64 },
-};
+const DEFAULT_DIMENSIONS: Record<ImageType, { width: number; height: number }> =
+  {
+    [ImageType.THUMBNAIL]: { width: 200, height: 200 },
+    [ImageType.LARGE]: { width: 800, height: 800 },
+    [ImageType.PROFILE]: { width: 400, height: 400 },
+    [ImageType.ICON]: { width: 64, height: 64 },
+  };
 
 export interface CreatePresignedUploadsOptions {
   /** Seconds until presigned URL expires (default: 900) */
@@ -273,7 +274,9 @@ export class UploadService {
       .map((url) => this.urlToBucketAndKey(url))
       .filter((p): p is { bucket: string; key: string } => p !== null);
     if (pairs.length === 0) return;
-    const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(
+      Date.now() + expiresInDays * 24 * 60 * 60 * 1000,
+    );
     for (const { bucket, key } of pairs) {
       await this.prisma.pendingUpload.upsert({
         where: {
@@ -314,7 +317,9 @@ export class UploadService {
   /**
    * Afbryder alle uafsluttede multipart-uploads i en bucket (ellers blokerer de DeleteBucket).
    */
-  private async abortIncompleteMultipartUploads(bucket: string): Promise<number> {
+  private async abortIncompleteMultipartUploads(
+    bucket: string,
+  ): Promise<number> {
     let aborted = 0;
     let keyMarker: string | undefined;
     let uploadIdMarker: string | undefined;
@@ -364,7 +369,9 @@ export class UploadService {
       );
       const count = list.KeyCount ?? list.Contents?.length ?? 0;
       total += count;
-      continuationToken = list.IsTruncated ? list.NextContinuationToken : undefined;
+      continuationToken = list.IsTruncated
+        ? list.NextContinuationToken
+        : undefined;
     } while (continuationToken);
     return total;
   }
@@ -401,9 +408,14 @@ export class UploadService {
     try {
       const result = await this.client.send(new ListBucketsCommand({}));
       buckets = result.Buckets ?? [];
-      report.bucketsListed = buckets.map((b) => b.Name).filter((n): n is string => !!n);
+      report.bucketsListed = buckets
+        .map((b) => b.Name)
+        .filter((n): n is string => !!n);
     } catch (err) {
-      report.errors.push({ bucket: '(ListBuckets)', message: (err as Error).message });
+      report.errors.push({
+        bucket: '(ListBuckets)',
+        message: (err as Error).message,
+      });
       return report;
     }
     for (const b of buckets) {
@@ -415,7 +427,8 @@ export class UploadService {
       }
       try {
         const aborted = await this.abortIncompleteMultipartUploads(name);
-        if (aborted > 0) report.multipartAborted.push({ bucket: name, count: aborted });
+        if (aborted > 0)
+          report.multipartAborted.push({ bucket: name, count: aborted });
         const objectCount = await this.getBucketObjectCount(name);
         if (objectCount > 0) {
           report.hadObjects.push({ bucket: name, objectCount });

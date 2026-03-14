@@ -37,10 +37,15 @@ export function ArrangementDetailClient() {
       <BackLink href="/arrangements">← Tilbage til arrangementer</BackLink>
       <div className="flex items-center justify-between gap-4">
         <PageHeading>{item.name}</PageHeading>
-        <LinkButton href={`/arrangements/${encodeURIComponent(item.id)}/edit`} variant="secondary">
-          <IconPencil className="h-5 w-5" />
-          Rediger
-        </LinkButton>
+        <div className="flex items-center gap-2">
+          <LinkButton href={`/arrangements/${encodeURIComponent(item.id)}/start`} variant="accent">
+            ▶ Start smagning
+          </LinkButton>
+          <LinkButton href={`/arrangements/${encodeURIComponent(item.id)}/edit`} variant="secondary">
+            <IconPencil className="h-5 w-5" />
+            Rediger
+          </LinkButton>
+        </div>
       </div>
       <Card>
         <DetailList>

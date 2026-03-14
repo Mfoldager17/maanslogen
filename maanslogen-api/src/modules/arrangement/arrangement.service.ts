@@ -50,7 +50,9 @@ export class ArrangementService {
 
   async update(id: string, dto: UpdateArrangementDto) {
     await this.getById(id);
-    const updateData: Parameters<typeof this.prisma.arrangement.update>[0]['data'] = {
+    const updateData: Parameters<
+      typeof this.prisma.arrangement.update
+    >[0]['data'] = {
       ...(dto.name !== undefined && { name: dto.name }),
       ...(dto.description !== undefined && { description: dto.description }),
     };
