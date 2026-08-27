@@ -1,19 +1,34 @@
 // user/dto/create-user.dto.ts
-import { IsString, IsOptional, IsEmail, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEmail,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateImageDto } from '../../image/dto/create-image.dto';
 
 export class CreateUserDto {
-  @ApiProperty({ description: 'Unique username for the user', example: 'alice' })
+  @ApiProperty({
+    description: 'Unique username for the user',
+    example: 'alice',
+  })
   @IsString()
   username: string;
 
-  @ApiProperty({ description: 'Email address of the user', example: 'alice@example.com' })
+  @ApiProperty({
+    description: 'Email address of the user',
+    example: 'alice@example.com',
+  })
   @IsEmail()
   email: string;
 
-  @ApiProperty({ description: 'Hashed password for the user', example: 'hashedpassword123' })
+  @ApiProperty({
+    description: 'Hashed password for the user',
+    example: 'hashedpassword123',
+  })
   @IsString()
   passwordHash: string;
 

@@ -50,7 +50,9 @@ export class AttributeDefinitionService {
       data: {
         ...data,
         categories: { connect: categoryIds.map((id) => ({ id })) },
-        types: typeIds.length ? { connect: typeIds.map((id) => ({ id })) } : undefined,
+        types: typeIds.length
+          ? { connect: typeIds.map((id) => ({ id })) }
+          : undefined,
       },
       include: includeRelations,
     });
@@ -106,7 +108,11 @@ export class AttributeDefinitionService {
           ? { categories: { set: categoryIds.map((id) => ({ id })) } }
           : {}),
         ...(typeIds !== undefined
-          ? { types: { set: typeIds.length ? typeIds.map((id) => ({ id })) : [] } }
+          ? {
+              types: {
+                set: typeIds.length ? typeIds.map((id) => ({ id })) : [],
+              },
+            }
           : {}),
       },
       include: includeRelations,
@@ -116,8 +122,12 @@ export class AttributeDefinitionService {
 
   async remove(id: string) {
     await this.getById(id);
-    await this.prisma.beverageAttributeValue.deleteMany({ where: { attributeId: id } });
-    await this.prisma.attributeDefinition.delete({ where: { id } });
+    await this.prisma.$transaction([
+      this.prisma.beverageAttributeValue.deleteMany({
+        where: { attributeId: id },
+      }),
+      this.prisma.attributeDefinition.delete({ where: { id } }),
+    ]);
     return { deleted: true };
   }
 }

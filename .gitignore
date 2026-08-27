@@ -4,9 +4,13 @@
 # Node
 node_modules
 
-# Prisma
-prisma/migrations
+# Prisma (genererede filer – migrations SKAL committes)
 prisma/generated
+
+# Compiled prisma config (genereres fra prisma.config.ts)
+prisma.config.js
+prisma.config.js.map
+prisma.config.d.ts
 
 # Environment variables
 .env
@@ -18,3 +22,6 @@ package-lock.json
 
 # dist
 dist
+
+# openapi-ts fejl-logs
+openapi-ts-error-*.log

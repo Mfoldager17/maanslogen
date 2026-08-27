@@ -54,32 +54,40 @@ export class BeverageService {
   }
 
   async update(id: string, dto: UpdateBeverageDto) {
-    await this.getById(id);
+    const existing = await this.getById(id);
     const { images, ...beverageData } = dto;
     const entity = await this.prisma.beverage.update({
       where: { id },
       data: {
         ...beverageData,
         ...(images !== undefined
-          ? images.length
-            ? {
-                images: {
-                  deleteMany: {},
-                  create: images.map((img) => ({
-                    url: img.url,
-                    type: img.type,
-                    width: img.width,
-                    height: img.height,
-                  })),
-                },
-              }
-            : { images: { deleteMany: {} } }
+          ? {
+              images: {
+                deleteMany: {},
+                create: images.map((img) => ({
+                  url: img.url,
+                  type: img.type,
+                  width: img.width,
+                  height: img.height,
+                })),
+              },
+            }
           : {}),
       },
       include: { images: true, brand: true },
     });
-    if (images?.length) {
-      await this.uploadService.confirmUploads(images.map((img) => img.url));
+    if (images !== undefined) {
+      if (images.length) {
+        await this.uploadService.confirmUploads(images.map((img) => img.url));
+      }
+      // Billeder der er fjernet i redigeringen skal også ryddes op i S3
+      const keptUrls = new Set(images.map((img) => img.url));
+      const removedUrls = existing.images
+        .map((img) => img.url)
+        .filter((url) => !keptUrls.has(url));
+      if (removedUrls.length) {
+        await this.uploadService.registerImagesForPendingCleanup(removedUrls);
+      }
     }
     return entity;
   }
@@ -90,16 +98,16 @@ export class BeverageService {
     if (imageUrls.length) {
       await this.uploadService.registerImagesForPendingCleanup(imageUrls);
     }
-    const reviews = await this.prisma.review.findMany({
-      where: { beverageId: id },
-      select: { id: true },
-    });
-    for (const r of reviews) {
-      await this.prisma.reviewAnswer.deleteMany({ where: { reviewId: r.id } });
-    }
-    await this.prisma.review.deleteMany({ where: { beverageId: id } });
-    await this.prisma.beverageAttributeValue.deleteMany({ where: { beverageId: id } });
-    await this.prisma.beverage.delete({ where: { id } });
+    await this.prisma.$transaction([
+      this.prisma.reviewAnswer.deleteMany({
+        where: { review: { beverageId: id } },
+      }),
+      this.prisma.review.deleteMany({ where: { beverageId: id } }),
+      this.prisma.beverageAttributeValue.deleteMany({
+        where: { beverageId: id },
+      }),
+      this.prisma.beverage.delete({ where: { id } }),
+    ]);
     return { deleted: true };
   }
 }

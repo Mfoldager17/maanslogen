@@ -1,5 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Patch } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Patch,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { QuestionService } from '../question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
@@ -21,7 +35,11 @@ export class QuestionAdminController {
 
   @Get()
   @ApiOperation({ summary: '[Admin] Get all questions' })
-  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of questions',
+    type: [Question],
+  })
   findAll() {
     return this.service.findAll();
   }
@@ -29,7 +47,11 @@ export class QuestionAdminController {
   @Get('category/:categoryId')
   @ApiOperation({ summary: '[Admin] Get questions by category' })
   @ApiParam({ name: 'categoryId', description: 'Beverage category ID' })
-  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of questions',
+    type: [Question],
+  })
   findByCategory(@Param('categoryId') categoryId: string) {
     return this.service.findByCategory(categoryId);
   }
@@ -37,7 +59,11 @@ export class QuestionAdminController {
   @Get('type/:typeId')
   @ApiOperation({ summary: '[Admin] Get questions by type' })
   @ApiParam({ name: 'typeId', description: 'Beverage type ID' })
-  @ApiResponse({ status: 200, description: 'List of questions', type: [Question] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of questions',
+    type: [Question],
+  })
   findByType(@Param('typeId') typeId: string) {
     return this.service.findByType(typeId);
   }
@@ -65,7 +91,11 @@ export class QuestionAdminController {
   @Delete(':id')
   @ApiOperation({ summary: '[Admin] Delete question and compact sortOrder' })
   @ApiParam({ name: 'id', description: 'Question ID' })
-  @ApiResponse({ status: 200, description: 'Question deleted', schema: { type: 'object', properties: { deleted: { type: 'boolean' } } } })
+  @ApiResponse({
+    status: 200,
+    description: 'Question deleted',
+    schema: { type: 'object', properties: { deleted: { type: 'boolean' } } },
+  })
   @ApiResponse({ status: 404, description: 'Not found' })
   remove(@Param('id') id: string) {
     return this.service.remove(id);

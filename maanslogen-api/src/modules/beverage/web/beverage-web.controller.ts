@@ -10,7 +10,11 @@ export class BeverageWebController {
 
   @Get()
   @ApiOperation({ summary: '[Web] Get all beverages (public)' })
-  @ApiResponse({ status: 200, description: 'List of beverages', type: [Beverage] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of beverages',
+    type: [Beverage],
+  })
   getAll() {
     return this.beverageService.getAll();
   }

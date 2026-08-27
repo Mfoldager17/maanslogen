@@ -10,7 +10,10 @@ export enum ImageType {
 }
 
 export class CreateImageDto {
-  @ApiProperty({ description: 'URL to the image', example: 'https://example.com/image.jpg' })
+  @ApiProperty({
+    description: 'URL to the image',
+    example: 'https://example.com/image.jpg',
+  })
   @IsString()
   url: string;
 
@@ -22,7 +25,11 @@ export class CreateImageDto {
   @IsEnum(ImageType)
   type: ImageType;
 
-  @ApiPropertyOptional({ description: 'Bredde (px)', minimum: 1, maximum: 4096 })
+  @ApiPropertyOptional({
+    description: 'Bredde (px)',
+    minimum: 1,
+    maximum: 4096,
+  })
   @IsOptional()
   @Type(() => Number)
   @IsInt()

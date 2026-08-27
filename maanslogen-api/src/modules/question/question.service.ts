@@ -8,19 +8,14 @@ export class QuestionService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateQuestionDto) {
-    const rawOrder = dto.sortOrder;
-    // 0 = "sidst i rækken" → behandles som ingen angivet rækkefølge
+    // 0 eller udeladt = "sidst i rækken" → behandles som ingen angivet rækkefølge
     const sortOrder =
-      rawOrder != null && rawOrder !== undefined && rawOrder > 0
-        ? rawOrder
-        : undefined;
+      dto.sortOrder != null && dto.sortOrder > 0 ? dto.sortOrder : undefined;
 
     return this.prisma.$transaction(async (tx) => {
       const scope = {
         categoryId: dto.categoryId,
-        ...(dto.typeId != null && dto.typeId !== ''
-          ? { typeId: dto.typeId }
-          : { typeId: null }),
+        typeId: dto.typeId || null,
       };
 
       let finalSortOrder: number | undefined = sortOrder;
@@ -63,11 +58,11 @@ export class QuestionService {
 
   async update(id: string, dto: UpdateQuestionDto) {
     await this.getById(id);
-    const data: { questionText?: string; answerType?: string; options?: object; sortOrder?: number; required?: boolean; categoryId?: string; typeId?: string | null } = { ...dto };
-    if (dto.typeId === '') (data as { typeId: null }).typeId = null;
+    // Tom streng betyder "gælder hele kategorien" → gem som null
+    const typeId = dto.typeId === '' ? null : dto.typeId;
     return this.prisma.question.update({
       where: { id },
-      data,
+      data: { ...dto, typeId },
     });
   }
 

@@ -1,7 +1,9 @@
 // Load environment variables first
 import 'dotenv/config';
+import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
+import type { NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -9,6 +11,16 @@ async function bootstrap() {
 
   // Alle API-routes under /api (klar til evt. api/admin og api/web senere)
   app.setGlobalPrefix('api');
+
+  // Håndhæv class-validator-dekoratorerne på alle DTO'er:
+  // - whitelist: ukendte felter fjernes fra body
+  // - transform: payloads instantieres som DTO-klasser (og @Type-konverteringer anvendes)
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   // Tillad CORS fra admin og andre dev-origins (localhost + Pi/netværk + offentlig admin)
   const corsOrigins: (string | RegExp)[] = [
@@ -20,7 +32,9 @@ async function bootstrap() {
     /^https:\/\/[a-z0-9-]+\.mathiasfoldager\.com$/, // evt. andre subdomains
   ];
   if (process.env.CORS_ORIGINS) {
-    corsOrigins.push(...process.env.CORS_ORIGINS.split(',').map((s) => s.trim()));
+    corsOrigins.push(
+      ...process.env.CORS_ORIGINS.split(',').map((s) => s.trim()),
+    );
   }
   app.enableCors({
     origin: corsOrigins,
@@ -28,7 +42,7 @@ async function bootstrap() {
   });
 
   // Tillad Private Network Access: når admin kører på https (offentlig) og kalder API på privat IP (192.168.x.x)
-  app.use((_req: { method: string }, res: { setHeader: (name: string, value: string) => void; end?: () => void }, next: () => void) => {
+  app.use((_req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Access-Control-Allow-Private-Network', 'true');
     next();
   });
@@ -38,7 +52,7 @@ async function bootstrap() {
     .setTitle('Maanslogen API')
     .setDescription('API til Maanslogen admin og frontend')
     .setVersion('1.0')
-    .addBearerAuth() 
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -50,4 +64,4 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
-bootstrap();
+void bootstrap();

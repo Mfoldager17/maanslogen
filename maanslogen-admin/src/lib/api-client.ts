@@ -7,6 +7,7 @@
  * are then available here automatically (no manual exports needed).
  */
 import { client } from "./api/client.gen";
+import type { Brand } from "./api/types.gen";
 
 // I browser: brug URL fra server (window.__MAANSLOGEN_API_URL__), ellers fallback til public API når origin er mathiasfoldager.com.
 const PUBLIC_API_URL = "https://maanslogen-dev-api.mathiasfoldager.com";
@@ -45,6 +46,7 @@ export {
   beverageAdminControllerGetById as getBeverageById,
   beverageAdminControllerUpdate as updateBeverage,
   beverageAdminControllerRemove as deleteBeverage,
+  beverageAttributeValueAdminControllerCreate as createBeverageAttributeValue,
   beverageCategoryAdminControllerCreate as createCategory,
   beverageCategoryAdminControllerGetAll as getAllCategories,
   beverageCategoryAdminControllerGetById as getCategoryById,
@@ -77,7 +79,7 @@ export {
 
 /** Get brands allowed in this category (until generate:api:live adds brandAdminControllerGetByCategory). */
 export async function getBrandsByCategory(categoryId: string) {
-  return client.get<unknown>({ url: `/api/admin/brands/category/${encodeURIComponent(categoryId)}` });
+  return client.get<{ 200: Brand[] }>({ url: `/api/admin/brands/category/${encodeURIComponent(categoryId)}` });
 }
 
 // All generated SDK functions (new endpoints appear here after generate:api:live)
