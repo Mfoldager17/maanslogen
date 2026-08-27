@@ -13,6 +13,11 @@ enum ImageType {
   ICON
 }
 
+// Arrangementstyper – udvid med flere (fx EVENT, WORKSHOP) ved behov
+enum ArrangementType {
+  TASTING // smagning
+}
+
 model Image {
   id         String            @id @default(uuid())
   url        String
@@ -32,13 +37,14 @@ model Image {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  username     String   @unique
-  email        String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
-  images       Image[]
-  reviews      Review[]
+  id                 String              @id @default(uuid())
+  username           String              @unique
+  email              String              @unique
+  passwordHash       String
+  createdAt          DateTime            @default(now())
+  images             Image[]
+  reviews            Review[]
+  createdArrangements Arrangement[]
 }
 
 model BeverageCategory {
@@ -90,8 +96,9 @@ model Beverage {
   createdAt       DateTime                 @default(now())
   type            BeverageType             @relation(fields: [beverageTypeId], references: [id])
   brand           Brand                    @relation(fields: [brandId], references: [id])
-  attributeValues BeverageAttributeValue[]
-  reviews         Review[]
+  attributeValues     BeverageAttributeValue[]
+  reviews             Review[]
+  arrangementBeverages ArrangementBeverage[]
 
   @@unique([brandId, name])
   @@index([beverageTypeId])
@@ -174,6 +181,39 @@ model ReviewAnswer {
   @@unique([reviewId, questionId])
   @@index([reviewId])
   @@index([questionId])
+}
+
+// --- Arrangementer (smagninger m.m.) – dynamisk struktur for flere typer senere ---
+// Et arrangement er en række drikkevarer (med angivet rækkefølge); brugerne anmelder dem via almindelige Review.
+// Har brugeren allerede anmeldt en drikkevare, kan de springe over eller lave review forfra.
+
+model Arrangement {
+  id          String                 @id @default(uuid())
+  type        ArrangementType
+  name        String
+  description String?
+  createdById String
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  createdBy   User                   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  beverages   ArrangementBeverage[]
+
+  @@index([createdById])
+  @@index([type])
+}
+
+// Drikkevarer på arrangementet med rækkefølge (sortOrder: 0, 1, 2, …)
+model ArrangementBeverage {
+  id            String      @id @default(uuid())
+  arrangementId String
+  beverageId    String
+  sortOrder     Int         @default(0)
+  arrangement   Arrangement @relation(fields: [arrangementId], references: [id], onDelete: Cascade)
+  beverage      Beverage    @relation(fields: [beverageId], references: [id], onDelete: Cascade)
+
+  @@unique([arrangementId, beverageId])
+  @@index([arrangementId])
+  @@index([beverageId])
 }
 
 // Uploads that got a presigned URL but were never "claimed" by creating a Beverage/User/Category/Type.

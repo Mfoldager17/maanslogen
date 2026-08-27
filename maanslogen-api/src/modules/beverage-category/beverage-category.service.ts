@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
 import { ImageType } from '../image/dto/create-image.dto';
@@ -14,14 +18,24 @@ export class BeverageCategoryService {
 
   async getAll() {
     return this.prisma.beverageCategory.findMany({
-      include: { types: true, attributeDefinitions: true, questions: true, images: true},
+      include: {
+        types: true,
+        attributeDefinitions: true,
+        questions: true,
+        images: true,
+      },
     });
   }
 
   async getById(id: string) {
     const category = await this.prisma.beverageCategory.findUnique({
       where: { id },
-      include: { types: true, attributeDefinitions: true, questions: true, images: true },
+      include: {
+        types: true,
+        attributeDefinitions: true,
+        questions: true,
+        images: true,
+      },
     });
     if (!category) throw new NotFoundException('Beverage category not found');
     return category;
@@ -57,8 +71,11 @@ export class BeverageCategoryService {
       });
     }
     if (images?.length) {
-      const uploadUrls = images.map((img) => img.url).filter((url) => url.startsWith('http'));
-      if (uploadUrls.length) await this.uploadService.confirmUploads(uploadUrls);
+      const uploadUrls = images
+        .map((img) => img.url)
+        .filter((url) => url.startsWith('http'));
+      if (uploadUrls.length)
+        await this.uploadService.confirmUploads(uploadUrls);
     }
     return this.getById(entity.id);
   }
@@ -70,22 +87,48 @@ export class BeverageCategoryService {
     const hasImages = images && images.length > 0;
     if (hasIcon || hasImages) {
       await this.prisma.image.deleteMany({ where: { categoryId: id } });
-      const toCreate: Array<{ url: string; type: ImageType; width?: number; height?: number }> = [];
+      const toCreate: Array<{
+        url: string;
+        type: ImageType;
+        width?: number;
+        height?: number;
+      }> = [];
       if (hasIcon) toCreate.push({ type: ImageType.ICON, url: icon });
-      if (hasImages) toCreate.push(...images!.map((img) => ({ url: img.url, type: img.type, width: img.width, height: img.height })));
+      if (hasImages)
+        toCreate.push(
+          ...images.map((img) => ({
+            url: img.url,
+            type: img.type,
+            width: img.width,
+            height: img.height,
+          })),
+        );
       await this.prisma.beverageCategory.update({
         where: { id },
         data: {
           ...categoryData,
-          images: { create: toCreate.map((img) => ({ url: img.url, type: img.type, width: img.width, height: img.height })) },
+          images: {
+            create: toCreate.map((img) => ({
+              url: img.url,
+              type: img.type,
+              width: img.width,
+              height: img.height,
+            })),
+          },
         },
       });
       if (hasImages) {
-        const uploadUrls = images!.map((img) => img.url).filter((url) => url.startsWith('http'));
-        if (uploadUrls.length) await this.uploadService.confirmUploads(uploadUrls);
+        const uploadUrls = images
+          .map((img) => img.url)
+          .filter((url) => url.startsWith('http'));
+        if (uploadUrls.length)
+          await this.uploadService.confirmUploads(uploadUrls);
       }
     } else {
-      await this.prisma.beverageCategory.update({ where: { id }, data: categoryData });
+      await this.prisma.beverageCategory.update({
+        where: { id },
+        data: categoryData,
+      });
     }
     return this.getById(id);
   }
@@ -97,10 +140,14 @@ export class BeverageCategoryService {
     });
     if (!category) throw new NotFoundException('Beverage category not found');
     if (category._count.types > 0) {
-      throw new ConflictException('Cannot delete category that has beverage types');
+      throw new ConflictException(
+        'Cannot delete category that has beverage types',
+      );
     }
     if (category._count.brands > 0) {
-      throw new ConflictException('Cannot delete category that has linked brands');
+      throw new ConflictException(
+        'Cannot delete category that has linked brands',
+      );
     }
     await this.prisma.beverageCategory.delete({ where: { id } });
     return { deleted: true };

@@ -98,7 +98,9 @@ export class BeverageService {
       await this.prisma.reviewAnswer.deleteMany({ where: { reviewId: r.id } });
     }
     await this.prisma.review.deleteMany({ where: { beverageId: id } });
-    await this.prisma.beverageAttributeValue.deleteMany({ where: { beverageId: id } });
+    await this.prisma.beverageAttributeValue.deleteMany({
+      where: { beverageId: id },
+    });
     await this.prisma.beverage.delete({ where: { id } });
     return { deleted: true };
   }

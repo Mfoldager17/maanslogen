@@ -35,7 +35,7 @@ export function CategoriesPageClient() {
 
       <CollapsibleCard title="Opret ny kategori" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-end gap-4">
             <TextField
               label="Navn"
               value={name}
@@ -60,8 +60,8 @@ export function CategoriesPageClient() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Valgfri"
             />
-            <div>
-              <Button type="submit" disabled={submitting || !name.trim() || !!iconError}>
+            <div className="pt-[1.5rem] pb-6">
+              <Button type="submit" className="h-11" disabled={submitting || !name.trim() || !!iconError}>
                 {submitting ? "Opretter…" : "Opret"}
               </Button>
             </div>

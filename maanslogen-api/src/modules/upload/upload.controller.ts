@@ -1,5 +1,20 @@
-import { BadRequestException, Body, Controller, Headers, Param, Post, Get } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiHeader } from '@nestjs/swagger';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Headers,
+  Param,
+  Post,
+  Get,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { UploadService, PresignContext } from './upload.service';
 import { PresignUploadDto } from './dto/presign-upload.dto';
 
@@ -28,7 +43,8 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
   @ApiHeader({
     name: 'X-Test-Bucket',
     required: false,
-    description: 'Valgfri bucket (fx til test) – opretter ny bucket med public policy hvis den ikke findes',
+    description:
+      'Valgfri bucket (fx til test) – opretter ny bucket med public policy hvis den ikke findes',
   })
   @ApiBody({ type: PresignUploadDto })
   @ApiResponse({
@@ -42,12 +58,27 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
           items: {
             type: 'object',
             properties: {
-              uploadUrl: { type: 'string', description: 'PUT fil til denne URL' },
-              url: { type: 'string', description: 'Brug denne URL i images[] ved oprettelse' },
+              uploadUrl: {
+                type: 'string',
+                description: 'PUT fil til denne URL',
+              },
+              url: {
+                type: 'string',
+                description: 'Brug denne URL i images[] ved oprettelse',
+              },
               key: { type: 'string' },
-              type: { type: 'string', enum: ['THUMBNAIL', 'LARGE', 'PROFILE', 'ICON'] },
-              width: { type: 'number', description: 'Bredde (px) – brug ved oprettelse' },
-              height: { type: 'number', description: 'Højde (px) – brug ved oprettelse' },
+              type: {
+                type: 'string',
+                enum: ['THUMBNAIL', 'LARGE', 'PROFILE', 'ICON'],
+              },
+              width: {
+                type: 'number',
+                description: 'Bredde (px) – brug ved oprettelse',
+              },
+              height: {
+                type: 'number',
+                description: 'Højde (px) – brug ved oprettelse',
+              },
               bucket: { type: 'string' },
             },
           },
@@ -55,7 +86,10 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
       },
     },
   })
-  @ApiResponse({ status: 400, description: 'Ugyldig request eller bucket findes ikke' })
+  @ApiResponse({
+    status: 400,
+    description: 'Ugyldig request eller bucket findes ikke',
+  })
   async presign(
     @Param('context') contextParam: string,
     @Body() dto: PresignUploadDto,
@@ -87,7 +121,14 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
     description:
       'Sletter udløbne PendingUpload-rækker fra DB og de tilhørende objekter fra S3. Samme job som cron kører hver 12. time. Returnerer antal slettede.',
   })
-  @ApiResponse({ status: 200, description: 'Cleanup kørt', schema: { type: 'object', properties: { ok: { type: 'boolean' }, deleted: { type: 'number' } } } })
+  @ApiResponse({
+    status: 200,
+    description: 'Cleanup kørt',
+    schema: {
+      type: 'object',
+      properties: { ok: { type: 'boolean' }, deleted: { type: 'number' } },
+    },
+  })
   async cleanupExpiredPending() {
     const result = await this.uploadService.cleanupExpiredPendingUploads();
     return { ok: true, deleted: result.deleted };
@@ -112,9 +153,15 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
             properties: {
               id: { type: 'string' },
               name: { type: 'string' },
-              schedule: { type: 'string', description: 'Cron-udtryk (min time dag måned ugedag)' },
+              schedule: {
+                type: 'string',
+                description: 'Cron-udtryk (min time dag måned ugedag)',
+              },
               description: { type: 'string' },
-              enabled: { type: 'boolean', description: 'Om jobbet kører (evt. betinget af env)' },
+              enabled: {
+                type: 'boolean',
+                description: 'Om jobbet kører (evt. betinget af env)',
+              },
             },
           },
         },
@@ -122,7 +169,8 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
     },
   })
   getCronJobs() {
-    const testEmptyBucketsEnabled = process.env.CRON_EMPTY_BUCKETS_EVERY_2MIN === 'true';
+    const testEmptyBucketsEnabled =
+      process.env.CRON_EMPTY_BUCKETS_EVERY_2MIN === 'true';
     return {
       jobs: [
         {
@@ -130,7 +178,8 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
           name: 'Cleanup udløbne PendingUploads',
           schedule: '0 */12 * * *',
           scheduleHuman: 'Hver 12. time (00:00, 12:00)',
-          description: 'Sletter udløbne PendingUpload-rækker og tilhørende objekter i S3.',
+          description:
+            'Sletter udløbne PendingUpload-rækker og tilhørende objekter i S3.',
           enabled: true,
         },
         {
@@ -146,7 +195,8 @@ Presigned URLs udløber efter 15 minutter (kan overstyres med \`expiresInSeconds
           name: 'Slet tomme buckets (test)',
           schedule: '*/2 * * * *',
           scheduleHuman: 'Hver 2. minut',
-          description: 'Kun aktiv når CRON_EMPTY_BUCKETS_EVERY_2MIN=true. Til test.',
+          description:
+            'Kun aktiv når CRON_EMPTY_BUCKETS_EVERY_2MIN=true. Til test.',
           enabled: testEmptyBucketsEnabled,
         },
       ],

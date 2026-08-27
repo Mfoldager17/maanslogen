@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateReviewDto } from './admin/dto/create-review.dto';
 import { UpdateReviewDto } from './admin/dto/update-review.dto';
@@ -13,7 +17,9 @@ export class ReviewService {
       include: {
         answers: {
           include: {
-            question: { select: { id: true, questionText: true, answerType: true } },
+            question: {
+              select: { id: true, questionText: true, answerType: true },
+            },
           },
           orderBy: { question: { sortOrder: 'asc' } },
         },
@@ -27,21 +33,61 @@ export class ReviewService {
     return this.prisma.review.findMany();
   }
 
+  async getByUser(userId: string) {
+    return this.prisma.review.findMany({ where: { userId } });
+  }
+
   async create(createReviewDto: CreateReviewDto) {
+    const { answers, ...reviewData } = createReviewDto;
+
+    const existing = await this.prisma.review.findUnique({
+      where: {
+        userId_beverageId: {
+          userId: reviewData.userId,
+          beverageId: reviewData.beverageId,
+        },
+      },
+    });
+    if (existing) {
+      throw new ConflictException('Du har allerede anmeldt denne drikkevare');
+    }
+
     const beverage = await this.prisma.beverage.findUnique({
-      where: { id: createReviewDto.beverageId },
+      where: { id: reviewData.beverageId },
       select: { reviewCount: true, averageRating: true },
     });
     const prevCount = beverage?.reviewCount ?? 0;
     const prevAverage = beverage?.averageRating ?? 0;
     const newCount = prevCount + 1;
-    const newAverage = (prevAverage * prevCount + createReviewDto.rating) / newCount;
+    const newAverage = (prevAverage * prevCount + reviewData.rating) / newCount;
     await this.prisma.beverage.update({
-      where: { id: createReviewDto.beverageId },
+      where: { id: reviewData.beverageId },
       data: { reviewCount: newCount, averageRating: newAverage },
     });
+
     return this.prisma.review.create({
-      data: createReviewDto,
+      data: {
+        ...reviewData,
+        ...(answers?.length
+          ? {
+              answers: {
+                create: answers.map((a) => ({
+                  questionId: a.questionId,
+                  answer: a.answer,
+                })),
+              },
+            }
+          : {}),
+      },
+      include: {
+        answers: {
+          include: {
+            question: {
+              select: { id: true, questionText: true, answerType: true },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -51,9 +97,19 @@ export class ReviewService {
       select: { beverageId: true, rating: true },
     });
     if (!existing) throw new NotFoundException('Review not found');
+
+    const updateData: {
+      rating?: number;
+      title?: string | null;
+      description?: string | null;
+    } = {};
+    if (dto.rating !== undefined) updateData.rating = dto.rating;
+    if (dto.title !== undefined) updateData.title = dto.title;
+    if (dto.description !== undefined) updateData.description = dto.description;
+
     const updated = await this.prisma.review.update({
       where: { id },
-      data: dto,
+      data: updateData,
     });
     if (dto.rating !== undefined && dto.rating !== existing.rating) {
       const beverage = await this.prisma.beverage.findUnique({

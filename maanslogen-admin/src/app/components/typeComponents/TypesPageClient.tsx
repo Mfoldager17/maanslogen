@@ -51,7 +51,7 @@ export function TypesPageClient() {
 
       <CollapsibleCard title="Opret ny type" defaultOpen={false} className="mb-8">
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-end gap-4">
             <TextField
               label="Navn"
               value={name}
@@ -75,7 +75,7 @@ export function TypesPageClient() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Valgfri"
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 pt-[1.5rem] pb-6">
               <input
                 type="checkbox"
                 id="active"
@@ -85,8 +85,8 @@ export function TypesPageClient() {
               />
               <Label htmlFor="active" className="mb-0 text-sm">Aktiv</Label>
             </div>
-            <div>
-              <Button type="submit" disabled={submitting || !name.trim() || !categoryId}>
+            <div className="pt-[1.5rem] pb-6">
+              <Button type="submit" className="h-11" disabled={submitting || !name.trim() || !categoryId}>
                 {submitting ? "Opretter…" : "Opret"}
               </Button>
             </div>

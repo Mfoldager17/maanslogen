@@ -6,7 +6,10 @@ import { BeverageAttributeValueWebController } from './web/beverage-attribute-va
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Module({
-  controllers: [BeverageAttributeValueAdminController, BeverageAttributeValueWebController],
+  controllers: [
+    BeverageAttributeValueAdminController,
+    BeverageAttributeValueWebController,
+  ],
   providers: [BeverageAttributeValueService, PrismaService],
   exports: [BeverageAttributeValueService],
 })

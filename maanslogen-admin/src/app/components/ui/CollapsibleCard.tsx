@@ -51,11 +51,11 @@ export function CollapsibleCard({
       <div
         className="grid transition-[grid-template-rows] ease-out"
         style={{
-          gridTemplateRows: open ? "1fr" : "0fr",
+          gridTemplateRows: open ? "auto" : "0fr",
           transitionDuration: `${COLLAPSE_DURATION}s`,
         }}
       >
-        <div className="min-h-0 overflow-hidden">
+        <div className="min-h-0 overflow-hidden overflow-y-auto">
           <div className="border-t border-border p-6 pt-4">{children}</div>
         </div>
       </div>

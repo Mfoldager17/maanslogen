@@ -1,5 +1,19 @@
-import { Body, Controller, Get, Param, Post, Patch, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Patch,
+  Delete,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { BrandService } from '../brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
@@ -57,7 +71,11 @@ export class BrandAdminController {
   @Delete(':id')
   @ApiOperation({ summary: '[Admin] Delete brand' })
   @ApiParam({ name: 'id', description: 'Brand ID' })
-  @ApiResponse({ status: 200, description: 'Brand deleted', schema: { type: 'object', properties: { deleted: { type: 'boolean' } } } })
+  @ApiResponse({
+    status: 200,
+    description: 'Brand deleted',
+    schema: { type: 'object', properties: { deleted: { type: 'boolean' } } },
+  })
   @ApiResponse({ status: 404, description: 'Not found' })
   @ApiResponse({ status: 409, description: 'Brand has beverages' })
   remove(@Param('id') id: string) {

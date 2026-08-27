@@ -23,7 +23,8 @@ export class PresignSlotDto {
   type: ImageType;
 
   @ApiPropertyOptional({
-    description: 'Bredde (px) – bruges i key som .../id/widthxheight. Default per type hvis udeladt.',
+    description:
+      'Bredde (px) – bruges i key som .../id/widthxheight. Default per type hvis udeladt.',
     minimum: 1,
     maximum: 4096,
   })
@@ -34,7 +35,8 @@ export class PresignSlotDto {
   width?: number;
 
   @ApiPropertyOptional({
-    description: 'Højde (px) – bruges i key som .../id/widthxheight. Default per type hvis udeladt.',
+    description:
+      'Højde (px) – bruges i key som .../id/widthxheight. Default per type hvis udeladt.',
     minimum: 1,
     maximum: 4096,
   })
@@ -49,10 +51,7 @@ export class PresignUploadDto {
   @ApiProperty({
     description: 'List of image slots – one entry per file you will upload',
     type: [PresignSlotDto],
-    example: [
-      { type: 'THUMBNAIL' },
-      { type: 'LARGE' },
-    ],
+    example: [{ type: 'THUMBNAIL' }, { type: 'LARGE' }],
   })
   @IsArray()
   @ArrayMinSize(1, { message: 'At least one upload slot required' })

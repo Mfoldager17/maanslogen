@@ -15,6 +15,7 @@ import {
   IconQuestionMarkCircle,
   IconStar,
   IconClock,
+  IconQueueList,
 } from "./NavIcons";
 
 const nav = [
@@ -23,6 +24,7 @@ const nav = [
   { href: "/types", label: "Typer", icon: IconTag },
   { href: "/brands", label: "Mærker", icon: IconBuildingStorefront },
   { href: "/beverages", label: "Drikke", icon: IconBeaker },
+  { href: "/arrangements", label: "Arrangementer", icon: IconQueueList },
   { href: "/attributes", label: "Attribute", icon: IconListBullets },
   { href: "/questions", label: "Spørgsmål", icon: IconQuestionMarkCircle },
   { href: "/reviews", label: "Anmeldelser", icon: IconStar },
