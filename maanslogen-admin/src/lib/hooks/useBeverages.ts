@@ -8,9 +8,9 @@ import {
   getAllBrands,
   getBrandsByCategory,
   createBeverage,
+  createBeverageAttributeValue,
   deleteBeverage,
   findAttributesByCategory,
-  getApiBaseUrl,
   type Beverage,
   type BeverageType,
   type BeverageCategory,
@@ -18,7 +18,7 @@ import {
   type AttributeDefinition,
 } from "@/lib/api-client";
 import { getApiError } from "./useApiError";
-import { resizeImageToBlob, THUMBNAIL_SIZE, LARGE_SIZE } from "@/lib/resizeImage";
+import { uploadBeverageImage, type UploadedImageSlot } from "@/lib/uploadBeverageImage";
 
 function defAppliesToType(
   def: AttributeDefinition & { typeIds?: string[]; typeId?: unknown },
@@ -29,7 +29,7 @@ function defAppliesToType(
   return t == null || t === "" || (typeof t === "string" && t === beverageTypeId);
 }
 
-type ImageSlot = { url: string; type: "THUMBNAIL" | "LARGE"; width: number; height: number };
+type ImageSlot = UploadedImageSlot;
 
 export function useBeverages() {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -202,41 +202,7 @@ export function useBeverages() {
     let images: ImageSlot[] = [];
     if (imageFile) {
       try {
-        const presignRes = await fetch(`${getApiBaseUrl()}/api/admin/upload/presign/beverage-images`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ uploads: [{ type: "THUMBNAIL" }, { type: "LARGE" }] }),
-        });
-        if (!presignRes.ok) {
-          const errData = await presignRes.json().catch(() => ({}));
-          throw new Error(errData.message || `Presign fejlede: ${presignRes.status}`);
-        }
-        const { uploads: presignUploads } = (await presignRes.json()) as {
-          uploads: Array<{ uploadUrl: string; url: string; type: string; width: number; height: number }>;
-        };
-        const [thumbPresign, largePresign] = presignUploads;
-        const [thumbBlob, largeBlob] = await Promise.all([
-          resizeImageToBlob(imageFile, THUMBNAIL_SIZE, THUMBNAIL_SIZE),
-          resizeImageToBlob(imageFile, LARGE_SIZE, LARGE_SIZE),
-        ]);
-        const [thumbPut, largePut] = await Promise.all([
-          fetch(thumbPresign.uploadUrl, {
-            method: "PUT",
-            body: thumbBlob,
-            headers: { "Content-Type": "image/jpeg" },
-          }),
-          fetch(largePresign.uploadUrl, {
-            method: "PUT",
-            body: largeBlob,
-            headers: { "Content-Type": "image/jpeg" },
-          }),
-        ]);
-        if (!thumbPut.ok) throw new Error(`Upload af thumbnail fejlede: ${thumbPut.status}`);
-        if (!largePut.ok) throw new Error(`Upload af stor version fejlede: ${largePut.status}`);
-        images = [
-          { url: thumbPresign.url, type: "THUMBNAIL", width: thumbPresign.width, height: thumbPresign.height },
-          { url: largePresign.url, type: "LARGE", width: largePresign.width, height: largePresign.height },
-        ];
+        images = await uploadBeverageImage(imageFile);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Billedupload fejlede");
         setSubmitting(false);
@@ -253,19 +219,47 @@ export function useBeverages() {
         ...(images.length ? { images } : {}),
       },
     });
-    setSubmitting(false);
     const createErr = getApiError(createRes);
     if (createErr) {
+      setSubmitting(false);
       setError(createErr);
       return;
     }
+
+    // Gem udfyldte attributværdier på den nye beverage
+    const created = createRes.data;
+    if (created) {
+      const filled = attributeDefinitions.filter(
+        (def) => !isAttributeValueEmpty(def, attributeValues[def.id]),
+      );
+      const valueResults = await Promise.all(
+        filled.map((def) => {
+          const value = attributeValues[def.id];
+          return createBeverageAttributeValue({
+            body: {
+              beverageId: created.id,
+              attributeId: def.id,
+              ...(def.dataType === "number"
+                ? { valueNumber: Number(value) }
+                : def.dataType === "boolean"
+                  ? { valueBoolean: Boolean(value) }
+                  : { valueString: String(value) }),
+            },
+          });
+        }),
+      );
+      const valueErr = valueResults.map(getApiError).find(Boolean);
+      if (valueErr) setError(`Drikkevaren blev oprettet, men attributter kunne ikke gemmes: ${valueErr}`);
+    }
+
+    setSubmitting(false);
     setBrandId("");
     setName("");
     setCountry("");
     setImageFile(null);
     setAttributeValues({});
-    imageInputRef.current && (imageInputRef.current.value = "");
-    if (createRes.data) setList((prev) => [...prev, createRes.data]);
+    if (imageInputRef.current) imageInputRef.current.value = "";
+    if (created) setList((prev) => [...prev, created]);
   }
 
   function beverageBrandName(b: Beverage): string {

@@ -6,17 +6,31 @@ export class CreateBrandDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'Description of the brand', example: 'Danish brewery', required: false })
+  @ApiProperty({
+    description: 'Description of the brand',
+    example: 'Danish brewery',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ description: 'Whether the brand is active', example: true, required: false, default: true })
+  @ApiProperty({
+    description: 'Whether the brand is active',
+    example: true,
+    required: false,
+    default: true,
+  })
   @IsOptional()
   @IsBoolean()
   active?: boolean;
 
-  @ApiProperty({ description: 'IDs of categories this brand is allowed in (empty = all)', example: [], type: [String], required: false })
+  @ApiProperty({
+    description: 'IDs of categories this brand is allowed in (empty = all)',
+    example: [],
+    type: [String],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

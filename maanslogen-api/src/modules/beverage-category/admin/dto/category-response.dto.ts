@@ -12,6 +12,9 @@ export class BeverageCategory {
   @ApiPropertyOptional({ description: 'Category description' })
   description?: string | null;
 
-  @ApiPropertyOptional({ description: 'Category images (e.g. icon)', type: [Image] })
+  @ApiPropertyOptional({
+    description: 'Category images (e.g. icon)',
+    type: [Image],
+  })
   images?: Image[];
 }

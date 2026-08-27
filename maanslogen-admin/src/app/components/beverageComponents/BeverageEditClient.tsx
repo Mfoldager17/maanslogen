@@ -7,11 +7,10 @@ import {
   getAllTypes,
   getBrandsByCategory,
   updateBeverage,
-  getApiBaseUrl,
 } from "@/lib/api-client";
 import { useFetchAll, useFetch } from "@/lib/hooks";
 import { getApiError } from "@/lib/hooks/useApiError";
-import { resizeImageToBlob, THUMBNAIL_SIZE, LARGE_SIZE } from "@/lib/resizeImage";
+import { uploadBeverageImage } from "@/lib/uploadBeverageImage";
 import type { CreateImageDto } from "@/lib/api-client";
 import type { Beverage, BeverageType } from "@/lib/api-client";
 import {
@@ -116,42 +115,8 @@ export function BeverageEditClient() {
     setImageError(null);
     setUploadingImage(true);
     try {
-      const presignRes = await fetch(`${getApiBaseUrl()}/api/admin/upload/presign/beverage-images`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uploads: [{ type: "THUMBNAIL" }, { type: "LARGE" }] }),
-      });
-      if (!presignRes.ok) {
-        const errData = await presignRes.json().catch(() => ({}));
-        throw new Error((errData as { message?: string }).message || `Presign fejlede: ${presignRes.status}`);
-      }
-      const { uploads: presignUploads } = (await presignRes.json()) as {
-        uploads: Array<{ uploadUrl: string; url: string; type: string; width: number; height: number }>;
-      };
-      const [thumbPresign, largePresign] = presignUploads;
-      const [thumbBlob, largeBlob] = await Promise.all([
-        resizeImageToBlob(file, THUMBNAIL_SIZE, THUMBNAIL_SIZE),
-        resizeImageToBlob(file, LARGE_SIZE, LARGE_SIZE),
-      ]);
-      const [thumbPut, largePut] = await Promise.all([
-        fetch(thumbPresign.uploadUrl, {
-          method: "PUT",
-          body: thumbBlob,
-          headers: { "Content-Type": "image/jpeg" },
-        }),
-        fetch(largePresign.uploadUrl, {
-          method: "PUT",
-          body: largeBlob,
-          headers: { "Content-Type": "image/jpeg" },
-        }),
-      ]);
-      if (!thumbPut.ok) throw new Error(`Upload af thumbnail fejlede: ${thumbPut.status}`);
-      if (!largePut.ok) throw new Error(`Upload af stor version fejlede: ${largePut.status}`);
-      setImages((prev) => [
-        ...prev,
-        { url: thumbPresign.url, type: "THUMBNAIL", width: thumbPresign.width, height: thumbPresign.height },
-        { url: largePresign.url, type: "LARGE", width: largePresign.width, height: largePresign.height },
-      ]);
+      const uploaded = await uploadBeverageImage(file);
+      setImages((prev) => [...prev, ...uploaded]);
       if (imageInputRef.current) imageInputRef.current.value = "";
     } catch (err) {
       setImageError(err instanceof Error ? err.message : "Billedupload fejlede");

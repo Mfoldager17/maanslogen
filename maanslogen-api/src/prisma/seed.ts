@@ -10,14 +10,17 @@ const pool = new Pool({
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  log:
+    process.env.NODE_ENV === 'development'
+      ? ['query', 'error', 'warn']
+      : ['error'],
 });
 
 async function main() {
   console.log('Seeding database...');
 
   // Users
-  const user1 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'alice',
       email: 'alice@test.com',
@@ -25,7 +28,7 @@ async function main() {
     },
   });
 
-  const user2 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'bob',
       email: 'bob@test.com',
@@ -71,7 +74,7 @@ async function main() {
     },
   });
 
-  const redWineType = await prisma.beverageType.create({
+  await prisma.beverageType.create({
     data: {
       name: 'Rødvin',
       categoryId: wineCategory.id,
@@ -80,7 +83,7 @@ async function main() {
   });
 
   // Attributes
-  const abvAttribute = await prisma.attributeDefinition.create({
+  await prisma.attributeDefinition.create({
     data: {
       attributeKey: 'abv',
       displayName: 'Alkohol %',
@@ -91,7 +94,7 @@ async function main() {
     },
   });
 
-  const bitternessAttribute = await prisma.attributeDefinition.create({
+  await prisma.attributeDefinition.create({
     data: {
       attributeKey: 'ibu',
       displayName: 'Bitterhed (IBU)',
@@ -103,7 +106,7 @@ async function main() {
   });
 
   // Questions
-  const aromaQuestion = await prisma.question.create({
+  await prisma.question.create({
     data: {
       categoryId: beerCategory.id,
       typeId: null,
@@ -112,7 +115,7 @@ async function main() {
     },
   });
 
-  const tasteQuestion = await prisma.question.create({
+  await prisma.question.create({
     data: {
       categoryId: beerCategory.id,
       typeId: ipaType.id,
@@ -123,14 +126,22 @@ async function main() {
 
   // Brands (tilladte kategorier: øl-mærker → Øl)
   const brandCarlsberg = await prisma.brand.create({
-    data: { name: 'Carlsberg', description: 'Dansk bryggeri', categories: { connect: { id: beerCategory.id } } },
+    data: {
+      name: 'Carlsberg',
+      description: 'Dansk bryggeri',
+      categories: { connect: { id: beerCategory.id } },
+    },
   });
   const brandMikkeller = await prisma.brand.create({
-    data: { name: 'Mikkeller', description: 'Dansk mikrobryggeri', categories: { connect: { id: beerCategory.id } } },
+    data: {
+      name: 'Mikkeller',
+      description: 'Dansk mikrobryggeri',
+      categories: { connect: { id: beerCategory.id } },
+    },
   });
 
   // Beverages
-  const beer1 = await prisma.beverage.create({
+  await prisma.beverage.create({
     data: {
       beverageTypeId: lagerType.id,
       brandId: brandCarlsberg.id,
@@ -140,7 +151,7 @@ async function main() {
     },
   });
 
-  const beer2 = await prisma.beverage.create({
+  await prisma.beverage.create({
     data: {
       beverageTypeId: ipaType.id,
       brandId: brandMikkeller.id,

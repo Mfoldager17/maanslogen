@@ -40,12 +40,13 @@ export interface PresignResult {
 const PROTECTED_BUCKET_CLEANUP = 'maanslogen-dev';
 
 /** Default dimensioner per type (width x height) når slot ikke angiver width/height. */
-const DEFAULT_DIMENSIONS: Record<ImageType, { width: number; height: number }> = {
-  [ImageType.THUMBNAIL]: { width: 200, height: 200 },
-  [ImageType.LARGE]: { width: 800, height: 800 },
-  [ImageType.PROFILE]: { width: 400, height: 400 },
-  [ImageType.ICON]: { width: 64, height: 64 },
-};
+const DEFAULT_DIMENSIONS: Record<ImageType, { width: number; height: number }> =
+  {
+    [ImageType.THUMBNAIL]: { width: 200, height: 200 },
+    [ImageType.LARGE]: { width: 800, height: 800 },
+    [ImageType.PROFILE]: { width: 400, height: 400 },
+    [ImageType.ICON]: { width: 64, height: 64 },
+  };
 
 export interface CreatePresignedUploadsOptions {
   /** Seconds until presigned URL expires (default: 900) */
@@ -273,7 +274,9 @@ export class UploadService {
       .map((url) => this.urlToBucketAndKey(url))
       .filter((p): p is { bucket: string; key: string } => p !== null);
     if (pairs.length === 0) return;
-    const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(
+      Date.now() + expiresInDays * 24 * 60 * 60 * 1000,
+    );
     for (const { bucket, key } of pairs) {
       await this.prisma.pendingUpload.upsert({
         where: {
@@ -301,8 +304,10 @@ export class UploadService {
       } catch {
         // Object may already be deleted or bucket missing
       }
-      await this.prisma.pendingUpload.delete({ where: { id: row.id } });
     }
+    await this.prisma.pendingUpload.deleteMany({
+      where: { id: { in: expired.map((row) => row.id) } },
+    });
     return { deleted: expired.length };
   }
 
@@ -314,7 +319,9 @@ export class UploadService {
   /**
    * Afbryder alle uafsluttede multipart-uploads i en bucket (ellers blokerer de DeleteBucket).
    */
-  private async abortIncompleteMultipartUploads(bucket: string): Promise<number> {
+  private async abortIncompleteMultipartUploads(
+    bucket: string,
+  ): Promise<number> {
     let aborted = 0;
     let keyMarker: string | undefined;
     let uploadIdMarker: string | undefined;
@@ -364,20 +371,16 @@ export class UploadService {
       );
       const count = list.KeyCount ?? list.Contents?.length ?? 0;
       total += count;
-      continuationToken = list.IsTruncated ? list.NextContinuationToken : undefined;
+      continuationToken = list.IsTruncated
+        ? list.NextContinuationToken
+        : undefined;
     } while (continuationToken);
     return total;
   }
 
   /**
-   * Returnerer true hvis bucketen har 0 objekter (tjekker alle sider).
-   */
-  private async isBucketEmpty(bucket: string): Promise<boolean> {
-    return (await this.getBucketObjectCount(bucket)) === 0;
-  }
-
-  /**
-   * Rapport fra deleteEmptyBuckets – så man kan se i API-svaret hvorfor en bucket ikke blev slettet.
+   * Sletter buckets der er tomme (0 objekter). Kun "maanslogen-dev" springes over.
+   * Returnerer en rapport – så man kan se i API-svaret hvorfor en bucket ikke blev slettet.
    */
   async deleteEmptyBucketsReport(): Promise<{
     protectedBucket: string;
@@ -401,9 +404,14 @@ export class UploadService {
     try {
       const result = await this.client.send(new ListBucketsCommand({}));
       buckets = result.Buckets ?? [];
-      report.bucketsListed = buckets.map((b) => b.Name).filter((n): n is string => !!n);
+      report.bucketsListed = buckets
+        .map((b) => b.Name)
+        .filter((n): n is string => !!n);
     } catch (err) {
-      report.errors.push({ bucket: '(ListBuckets)', message: (err as Error).message });
+      report.errors.push({
+        bucket: '(ListBuckets)',
+        message: (err as Error).message,
+      });
       return report;
     }
     for (const b of buckets) {
@@ -415,7 +423,8 @@ export class UploadService {
       }
       try {
         const aborted = await this.abortIncompleteMultipartUploads(name);
-        if (aborted > 0) report.multipartAborted.push({ bucket: name, count: aborted });
+        if (aborted > 0)
+          report.multipartAborted.push({ bucket: name, count: aborted });
         const objectCount = await this.getBucketObjectCount(name);
         if (objectCount > 0) {
           report.hadObjects.push({ bucket: name, objectCount });
@@ -430,23 +439,15 @@ export class UploadService {
     return report;
   }
 
-  /**
-   * Sletter buckets der er tomme (0 objekter). Kun "maanslogen-dev" springes over.
-   * Kalder deleteEmptyBucketsReport som udfører selve sletningen.
-   */
-  async deleteEmptyBuckets(): Promise<void> {
-    await this.deleteEmptyBucketsReport();
-  }
-
   @Cron('0 3 * * 0') // Hver søndag kl. 03:00 (produktion)
   async handleWeeklyEmptyBucketCleanup(): Promise<void> {
-    await this.deleteEmptyBuckets();
+    await this.deleteEmptyBucketsReport();
   }
 
   /** Kører hver 2. minut når CRON_EMPTY_BUCKETS_EVERY_2MIN=true – kun til test. */
   @Cron('*/2 * * * *')
   async handleTestEmptyBucketCleanup(): Promise<void> {
     if (process.env.CRON_EMPTY_BUCKETS_EVERY_2MIN !== 'true') return;
-    await this.deleteEmptyBuckets();
+    await this.deleteEmptyBucketsReport();
   }
 }

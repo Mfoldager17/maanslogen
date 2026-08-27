@@ -6,7 +6,10 @@ import { AttributeDefinitionWebController } from './web/attribute-definition-web
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Module({
-  controllers: [AttributeDefinitionAdminController, AttributeDefinitionWebController],
+  controllers: [
+    AttributeDefinitionAdminController,
+    AttributeDefinitionWebController,
+  ],
   providers: [AttributeDefinitionService, PrismaService],
   exports: [AttributeDefinitionService],
 })
